@@ -59,43 +59,43 @@ namespace Json.Facts
             Assert.True(IsJsonString(Quoted(@"\""a\"" b")));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void CanContainEscapedReverseSolidus()
         {
             Assert.True(IsJsonString(Quoted(@"a \\ b")));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void CanContainEscapedSolidus()
         {
             Assert.True(IsJsonString(Quoted(@"a \/ b")));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void CanContainEscapedBackspace()
         {
             Assert.True(IsJsonString(Quoted(@"a \b b")));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void CanContainEscapedFormFeed()
         {
             Assert.True(IsJsonString(Quoted(@"a \f b")));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void CanContainEscapedLineFeed()
         {
             Assert.True(IsJsonString(Quoted(@"a \n b")));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void CanContainEscapedCarrigeReturn()
         {
             Assert.True(IsJsonString(Quoted(@"a \r b")));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void CanContainEscapedHorizontalTab()
         {
             Assert.True(IsJsonString(Quoted(@"a \t b")));
@@ -113,7 +113,7 @@ namespace Json.Facts
             Assert.True(IsJsonString(Quoted(@"\\\u1212\n\t\r\\\b")));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void DoesNotContainUnrecognizedExcapceCharacters()
         {
             Assert.False(IsJsonString(Quoted(@"a\x")));
