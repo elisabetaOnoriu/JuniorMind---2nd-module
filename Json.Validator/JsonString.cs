@@ -43,16 +43,23 @@ namespace Json
 
         private static bool ContainsExceptedChar(string input)
         {
-            char[] allowedToBeEscaped = { '"', '\\', '/', 'b', 'f', 'n', 'r', 't', 'u' };
             if (!input.Contains('\\'))
             {
                 return false;
             }
 
+            return CheckEscapedChars(input);
+        }
+
+        private static bool CheckEscapedChars(string input)
+        {
+            char[] allowedToBeEscaped = { '"', '\\', '/', 'b', 'f', 'n', 'r', 't', 'u' };
             for (int i = 0; i < allowedToBeEscaped.Length - 1; i++)
             {
-                if (input[input.IndexOf(@"\") + 1] == allowedToBeEscaped[i])
+                if (input[input.IndexOf('\\') + 1] == allowedToBeEscaped[i])
                 {
+                    input = input.Remove(input.IndexOf('\\'), 1);
+                    CheckEscapedChars(input);
                     return false;
                 }
             }
