@@ -28,7 +28,7 @@ namespace Json
         private static bool ContainsValidChars(string input)
         {
             return !ContainsControlCharacters(input)
-                && !ContainsExceptedChar(input);
+                && !ContainsExceptedChars(input);
         }
 
         private static bool HasContent(string input)
@@ -41,30 +41,36 @@ namespace Json
             return input.Length >= 2 && input[0] == '"' && input[input.Length - 1] == '"';
         }
 
-        private static bool ContainsExceptedChar(string input)
+        private static bool ContainsExceptedChars(string input)
         {
             if (!input.Contains('\\'))
             {
                 return false;
             }
 
-            return CheckEscapedChars(input);
+            return !EscapedCharsAreValid(input);
         }
 
-        private static bool CheckEscapedChars(string input)
+        private static bool EscapedCharsAreValid(string input)
         {
+            const byte numberOfItemsToRemove = 2;
             char[] allowedToBeEscaped = { '"', '\\', '/', 'b', 'f', 'n', 'r', 't', 'u' };
-            for (int i = 0; i < allowedToBeEscaped.Length - 1; i++)
+            for (int i = 0; i < allowedToBeEscaped.Length; i++)
             {
                 if (input[input.IndexOf('\\') + 1] == allowedToBeEscaped[i])
                 {
-                    input = input.Remove(input.IndexOf('\\'), 1);
-                    CheckEscapedChars(input);
-                    return false;
+                    if (!input.Contains('\\'))
+                    {
+                        return true;
+                    }
+
+                    input = input.Remove(input.IndexOf('\\'), numberOfItemsToRemove);
+                    EscapedCharsAreValid(input);
+                    return true;
                 }
             }
 
-            return true;
+            return false;
         }
     }
 }
