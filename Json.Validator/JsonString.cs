@@ -1,3 +1,4 @@
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 
 namespace Json
@@ -71,8 +72,26 @@ namespace Json
                 return true;
             }
 
+            const string unicodeApprovedChars = "1234567890ABCDEFabcdef";
             const int minimumLengthOfUnicodeWithLastQuote = 6;
-            return input.Substring(input.IndexOf("\\u") + 1).Length >= minimumLengthOfUnicodeWithLastQuote;
+            const int unicodeDigitsLength = 4;
+            if (input.Substring(input.IndexOf("\\u") + 1).Length < minimumLengthOfUnicodeWithLastQuote)
+            {
+                return false;
+            }
+
+            int indexOfUnicode = input.IndexOf("\\u") + 2;
+            for (int i = indexOfUnicode; i < indexOfUnicode + unicodeDigitsLength; i++)
+            {
+                if (!unicodeApprovedChars.Contains(input[i]))
+                {
+                    return false;
+                }
+            }
+
+            input = input.Remove(input.IndexOf("\\u"), unicodeDigitsLength);
+            UnicodeCharsAreValid(input);
+            return true;
         }
     }
 }
