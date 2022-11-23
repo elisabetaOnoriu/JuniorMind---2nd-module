@@ -44,7 +44,7 @@ namespace Json
         private static bool EscapedCharsAreValid(string input)
         {
             const byte numberOfItemsToRemove = 2;
-            char[] allowedToBeEscaped = { '"', '\\', '/', 'b', 'f', 'n', 'r', 't', 'u' };
+            const string allowedToBeEscaped = "\"\\/bfnrtu";
             for (int i = 0; i < allowedToBeEscaped.Length; i++)
             {
                 if (!input.Contains('\\'))
