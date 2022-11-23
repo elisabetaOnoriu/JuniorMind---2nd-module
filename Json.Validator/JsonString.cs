@@ -45,17 +45,17 @@ namespace Json
         {
             const byte numberOfItemsToRemove = 2;
             const string allowedToBeEscaped = "\"\\/bfnrtu";
-            for (int i = 0; i < allowedToBeEscaped.Length; i++)
+            for (int i = 0; i < input.Length - 1; i++)
             {
                 if (!input.Contains('\\'))
                 {
                     return true;
                 }
 
-                if (input[input.IndexOf('\\') + 1] == allowedToBeEscaped[i]
-                    && input.IndexOf('\\') + 1 != input.Length - 1)
+                if (input[i] == '\\' && allowedToBeEscaped.Contains(input[i + 1])
+                    && i + 1 != input.Length - 1)
                 {
-                    input = input.Remove(input.IndexOf('\\'), numberOfItemsToRemove);
+                    input = input.Remove(i, numberOfItemsToRemove);
                     EscapedCharsAreValid(input);
                     return true;
                 }

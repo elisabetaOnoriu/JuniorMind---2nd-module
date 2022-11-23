@@ -128,7 +128,7 @@ namespace Json.Facts
         [Fact]
         public void DoesNotEndWithAnUnfinishedHexNumber()
         {
-            //Assert.False(IsJsonString(Quoted(@"a\u")));
+            Assert.False(IsJsonString(Quoted(@"a\u")));
             Assert.False(IsJsonString(Quoted(@"a\u123")));
         }
 
