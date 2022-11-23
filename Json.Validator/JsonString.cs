@@ -28,7 +28,8 @@ namespace Json
         private static bool ContainsValidChars(string input)
         {
             return !ContainsControlCharacters(input)
-                && !ContainsExceptedChars(input);
+                && !ContainsExceptedChars(input)
+                && HasValidUnicodeChars(input);
         }
 
         private static bool HasContent(string input)
@@ -57,13 +58,14 @@ namespace Json
             char[] allowedToBeEscaped = { '"', '\\', '/', 'b', 'f', 'n', 'r', 't', 'u' };
             for (int i = 0; i < allowedToBeEscaped.Length; i++)
             {
-                if (input[input.IndexOf('\\') + 1] == allowedToBeEscaped[i])
+                if (!input.Contains('\\'))
                 {
-                    if (!input.Contains('\\'))
-                    {
-                        return true;
-                    }
+                    return true;
+                }
 
+                if (input[input.IndexOf('\\') + 1] == allowedToBeEscaped[i]
+                    && input.IndexOf('\\') + 1 != input.Length - 1)
+                {
                     input = input.Remove(input.IndexOf('\\'), numberOfItemsToRemove);
                     EscapedCharsAreValid(input);
                     return true;
@@ -71,6 +73,17 @@ namespace Json
             }
 
             return false;
+        }
+
+        private static bool HasValidUnicodeChars(string input)
+        {
+            if (!input.Contains("\\u"))
+            {
+                return true;
+            }
+
+            const int minimumLengthOfUnicodeWithLastQuote = 6;
+            return input.Substring(input.IndexOf("\\u") + 1).Length >= minimumLengthOfUnicodeWithLastQuote;
         }
     }
 }
