@@ -13,10 +13,9 @@ namespace Json
 
         private static bool ContainsControlCharacters(string input)
         {
-            const int firstValidCharForJsonString = 32;
             for (int i = 0; i < input.Length; i++)
             {
-                if (input[i] < firstValidCharForJsonString)
+                if (input[i] < ' ')
                 {
                     return true;
                 }
