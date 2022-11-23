@@ -43,11 +43,6 @@ namespace Json
 
         private static bool ContainsExceptedChars(string input)
         {
-            if (!input.Contains('\\'))
-            {
-                return false;
-            }
-
             return !EscapedCharsAreValid(input);
         }
 
