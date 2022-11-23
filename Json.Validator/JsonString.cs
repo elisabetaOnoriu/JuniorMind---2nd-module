@@ -75,7 +75,7 @@ namespace Json
             const string unicodeApprovedChars = "1234567890ABCDEFabcdef";
             const int minimumLengthOfUnicodeWithLastQuote = 6;
             const int unicodeDigitsLength = 4;
-            if (input.Substring(input.IndexOf("\\u") + 1).Length < minimumLengthOfUnicodeWithLastQuote)
+            if (input[(input.IndexOf("\\u") + 1) ..].Length < minimumLengthOfUnicodeWithLastQuote)
             {
                 return false;
             }
