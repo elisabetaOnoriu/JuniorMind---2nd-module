@@ -16,7 +16,7 @@ namespace Json
             const int firstValidCharForJsonString = 32;
             for (int i = 0; i < input.Length; i++)
             {
-                if (Convert.ToChar(input[i]) < firstValidCharForJsonString)
+                if (input[i] < firstValidCharForJsonString)
                 {
                     return true;
                 }
