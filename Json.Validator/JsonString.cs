@@ -13,9 +13,9 @@ namespace Json
 
         private static bool ContainsControlCharacters(string input)
         {
-            for (int i = 0; i < input.Length; i++)
+            foreach (char c in input)
             {
-                if (input[i] < ' ')
+                if (c < ' ')
                 {
                     return true;
                 }
