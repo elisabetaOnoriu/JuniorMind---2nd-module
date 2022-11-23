@@ -28,7 +28,7 @@ namespace Json
         {
             return !ContainsControlCharacters(input)
                 && EscapedCharsAreValid(input)
-                && HasValidUnicodeChars(input);
+                && UnicodeCharsAreValid(input);
         }
 
         private static bool HasContent(string input)
@@ -64,7 +64,7 @@ namespace Json
             return false;
         }
 
-        private static bool HasValidUnicodeChars(string input)
+        private static bool UnicodeCharsAreValid(string input)
         {
             if (!input.Contains("\\u"))
             {
