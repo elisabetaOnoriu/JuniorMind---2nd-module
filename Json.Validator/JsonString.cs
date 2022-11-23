@@ -27,7 +27,7 @@ namespace Json
         private static bool ContainsValidChars(string input)
         {
             return !ContainsControlCharacters(input)
-                && !ContainsExceptedChars(input)
+                && EscapedCharsAreValid(input)
                 && HasValidUnicodeChars(input);
         }
 
@@ -39,11 +39,6 @@ namespace Json
         private static bool IsDoubleQuoted(string input)
         {
             return input.Length >= 2 && input.StartsWith('"') && input.EndsWith('"');
-        }
-
-        private static bool ContainsExceptedChars(string input)
-        {
-            return !EscapedCharsAreValid(input);
         }
 
         private static bool EscapedCharsAreValid(string input)
