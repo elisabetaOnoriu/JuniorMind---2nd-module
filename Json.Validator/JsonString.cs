@@ -79,7 +79,6 @@ namespace Json
 
         private static bool CheckValidityOfUnicodeDigits(string input, int index)
         {
-            const string unicodeApprovedChars = "1234567890ABCDEFabcdef";
             const int minimumLengthOfUnicodeWithLastQuote = 5;
             const byte reversedSolidusAndULength = 2;
             const int unicodeDigitsLength = 4;
@@ -87,11 +86,25 @@ namespace Json
             for (int j = index + 2; j < index + reversedSolidusAndULength + unicodeDigitsLength; j++)
             {
                 int indexOfUnicodeDigits = index + 2;
-                if (!unicodeApprovedChars.Contains(input[j])
+                if (!IsHexChar(input[j])
                 || input.Substring(indexOfUnicodeDigits).Length < minimumLengthOfUnicodeWithLastQuote)
                 {
                     return false;
                 }
+            }
+
+            return true;
+        }
+
+        private static bool IsHexChar(char c)
+        {
+            if (int.TryParse(Convert.ToString(c), out _))
+            {
+                return true;
+            }
+            else if (char.ToUpper(c) < 'A' || char.ToUpper(c) > 'F')
+            {
+                return false;
             }
 
             return true;
