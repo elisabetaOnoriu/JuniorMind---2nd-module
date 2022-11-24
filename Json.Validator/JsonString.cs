@@ -27,10 +27,9 @@ namespace Json
 
         private static bool ContainsValidChars(string input)
         {
-            const bool check = true;
             return !ContainsControlCharacters(input)
                 && EscapedCharsAreValid(input)
-                && UnicodeCharsAreValid(input, check);
+                && UnicodeCharsAreValid(input);
         }
 
         private static bool HasContent(string input)
@@ -66,11 +65,11 @@ namespace Json
             return false;
         }
 
-        private static bool UnicodeCharsAreValid(string input, bool check)
+        private static bool UnicodeCharsAreValid(string input)
         {
             if (!input.Contains("\\u"))
             {
-                return check;
+                return true;
             }
 
             const string unicodeApprovedChars = "1234567890ABCDEFabcdef";
@@ -86,12 +85,12 @@ namespace Json
             {
                 if (!unicodeApprovedChars.Contains(input[i]))
                 {
-                    check = false;
+                    return false;
                 }
             }
 
             input = input.Remove(input.IndexOf("\\u"), unicodeDigitsLength);
-            return UnicodeCharsAreValid(input, check);
+            return UnicodeCharsAreValid(input);
         }
     }
 }
