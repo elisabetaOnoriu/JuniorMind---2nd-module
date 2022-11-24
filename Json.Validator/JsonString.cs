@@ -60,26 +60,37 @@ namespace Json
 
         private static bool UnicodeCharsAreValid(string input)
         {
+            const byte reversedSolidusAndULength = 2;
             if (!input.Contains("\\u"))
             {
                 return true;
             }
 
-            const string unicodeApprovedChars = "1234567890ABCDEFabcdef";
-            const int minimumLengthOfUnicodeWithLastQuote = 5;
-            const int unicodeDigitsLength = 4;
             for (int i = 0; i < input.Length - 1; i++)
             {
-                if (input.Substring(i, 2) == "\\u")
+                if (input.Substring(i, reversedSolidusAndULength) == "\\u" && !CheckValidityOfUnicodeDigits(input, i))
                 {
-                    for (int j = i + 2; j < i + 2 + unicodeDigitsLength; j++)
-                    {
-                        int indexOfUnicodeDigits = i + 2;
-                        if (!unicodeApprovedChars.Contains(input[j]) || input.Substring(indexOfUnicodeDigits).Length < minimumLengthOfUnicodeWithLastQuote)
-                        {
-                            return false;
-                        }
-                    }
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool CheckValidityOfUnicodeDigits(string input, int index)
+        {
+            const string unicodeApprovedChars = "1234567890ABCDEFabcdef";
+            const int minimumLengthOfUnicodeWithLastQuote = 5;
+            const byte reversedSolidusAndULength = 2;
+            const int unicodeDigitsLength = 4;
+
+            for (int j = index + 2; j < index + reversedSolidusAndULength + unicodeDigitsLength; j++)
+            {
+                int indexOfUnicodeDigits = index + 2;
+                if (!unicodeApprovedChars.Contains(input[j])
+                || input.Substring(indexOfUnicodeDigits).Length < minimumLengthOfUnicodeWithLastQuote)
+                {
+                    return false;
                 }
             }
 
