@@ -150,6 +150,12 @@ namespace Json.Facts
             Assert.False(IsJsonString(Quoted(@"a\u1234 i\u12io")));
         }
 
+        [Fact]
+        public void DoesNotContainInvalidHexDigitsAtTheMiddle()
+        {
+            Assert.False(IsJsonString(Quoted(@"a\u1234 i\u12io a/u4567")));
+        }
+
         public static string Quoted(string text)
             => $"\"{text}\"";
     }
