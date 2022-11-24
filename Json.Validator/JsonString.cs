@@ -66,24 +66,24 @@ namespace Json
             }
 
             const string unicodeApprovedChars = "1234567890ABCDEFabcdef";
-            const int minimumLengthOfUnicodeWithLastQuote = 6;
+            const int minimumLengthOfUnicodeWithLastQuote = 5;
             const int unicodeDigitsLength = 4;
-            if (input[(input.IndexOf("\\u") + 1) ..].Length < minimumLengthOfUnicodeWithLastQuote)
+            for (int i = 0; i < input.Length - 1; i++)
             {
-                return false;
-            }
-
-            int indexOfUnicode = input.IndexOf("\\u") + 2;
-            for (int i = indexOfUnicode; i < indexOfUnicode + unicodeDigitsLength; i++)
-            {
-                if (!unicodeApprovedChars.Contains(input[i]))
+                if (input.Substring(i, 2) == "\\u")
                 {
-                    return false;
+                    for (int j = i + 2; j < i + 2 + unicodeDigitsLength; j++)
+                    {
+                        int indexOfUnicodeDigits = i + 2;
+                        if (!unicodeApprovedChars.Contains(input[j]) || input.Substring(indexOfUnicodeDigits).Length < minimumLengthOfUnicodeWithLastQuote)
+                        {
+                            return false;
+                        }
+                    }
                 }
             }
 
-            input = input.Remove(input.IndexOf("\\u"), unicodeDigitsLength);
-            return UnicodeCharsAreValid(input);
+            return true;
         }
     }
 }
