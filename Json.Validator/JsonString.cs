@@ -44,7 +44,6 @@ namespace Json
 
         private static bool EscapedCharsAreValid(string input)
         {
-            const byte numberOfItemsToRemove = 2;
             const string allowedToBeEscaped = "\"\\/bfnrtu";
             for (int i = 0; i < input.Length - 1; i++)
             {
