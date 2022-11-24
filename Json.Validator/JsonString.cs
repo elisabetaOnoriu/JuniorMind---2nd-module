@@ -80,14 +80,16 @@ namespace Json
         private static bool CheckValidityOfUnicodeDigits(string input, int index)
         {
             const int minimumLengthOfUnicodeWithLastQuote = 5;
-            const byte reversedSolidusAndULength = 2;
             const int unicodeDigitsLength = 4;
-
-            for (int j = index + 2; j < index + reversedSolidusAndULength + unicodeDigitsLength; j++)
+            int indexOfUnicodeDigits = index + 2;
+            if (input.Substring(indexOfUnicodeDigits).Length < minimumLengthOfUnicodeWithLastQuote)
             {
-                int indexOfUnicodeDigits = index + 2;
-                if (!IsHexChar(input[j])
-                || input.Substring(indexOfUnicodeDigits).Length < minimumLengthOfUnicodeWithLastQuote)
+                return false;
+            }
+
+            for (int j = indexOfUnicodeDigits; j < indexOfUnicodeDigits + unicodeDigitsLength; j++)
+            {
+                if (!IsHexChar(input[j]))
                 {
                     return false;
                 }
