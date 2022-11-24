@@ -48,21 +48,14 @@ namespace Json
             const string allowedToBeEscaped = "\"\\/bfnrtu";
             for (int i = 0; i < input.Length - 1; i++)
             {
-                if (!input.Contains('\\'))
+                if (input[i] == '\\' && (!allowedToBeEscaped.Contains(input[i + 1])
+                    || (i + 1 == input.Length - 1)))
                 {
-                    return true;
-                }
-
-                if (input[i] == '\\' && allowedToBeEscaped.Contains(input[i + 1])
-                    && i + 1 != input.Length - 1)
-                {
-                    input = input.Remove(i, numberOfItemsToRemove);
-                    EscapedCharsAreValid(input);
-                    return true;
+                    return input[i - 1] == '\\';
                 }
             }
 
-            return false;
+            return true;
         }
 
         private static bool UnicodeCharsAreValid(string input)
