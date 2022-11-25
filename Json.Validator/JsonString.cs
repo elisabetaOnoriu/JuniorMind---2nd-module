@@ -62,7 +62,7 @@ namespace Json
             const byte reversedSolidusAndULength = 2;
             for (int i = 0; i < input.Length - 1; i++)
             {
-                if (input.Substring(i, reversedSolidusAndULength) == "\\u" && !CheckValidityOfUnicodeDigits(input, i))
+                if (input[i..].StartsWith("\\u") && !CheckValidityOfUnicodeDigits(input, i))
                 {
                     return false;
                 }
