@@ -44,7 +44,6 @@ namespace Json
 
         private static bool EscapedCharsAreValid(string input)
         {
-            int count = 1;
             int i = 0;
             const string allowedToBeEscaped = "\"\\/bfnrtu";
             while (i < input.Length - 1)
