@@ -162,6 +162,12 @@ namespace Json.Facts
             Assert.False(IsJsonString(Quoted(@"a\u1234 a/u4567 i\u12io")));
         }
 
+        [Fact]
+        public void DoesNotContainAnyInvalidEscapedSequence()
+        {
+            Assert.False(IsJsonString(Quoted(@"a \\\ b")));
+        }
+
         public static string Quoted(string text)
             => $"\"{text}\"";
     }

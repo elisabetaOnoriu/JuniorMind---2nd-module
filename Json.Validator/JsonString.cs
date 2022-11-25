@@ -44,14 +44,23 @@ namespace Json
 
         private static bool EscapedCharsAreValid(string input)
         {
+            int count = 1;
+            int i = 0;
             const string allowedToBeEscaped = "\"\\/bfnrtu";
-            for (int i = 0; i < input.Length - 1; i++)
+            while (i < input.Length - 1)
             {
                 if (input[i] == '\\' && (!allowedToBeEscaped.Contains(input[i + 1])
-                    || (i + 1 == input.Length - 1)) && input[i - 1] != '\\')
+                    || i + 1 == input.Length - 1))
                 {
                     return false;
                 }
+
+                if (input[i] == '\\' && input[i + 1] == '\\')
+                {
+                    i++;
+                }
+
+                i++;
             }
 
             return true;
