@@ -48,9 +48,9 @@ namespace Json
             for (int i = 0; i < input.Length - 1; i++)
             {
                 if (input[i] == '\\' && (!allowedToBeEscaped.Contains(input[i + 1])
-                    || (i + 1 == input.Length - 1)))
+                    || (i + 1 == input.Length - 1)) && input[i - 1] != '\\')
                 {
-                    return input[i - 1] == '\\';
+                    return false;
                 }
             }
 
