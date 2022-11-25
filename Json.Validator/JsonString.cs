@@ -99,16 +99,7 @@ namespace Json
 
         private static bool IsHexChar(char c)
         {
-            if (int.TryParse(Convert.ToString(c), out _))
-            {
-                return true;
-            }
-            else if (char.ToUpper(c) < 'A' || char.ToUpper(c) > 'F')
-            {
-                return false;
-            }
-
-            return true;
+            return char.IsDigit(c) || char.ToUpper(c) >= 'A' && char.ToUpper(c) <= 'F';
         }
     }
 }
