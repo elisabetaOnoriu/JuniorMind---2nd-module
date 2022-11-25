@@ -81,7 +81,7 @@ namespace Json
             const int minimumLengthOfUnicodeWithLastQuote = 5;
             const int unicodeDigitsLength = 4;
             int indexOfUnicodeDigits = index + 2;
-            if (input.Substring(indexOfUnicodeDigits).Length < minimumLengthOfUnicodeWithLastQuote)
+            if (input.Length - indexOfUnicodeDigits < minimumLengthOfUnicodeWithLastQuote)
             {
                 return false;
             }
