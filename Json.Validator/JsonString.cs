@@ -60,11 +60,6 @@ namespace Json
         private static bool UnicodeCharsAreValid(string input)
         {
             const byte reversedSolidusAndULength = 2;
-            if (!input.Contains("\\u"))
-            {
-                return true;
-            }
-
             for (int i = 0; i < input.Length - 1; i++)
             {
                 if (input.Substring(i, reversedSolidusAndULength) == "\\u" && !CheckValidityOfUnicodeDigits(input, i))
