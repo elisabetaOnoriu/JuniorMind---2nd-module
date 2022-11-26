@@ -31,6 +31,10 @@ namespace Json
             {
                 return false;
             }
+            else if (input.StartsWith("-0"))
+            {
+                return true;
+            }
 
             return true;
         }
