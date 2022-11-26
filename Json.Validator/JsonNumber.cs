@@ -21,6 +21,20 @@ namespace Json
             return !string.IsNullOrEmpty(input);
         }
 
+        private static bool HasValidDigits(string input)
+        {
+            if (input.Length == 1)
+            {
+                return true;
+            }
+            else if (input[0] == '0')
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         private static string Integer(string input, int indexOfDot, int indexOfExponent)
         {
             return indexOfDot == -1 && indexOfExponent == -1 ? input : string.Empty;
@@ -28,7 +42,7 @@ namespace Json
 
         private static bool IsInteger(string integer)
         {
-            return int.TryParse(integer, out var result);
+            return int.TryParse(integer, out _) && HasValidDigits(integer);
         }
     }
 }

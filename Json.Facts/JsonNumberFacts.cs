@@ -42,7 +42,7 @@ namespace Json.Facts
             Assert.False(IsJsonNumber(string.Empty));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void DoesNotStartWithZero()
         {
             Assert.False(IsJsonNumber("07"));
