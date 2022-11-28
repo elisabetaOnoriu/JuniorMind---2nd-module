@@ -25,7 +25,15 @@ namespace Json
 
         private static bool HasValidDigits(string input)
         {
-            return int.TryParse(input, out _);
+            foreach (char c in input)
+            {
+                if (!char.IsDigit(c))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private static string Integer(string input, int indexOfDot, int indexOfExponent)
@@ -39,7 +47,7 @@ namespace Json
                 return input[..indexOfExponent];
             }
 
-            return input;
+            return input.StartsWith('-') ? input[1..] : input;
         }
 
         private static bool IsInteger(string integer)
@@ -70,6 +78,11 @@ namespace Json
 
         private static bool IsFraction(string fraction)
         {
+            if (fraction.EndsWith('.'))
+            {
+                return false;
+            }
+
             return fraction == string.Empty || HasValidDigits(fraction[1..]);
         }
 
@@ -86,7 +99,7 @@ namespace Json
                 return true;
             }
 
-            if (exponent.Length == 1)
+            if (exponent.Length == 1 || exponent.EndsWith('-') || exponent.EndsWith('+'))
             {
                 return false;
             }
