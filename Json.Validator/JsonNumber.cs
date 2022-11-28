@@ -74,13 +74,7 @@ namespace Json
 
         private static bool IsFraction(string fraction)
         {
-            if (fraction == string.Empty)
-            {
-                return true;
-            }
-
-            fraction = fraction[1..];
-            return HasValidDigits(fraction);
+            return fraction == string.Empty || HasValidDigits(fraction[1..]);
         }
 
         private static string Exponent(string input, int indexOfDot, int indexOfExponent)
