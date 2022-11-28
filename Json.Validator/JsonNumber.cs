@@ -25,6 +25,11 @@ namespace Json
 
         private static bool HasValidDigits(string input)
         {
+            if (input.StartsWith('-') || input.StartsWith('+'))
+            {
+                input = input[1..];
+            }
+
             foreach (char c in input)
             {
                 if (!char.IsDigit(c))
@@ -42,8 +47,12 @@ namespace Json
             {
                 return input[..indexOfDot];
             }
+            else if (indexOfExponent != -1)
+            {
+                return input[..indexOfExponent];
+            }
 
-            return input[..indexOfExponent];
+            return input;
         }
 
         private static bool IsInteger(string integer)
@@ -53,7 +62,7 @@ namespace Json
                 return false;
             }
 
-            return integer.StartsWith('-') ? HasValidDigits(integer[1..]) : HasValidDigits(integer);
+            return HasValidDigits(integer);
         }
 
         private static string Fraction(string input, int indexOfDot, int indexOfExponent)
@@ -72,11 +81,6 @@ namespace Json
 
         private static bool IsFraction(string fraction)
         {
-            if (fraction.EndsWith('.'))
-            {
-                return false;
-            }
-
             return fraction == string.Empty || HasValidDigits(fraction[1..]);
         }
 
@@ -87,19 +91,12 @@ namespace Json
 
         private static bool IsExponent(string exponent)
         {
-            const byte indexOfFirstDigit = 2;
             if (exponent == string.Empty)
             {
                 return true;
             }
 
-            if (exponent.Length == 1 || exponent.EndsWith('-') || exponent.EndsWith('+'))
-            {
-                return false;
-            }
-
-            return exponent[1] == '+' || exponent[1] == '-' ?
-                   HasValidDigits(exponent[indexOfFirstDigit..]) : HasValidDigits(exponent[1..]);
+            return HasValidDigits(exponent[1..]);
         }
     }
 }
