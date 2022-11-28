@@ -25,8 +25,6 @@ namespace Json
 
         private static bool HasValidDigits(string input)
         {
-            
-
             foreach (char c in input)
             {
                 if (!char.IsDigit(c))
