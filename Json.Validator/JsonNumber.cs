@@ -30,11 +30,7 @@ namespace Json
 
         private static string Integer(string input, int indexOfDot, int indexOfExponent)
         {
-            if (indexOfDot == -1 && indexOfExponent == -1)
-            {
-                return input;
-            }
-            else if (indexOfDot != -1)
+            if (indexOfDot != -1)
             {
                 return input[..^(input.Length - indexOfDot)];
             }
@@ -43,7 +39,7 @@ namespace Json
                 return input[..^(input.Length - indexOfExponent)];
             }
 
-            return string.Empty;
+            return input;
         }
 
         private static bool IsInteger(string integer)
