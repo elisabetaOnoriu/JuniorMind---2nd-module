@@ -32,11 +32,11 @@ namespace Json
         {
             if (indexOfDot != -1)
             {
-                return input[..^(input.Length - indexOfDot)];
+                return input[..indexOfDot];
             }
             else if (indexOfDot == -1 && indexOfExponent != -1)
             {
-                return input[..^(input.Length - indexOfExponent)];
+                return input[..indexOfExponent];
             }
 
             return input;
