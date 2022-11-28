@@ -47,7 +47,8 @@ namespace Json
             {
                 return input[..indexOfDot];
             }
-            else if (indexOfExponent != -1)
+
+            if (indexOfExponent != -1)
             {
                 return input[..indexOfExponent];
             }
@@ -71,7 +72,8 @@ namespace Json
             {
                 return input[indexOfDot..];
             }
-            else if (indexOfDot != -1 && indexOfExponent != -1)
+
+            if (indexOfDot != -1 && indexOfExponent != -1)
             {
                 return input[indexOfDot..indexOfExponent];
             }
