@@ -34,11 +34,11 @@ namespace Json
             }
             else if (indexOfDot != -1)
             {
-                return input[..^(indexOfDot + 1)];
+                return input[..^(input.Length - indexOfDot)];
             }
             else if (indexOfDot == -1 && indexOfExponent != -1)
             {
-                return input[..^(indexOfExponent + 1)];
+                return input[..^(input.Length - indexOfExponent)];
             }
 
             return string.Empty;
