@@ -80,7 +80,19 @@ namespace Json
 
         private static bool IsExponent(string exponent)
         {
-            return exponent == string.Empty || HasValidDigits(exponent[1..]);
+            const byte indexOfFirstDigit = 2;
+            if (exponent == string.Empty)
+            {
+                return true;
+            }
+
+            if (exponent.Length == 1)
+            {
+                return false;
+            }
+
+            return exponent[1] == '+' || exponent[1] == '-' ?
+                   HasValidDigits(exponent[indexOfFirstDigit..]) : HasValidDigits(exponent[1..]);
         }
     }
 }
