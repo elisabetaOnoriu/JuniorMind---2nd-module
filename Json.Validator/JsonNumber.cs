@@ -23,20 +23,12 @@ namespace Json
 
         private static bool HasValidDigits(string input)
         {
-            if (input.Length == 1)
-            {
-                return true;
-            }
-            else if (input[0] == '0')
+            if (input.Length > 1 && input[0] == '0')
             {
                 return false;
             }
-            else if (input.StartsWith("-0"))
-            {
-                return true;
-            }
 
-            return true;
+            return int.TryParse(input, out _);
         }
 
         private static string Integer(string input, int indexOfDot, int indexOfExponent)
@@ -59,7 +51,7 @@ namespace Json
 
         private static bool IsInteger(string integer)
         {
-            return int.TryParse(integer, out _) && HasValidDigits(integer);
+            return HasValidDigits(integer);
         }
     }
 }
