@@ -70,10 +70,8 @@ namespace Json
             {
                 return input[indexOfDot..indexOfExponent];
             }
-            else
-            {
-                return string.Empty;
-            }
+
+            return string.Empty;
         }
 
         private static bool IsFraction(string fraction)
