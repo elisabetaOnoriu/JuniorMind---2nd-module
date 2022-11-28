@@ -13,8 +13,7 @@ namespace Json
 
             var indexOfDot = input.IndexOf('.');
             var indexOfExponent = input.IndexOfAny("eE".ToCharArray());
-            return IsInteger(Integer(input, indexOfDot, indexOfExponent))
-                && IsFraction(Fraction(input, indexOfDot, indexOfExponent));
+            return IsInteger(Integer(input, indexOfDot, indexOfExponent));
         }
 
         private static bool HasContent(string input)
@@ -42,32 +41,25 @@ namespace Json
 
         private static string Integer(string input, int indexOfDot, int indexOfExponent)
         {
-            return indexOfDot == -1 && indexOfExponent == -1 ? input : string.Empty;
+            if (indexOfDot == -1 && indexOfExponent == -1)
+            {
+                return input;
+            }
+            else if (indexOfDot != -1)
+            {
+                return input[..^(indexOfDot + 1)];
+            }
+            else if (indexOfDot == -1 && indexOfExponent != -1)
+            {
+                return input[..^(indexOfExponent + 1)];
+            }
+
+            return string.Empty;
         }
 
         private static bool IsInteger(string integer)
         {
-            if (integer == string.Empty)
-            {
-                return true;
-            }
-
             return int.TryParse(integer, out _) && HasValidDigits(integer);
-        }
-
-        private static string Fraction(string input, int indexOfDot, int indexOfExponent)
-        {
-            return indexOfDot != -1 && indexOfExponent == -1 ? input[..^(indexOfDot + 1)] + input[(indexOfDot + 1) ..] : string.Empty;
-        }
-
-        private static bool IsFraction(string fraction)
-        {
-            if (fraction == string.Empty)
-            {
-                return true;
-            }
-
-            return int.TryParse(fraction, out _) && HasValidDigits(fraction);
         }
     }
 }
