@@ -103,12 +103,13 @@ namespace Json
                 return true;
             }
 
-            if (exponent.Contains('-') || exponent.Contains('+'))
+            exponent = exponent[1..];
+            if (exponent.StartsWith('-') || exponent.StartsWith('+'))
             {
                 exponent = exponent[1..];
             }
 
-            return HasValidDigits(exponent[1..]);
+            return HasValidDigits(exponent);
         }
     }
 }
