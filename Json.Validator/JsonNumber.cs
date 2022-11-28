@@ -33,7 +33,7 @@ namespace Json
                 }
             }
 
-            return true;
+            return input.Length > 0;
         }
 
         private static string Integer(string input, int indexOfDot, int indexOfExponent)
