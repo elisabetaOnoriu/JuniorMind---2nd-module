@@ -15,7 +15,7 @@ namespace Json
             var indexOfExponent = input.IndexOfAny("eE".ToCharArray());
             return IsInteger(Integer(input, indexOfDot, indexOfExponent))
                 && IsFraction(Fraction(input, indexOfDot, indexOfExponent))
-                && IsExponent(Exponent(input, indexOfDot, indexOfExponent));
+                && IsExponent(Exponent(input, indexOfExponent));
         }
 
         private static bool HasContent(string input)
@@ -77,7 +77,7 @@ namespace Json
             return fraction == string.Empty || HasValidDigits(fraction[1..]);
         }
 
-        private static string Exponent(string input, int indexOfDot, int indexOfExponent)
+        private static string Exponent(string input, int indexOfExponent)
         {
             return indexOfExponent == -1 ? string.Empty : input[indexOfExponent..];
         }
