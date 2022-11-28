@@ -25,10 +25,7 @@ namespace Json
 
         private static bool HasValidDigits(string input)
         {
-            if (input.StartsWith('-') || input.StartsWith('+'))
-            {
-                input = input[1..];
-            }
+            
 
             foreach (char c in input)
             {
@@ -63,6 +60,11 @@ namespace Json
                 return false;
             }
 
+            if (integer.StartsWith('-'))
+            {
+                integer = integer[1..];
+            }
+
             return HasValidDigits(integer);
         }
 
@@ -88,12 +90,27 @@ namespace Json
 
         private static string Exponent(string input, int indexOfExponent)
         {
-            return indexOfExponent == -1 ? string.Empty : input[indexOfExponent..];
+            if (indexOfExponent == -1)
+            {
+                return string.Empty;
+            }
+
+            return input[indexOfExponent..];
         }
 
         private static bool IsExponent(string exponent)
         {
-            return exponent == string.Empty || HasValidDigits(exponent[1..]);
+            if (exponent == string.Empty)
+            {
+                return true;
+            }
+
+            if (exponent.Contains('-') || exponent.Contains('+'))
+            {
+                exponent = exponent[1..];
+            }
+
+            return HasValidDigits(exponent[1..]);
         }
     }
 }
