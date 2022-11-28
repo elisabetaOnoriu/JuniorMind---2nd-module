@@ -42,12 +42,8 @@ namespace Json
             {
                 return input[..indexOfDot];
             }
-            else if (indexOfDot == -1 && indexOfExponent != -1)
-            {
-                return input[..indexOfExponent];
-            }
 
-            return input.StartsWith('-') ? input[1..] : input;
+            return input[..indexOfExponent];
         }
 
         private static bool IsInteger(string integer)
@@ -57,7 +53,7 @@ namespace Json
                 return false;
             }
 
-            return HasValidDigits(integer);
+            return integer.StartsWith('-') ? HasValidDigits(integer[1..]) : HasValidDigits(integer);
         }
 
         private static string Fraction(string input, int indexOfDot, int indexOfExponent)
