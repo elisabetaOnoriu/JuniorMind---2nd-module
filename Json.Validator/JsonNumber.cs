@@ -68,7 +68,7 @@ namespace Json
             }
             else if (indexOfDot != -1 && indexOfExponent != -1)
             {
-                return input[indexOfDot..^(input.Length - indexOfExponent)];
+                return input[indexOfDot..indexOfExponent];
             }
             else
             {
