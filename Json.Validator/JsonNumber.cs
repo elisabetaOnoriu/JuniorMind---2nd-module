@@ -91,12 +91,7 @@ namespace Json
 
         private static bool IsExponent(string exponent)
         {
-            if (exponent == string.Empty)
-            {
-                return true;
-            }
-
-            return HasValidDigits(exponent[1..]);
+            return exponent == string.Empty || HasValidDigits(exponent[1..]);
         }
     }
 }
