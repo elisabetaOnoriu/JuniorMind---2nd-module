@@ -15,10 +15,5 @@ namespace Ranking
         {
             return this.points < that.points;
         }
-
-        public override string ToString()
-        {
-            return $"{this.name} + {this.points}";
-        }
     }
 }

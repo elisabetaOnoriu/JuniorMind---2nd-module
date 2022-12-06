@@ -16,9 +16,9 @@ namespace Ranking
             this.UpdateRanking();
         }
 
-        public string TeamAt(int position)
+        public Team TeamAt(int position)
         {
-            return teams[position].ToString();
+            return teams[position];
         }
 
         public int PositionOf(Team toFind)

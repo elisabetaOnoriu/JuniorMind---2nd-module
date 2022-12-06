@@ -18,7 +18,7 @@ namespace Ranking.Facts
             var ranking = new Ranking(teams);
             ranking.Add(new Team("CFR Cluj", 26));
 
-            Assert.Equal(new Team("CFR Cluj", 26).ToString(), ranking.TeamAt(1).ToString());
+            Assert.Equal(dinamo, ranking.TeamAt(3));
 
             Assert.Equal(3, ranking.PositionOf(dinamo));
         }
