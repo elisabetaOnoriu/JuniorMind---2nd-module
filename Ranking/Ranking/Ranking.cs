@@ -31,7 +31,7 @@ namespace Ranking
             int length = teams.Length;
             for (int i = 1; i < length; i++)
             {
-                for (int j = i; j >= 0 && teams[j - 1].IsLessThan(teams[j]); j--)
+                for (int j = i; j > 0 && teams[j - 1].IsLessThan(teams[j]); j--)
                 {
                     (teams[j - 1], teams[j]) = (teams[j], teams[j - 1]);
                 }
