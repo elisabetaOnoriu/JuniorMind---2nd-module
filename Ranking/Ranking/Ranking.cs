@@ -29,14 +29,13 @@ namespace Ranking
         private void UpdateRanking()
         {
             int length = teams.Length;
-            var key = teams[length - 1];
-            var k = length - 2;
-            while (k >= 0 && teams[k].IsLessThan(key))
+            for (int i = 1; i < length; i++)
             {
-                teams[k + 1] = teams[k];
-                k--;
-            }
-            teams[k + 1] = key;
+                for (int j = i; j >= 0 && teams[j - 1].IsLessThan(teams[j]); j--)
+                {
+                    (teams[j - 1], teams[j]) = (teams[j], teams[j - 1]);
+                }
+            } 
         }
     }
 }
