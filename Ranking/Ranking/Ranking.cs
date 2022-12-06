@@ -2,19 +2,18 @@ namespace Ranking
 {
     public class Ranking
     {
-        List<Team> teams;
+        Team[] teams;
 
-        public Ranking(List<Team> teams)
+        public Ranking(Team[] teams)
         {
             this.teams = teams;
         }
 
         public void Add(Team team)
         {
-            teams.Add(team);
-            var ranking = new Ranking(teams);
-            ranking.UpdateRanking();
-            teams = ranking.teams;
+            Array.Resize(ref teams, teams.Length + 1);
+            this.Add(team);
+            this.UpdateRanking();
         }
 
         public string TeamAt(int position)
@@ -24,14 +23,14 @@ namespace Ranking
 
         public int PositionOf(Team toFind)
         {
-            return teams.IndexOf(toFind);
+            return Array.IndexOf(teams, toFind);
         }
 
         private void UpdateRanking()
         {
-            for (int j = 0; j < teams.Count - 1; j++)
+            for (int j = 0; j < teams.Length - 1; j++)
             {
-                for (int i = 0; i < teams.Count - 1; i++)
+                for (int i = 0; i < teams.Length - 1; i++)
                 {
                     if (teams[i].IsLessThan(teams[i + 1]))
                     {

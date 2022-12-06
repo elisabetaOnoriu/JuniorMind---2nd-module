@@ -7,12 +7,13 @@ namespace Ranking.Facts
         [Fact]
         public void RankingIsUpdatingWhenTeamIsAdded()
         {
-            List<Team> teams = new List<Team>();
-
             var dinamo = new Team("Dinamo", 20);
-            teams.Add(new Team("FCSB", 28));
-            teams.Add(new Team("Viitorul", 21));
-            teams.Add(dinamo);
+            Team[] teams =
+        {
+            new Team("FCSB", 28),
+            new Team("Viitorul", 21),
+            dinamo
+        };
 
             var ranking = new Ranking(teams);
             ranking.Add(new Team("CFR Cluj", 26));
