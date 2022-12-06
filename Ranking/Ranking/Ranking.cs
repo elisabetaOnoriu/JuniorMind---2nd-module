@@ -33,7 +33,7 @@ namespace Ranking
             for (int j = 0; j < teams.Length - 1; j++)
             {
                 swapped = false;
-                for (int i = teams.Length - 1; i > 0; i--)
+                for (int i = teams.Length - 1; i > j; i--)
                 {
                     if (teams[i - 1].IsLessThan(teams[i]))
                     {
