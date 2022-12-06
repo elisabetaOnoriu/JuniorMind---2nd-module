@@ -28,14 +28,22 @@ namespace Ranking
 
         private void UpdateRanking()
         {
+            bool swapped;
+
             for (int j = 0; j < teams.Length - 1; j++)
             {
+                swapped = false;
                 for (int i = 0; i < teams.Length - 1; i++)
                 {
                     if (teams[i].IsLessThan(teams[i + 1]))
                     {
                         (teams[i], teams[i + 1]) = (teams[i + 1], teams[i]);
                     }
+                }
+
+                if (!swapped)
+                {
+                    break;
                 }
             }
         }
