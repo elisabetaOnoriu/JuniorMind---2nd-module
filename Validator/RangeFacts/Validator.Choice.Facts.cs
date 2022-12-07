@@ -23,33 +23,29 @@ namespace Validator.ChoiceFacts
         }
 
         [Theory]
-        [InlineData("012", 'a', 'f', '0', '1', '9', 'A', 'F')]
-        [InlineData("A8", 'a', 'f', '0', '1', '9', 'A', 'F')]
-        [InlineData("F12", 'a', 'f', '0', '1', '9', 'A', 'F')]
-        public void HexMatches_TrueCases(string text, char LetterStart, char letterEnd,
-                                         char digitBase, char digitStart, char digitEnd,
-                                         char upperLetterStart, char upperLetterEnd)
+        [InlineData("012")]
+        [InlineData("A8")]
+        [InlineData("F12")]
+        public void HexMatches_TrueCases(string text)
         {
-            var digit = new Choice(new Character(digitBase), new Range(digitStart, digitEnd));
+            var digit = new Choice(new Character('0'), new Range('1', '9'));
             var hex = new Choice(digit,
                                  new Choice(
-                                     new Range(LetterStart, letterEnd), new Range(upperLetterStart, upperLetterEnd)));
+                                     new Range('a', 'f'), new Range('A', 'F')));
             Assert.True(hex.Match(text));
         }
 
         [Theory]
-        [InlineData("P12", 'a', 'f', '0', '1', '9', 'A', 'F')]
-        [InlineData("n8", 'a', 'f', '0', '1', '9', 'A', 'F')]
-        [InlineData("", 'a', 'f', '0', '1', '9', 'A', 'F')]
-        [InlineData(null, 'a', 'f', '0', '1', '9', 'A', 'F')]
-        public void HexMatches_FalseCases(string text, char letterStart, char letterEnd,
-                                 char digitBase, char digitStart, char digitEnd,
-                                 char upperLetterStart, char upperLetterEnd)
+        [InlineData("P12")]
+        [InlineData("n8")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void HexMatches_FalseCases(string text)
         {
-            var digit = new Choice(new Character(digitBase), new Range(digitStart, digitEnd));
+            var digit = new Choice(new Character('0'), new Range('1', '9'));
             var hex = new Choice(digit,
                                  new Choice(
-                                     new Range(letterStart, letterEnd), new Range(upperLetterStart, upperLetterEnd)));
+                                     new Range('a', 'f'), new Range('A', 'F')));
             Assert.False(hex.Match(text));
         }
     }
