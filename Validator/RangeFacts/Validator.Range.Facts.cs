@@ -18,6 +18,8 @@ namespace Validator.RangeFacts
         [InlineData('c', 'e', "whale")]
         [InlineData('a', 'z', "1234")]
         [InlineData('#', '@', "~abc")]
+        [InlineData('a', 'z', null)]
+        [InlineData('a', 'z', "")]
         public void IsInRange_FalseCases(char start, char end, string text)
         {
             var result = new Range(start, end);
