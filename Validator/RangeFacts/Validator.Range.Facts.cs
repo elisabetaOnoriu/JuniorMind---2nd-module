@@ -4,15 +4,24 @@ namespace Validator.RangeFacts
 {
     public class TestProgram
     {
-        [Fact]
-        public void IsInRange()
+        [Theory]
+        [InlineData('b', 'i', "bizar")]
+        [InlineData('1', '5', "1marinar")]
+        [InlineData(' ', '/', "*code")]
+        public void IsInRange_TrueCases(char start, char end, string text)
         {
-            string text = "hello";
-            var range = new Range('b', 'i');
-            Assert.True(range.Match(text));
+            var result = new Range(start, end);
+            Assert.True(result.Match(text));
+        }
 
-            var otherRange = new Range('i', 'u');
-            Assert.False(otherRange.Match(text));
+        [Theory]
+        [InlineData('c', 'e', "whale")]
+        [InlineData('a', 'z', "1234")]
+        [InlineData('#', '@', "~abc")]
+        public void IsInRange_FalseCases(char start, char end, string text)
+        {
+            var result = new Range(start, end);
+            Assert.False(result.Match(text));
         }
     }
 }
