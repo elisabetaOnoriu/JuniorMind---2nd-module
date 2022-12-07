@@ -42,14 +42,14 @@ namespace Validator.ChoiceFacts
         [InlineData("n8", 'a', 'f', '0', '1', '9', 'A', 'F')]
         [InlineData("", 'a', 'f', '0', '1', '9', 'A', 'F')]
         [InlineData(null, 'a', 'f', '0', '1', '9', 'A', 'F')]
-        public void HexMatches_FalseCases(string text, char LetterStart, char letterEnd,
+        public void HexMatches_FalseCases(string text, char letterStart, char letterEnd,
                                  char digitBase, char digitStart, char digitEnd,
                                  char upperLetterStart, char upperLetterEnd)
         {
             var digit = new Choice(new Character(digitBase), new Range(digitStart, digitEnd));
             var hex = new Choice(digit,
                                  new Choice(
-                                     new Range(LetterStart, letterEnd), new Range(upperLetterStart, upperLetterEnd)));
+                                     new Range(letterStart, letterEnd), new Range(upperLetterStart, upperLetterEnd)));
             Assert.False(hex.Match(text));
         }
     }
