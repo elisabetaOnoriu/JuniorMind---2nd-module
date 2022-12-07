@@ -18,6 +18,8 @@ namespace Validator.CharacterFacts
         [InlineData('x', "samsung")]
         [InlineData('1', "voila")]
         [InlineData(' ', "digital")]
+        [InlineData('i', null)]
+        [InlineData('e', "")]
         public void FirstCharacterMatches_FalseCases(char letter, string text)
         {
             var x = new Character(letter);
