@@ -1,3 +1,5 @@
+global using Xunit;
+
 namespace Validator.RangeFacts
 {
     public class TestProgram

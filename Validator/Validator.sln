@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Range", "Validator\Range.csproj", "{97897E0B-01EE-4818-B7A6-B53B47AD569E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validator", "Validator\Validator.csproj", "{97897E0B-01EE-4818-B7A6-B53B47AD569E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RangeFacts", "RangeFacts\RangeFacts.csproj", "{0CA8268F-53FE-4360-A403-C81312DF88F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validator.Facts", "RangeFacts\Validator.Facts.csproj", "{0CA8268F-53FE-4360-A403-C81312DF88F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
