@@ -1,4 +1,4 @@
-namespace RangeFacts
+namespace Validator.RangeFacts
 {
     public class TestProgram
     {
@@ -6,10 +6,10 @@ namespace RangeFacts
         public void IsInRange()
         {
             string text = "hello";
-            var range = new Validator.Range('b', 'i');
+            var range = new Range('b', 'i');
             Assert.True(range.Match(text));
 
-            var otherRange = new Validator.Range('i', 'u');
+            var otherRange = new Range('i', 'u');
             Assert.False(otherRange.Match(text));
         }
     }
