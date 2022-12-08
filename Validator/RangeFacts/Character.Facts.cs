@@ -6,7 +6,6 @@ namespace Validator.CharacterFacts
     {
         [Theory]
         [InlineData('x', "xiaomi")]
-        [InlineData('m', "mobile")]
         [InlineData('v', "valid")]
         public void FirstCharacterMatches_TrueCases(char letter, string text)
         {
@@ -16,11 +15,17 @@ namespace Validator.CharacterFacts
 
         [Theory]
         [InlineData('x', "samsung")]
-        [InlineData('1', "voila")]
         [InlineData(' ', "digital")]
+        public void FirstCharacterMatches_FalseCases(char letter, string text)
+        {
+            var x = new Character(letter);
+            Assert.False(x.Match(text));
+        }
+
+        [Theory]
         [InlineData('i', null)]
         [InlineData('e', "")]
-        public void FirstCharacterMatches_FalseCases(char letter, string text)
+        public void FirstCharacterMatches_IsNotNullOrEmpty_FalseCases(char letter, string text)
         {
             var x = new Character(letter);
             Assert.False(x.Match(text));
