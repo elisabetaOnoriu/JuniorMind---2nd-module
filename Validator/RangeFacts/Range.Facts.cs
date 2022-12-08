@@ -15,6 +15,7 @@ namespace Validator.RangeFacts
 
         [Theory]
         [InlineData(' ', '/', "*code")]
+        [InlineData('#', '?', ".code")]
         public void IsInRange_OddCharacters_TrueCases(char start, char end, string text)
         {
             var result = new Range(start, end);
@@ -32,7 +33,8 @@ namespace Validator.RangeFacts
 
         [Theory]
         [InlineData('#', '@', "~abc")]
-        public void IsInRange_OdCharacters_FalseCases(char start, char end, string text)
+        [InlineData('%', '%', "&abc")]
+        public void IsInRange_OddCharacters_FalseCases(char start, char end, string text)
         {
             var result = new Range(start, end);
             Assert.False(result.Match(text));
