@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Validator
+﻿namespace Validator
 {
     public class Character : IPattern
     {
