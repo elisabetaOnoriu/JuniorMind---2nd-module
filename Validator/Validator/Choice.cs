@@ -10,17 +10,23 @@ namespace Validator
             this.patterns = patterns;
         }
 
-        public bool Match(string text)
+        public IMatch Match(string text)
         {
+            if(string.IsNullOrEmpty(text))
+            {
+                return new FailedMatch(text);
+            }
+
             foreach (var pattern in patterns)
             {
-                if (pattern.Match(text))
+                var match = pattern.Match(text);
+                if (match.Success())
                 {
-                    return true;
+                    return new SuccessMatch(text[1..]);
                 }
             }
 
-            return false;
+            return new FailedMatch(text);
         }
 
     }

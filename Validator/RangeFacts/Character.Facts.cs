@@ -10,7 +10,9 @@ namespace Validator.CharacterFacts
         public void FirstCharacterMatches_TrueCases(char letter, string text)
         {
             var x = new Character(letter);
-            Assert.True(x.Match(text));
+            var match = x.Match(text);
+            Assert.IsType<SuccessMatch>(match);
+            Assert.Equal(text[1..], match.RemainingText());
         }
 
         [Theory]
@@ -19,7 +21,9 @@ namespace Validator.CharacterFacts
         public void FirstCharacterMatches_FalseCases(char letter, string text)
         {
             var x = new Character(letter);
-            Assert.False(x.Match(text));
+            var match = x.Match(text);
+            Assert.IsType<FailedMatch>(match);
+            Assert.Equal(text, match.RemainingText());
         }
 
         [Theory]
@@ -28,7 +32,9 @@ namespace Validator.CharacterFacts
         public void FirstCharacterMatches_IsNotNullOrEmpty_FalseCases(char letter, string text)
         {
             var x = new Character(letter);
-            Assert.False(x.Match(text));
+            var match = x.Match(text);
+            Assert.IsType<FailedMatch>(match);
+            Assert.Equal(text, match.RemainingText());
         }
     }
 }

@@ -10,7 +10,9 @@ namespace Validator.ChoiceFacts
         public void StringMatches_TrueCases(string text, char start, char end, char letter)
         {
             var result = new Choice(new Range(start, end), new Character(letter));
-            Assert.True(result.Match(text));
+            var match = result.Match(text);
+            Assert.True(match.Success());
+            Assert.Equal(text[1..], match.RemainingText());
         }
 
         [Theory]
@@ -19,7 +21,9 @@ namespace Validator.ChoiceFacts
         public void StringMatches_FalseCases(string text, char start, char end, char letter)
         {
             var result = new Choice(new Range(start, end), new Character(letter));
-            Assert.False(result.Match(text));
+            var match = result.Match(text);
+            Assert.False(match.Success());
+            Assert.Equal(text, match.RemainingText());
         }
 
         [Theory]
@@ -31,7 +35,9 @@ namespace Validator.ChoiceFacts
             var hex = new Choice(digit,
                                  new Choice(
                                      new Range('a', 'f'), new Range('A', 'F')));
-            Assert.True(hex.Match(text));
+            var match = hex.Match(text);
+            Assert.True(match.Success());
+            Assert.Equal(text[1..], match.RemainingText());
         }
 
         [Theory]
@@ -43,7 +49,9 @@ namespace Validator.ChoiceFacts
             var hex = new Choice(digit,
                                  new Choice(
                                      new Range('a', 'f'), new Range('A', 'F')));
-            Assert.True(hex.Match(text));
+            var match = hex.Match(text);
+            Assert.True(match.Success());
+            Assert.Equal(text[1..], match.RemainingText());
         }
 
         [Theory]
@@ -55,7 +63,9 @@ namespace Validator.ChoiceFacts
             var hex = new Choice(digit,
                                  new Choice(
                                      new Range('a', 'f'), new Range('A', 'F')));
-            Assert.True(hex.Match(text));
+            var match = hex.Match(text);
+            Assert.True(match.Success());
+            Assert.Equal(text[1..], match.RemainingText());
         }
 
         [Theory]
@@ -67,7 +77,9 @@ namespace Validator.ChoiceFacts
             var hex = new Choice(digit,
                                  new Choice(
                                      new Range('a', 'f'), new Range('A', 'F')));
-            Assert.False(hex.Match(text));
+            var match = hex.Match(text);
+            Assert.False(match.Success());
+            Assert.Equal(text, match.RemainingText());
         }
 
         [Theory]
@@ -79,7 +91,9 @@ namespace Validator.ChoiceFacts
             var hex = new Choice(digit,
                                  new Choice(
                                      new Range('a', 'f'), new Range('A', 'F')));
-            Assert.False(hex.Match(text));
+            var match = hex.Match(text);
+            Assert.False(match.Success());
+            Assert.Equal(text, match.RemainingText());
         }
     }
 }

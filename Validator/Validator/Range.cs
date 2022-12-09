@@ -11,14 +11,11 @@ namespace Validator
             this.end = end;
         }
 
-        public bool Match(string text)
+        public IMatch Match(string text)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                return false;
-            }
-
-            return text[0] >= start && text[0] <= end;
+            return !string.IsNullOrEmpty(text) && (text[0] >= start && text[0] <= end)
+                ? new SuccessMatch(text[1..])
+                : new FailedMatch(text);
         }
     }
 }

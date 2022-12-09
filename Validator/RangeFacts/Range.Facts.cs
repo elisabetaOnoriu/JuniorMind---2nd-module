@@ -10,7 +10,9 @@ namespace Validator.RangeFacts
         public void IsInRange_TrueCases(char start, char end, string text)
         {
             var result = new Range(start, end);
-            Assert.True(result.Match(text));
+            var match = result.Match(text);
+            Assert.True(match.Success());
+            Assert.Equal(text[1..], match.RemainingText());
         }
 
         [Theory]
@@ -19,7 +21,9 @@ namespace Validator.RangeFacts
         public void IsInRange_OddCharacters_TrueCases(char start, char end, string text)
         {
             var result = new Range(start, end);
-            Assert.True(result.Match(text));
+            var match = result.Match(text);
+            Assert.True(match.Success());
+            Assert.Equal(text[1..], match.RemainingText());
         }
 
         [Theory]
@@ -28,7 +32,9 @@ namespace Validator.RangeFacts
         public void IsInRange_FalseCases(char start, char end, string text)
         {
             var result = new Range(start, end);
-            Assert.False(result.Match(text));
+            var match = result.Match(text);
+            Assert.False(match.Success());
+            Assert.Equal(text, match.RemainingText());
         }
 
         [Theory]
@@ -37,7 +43,9 @@ namespace Validator.RangeFacts
         public void IsInRange_OddCharacters_FalseCases(char start, char end, string text)
         {
             var result = new Range(start, end);
-            Assert.False(result.Match(text));
+            var match = result.Match(text);
+            Assert.False(match.Success());
+            Assert.Equal(text, match.RemainingText());
         }
 
         [Theory]
@@ -46,7 +54,9 @@ namespace Validator.RangeFacts
         public void IsInRange__IsNotNullOrEmpty_FalseCases(char start, char end, string text)
         {
             var result = new Range(start, end);
-            Assert.False(result.Match(text));
+            var match = result.Match(text);
+            Assert.False(match.Success());
+            Assert.Equal(text, match.RemainingText());
         }
     }
 }
