@@ -6,7 +6,8 @@ namespace Validator
     {
         readonly IPattern[] patterns;
 
-        public Choice(params IPattern[] patterns)        {
+        public Choice(params IPattern[] patterns)
+        {
             this.patterns = patterns;
         }
 
