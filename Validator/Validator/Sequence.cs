@@ -1,5 +1,4 @@
-﻿using System;
-namespace Validator
+﻿namespace Validator
 {
     public class Sequence : IPattern
     {
@@ -12,19 +11,17 @@ namespace Validator
 
         public IMatch Match(string text)
         {
-            string textInFirstInstance = text;
+            IMatch match = new SuccessMatch(text);
             foreach (var pattern in patterns)
             {
-                var match = pattern.Match(text);
+                match = pattern.Match(match.RemainingText());
                 if (!match.Success())
                 {
-                    return new FailedMatch(textInFirstInstance);
+                    return new FailedMatch(text);
                 }
-                
-                text = match.RemainingText();
             }
 
-            return new SuccessMatch(text);
+            return new SuccessMatch(match.RemainingText());
         }
     }
 }

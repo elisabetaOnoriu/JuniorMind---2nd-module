@@ -1,0 +1,6 @@
+﻿namespace Validator
+{
+    class Any
+    {
+    }
+}
