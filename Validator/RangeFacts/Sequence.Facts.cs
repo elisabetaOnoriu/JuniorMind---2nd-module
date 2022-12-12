@@ -80,7 +80,7 @@ namespace Validator.SequenceFacts
 
         [Theory]
         [InlineData("", 'a', 'b', 'c')]
-        [InlineData(null , '1', '2', '6')]
+        [InlineData(null, '1', '2', '6')]
         public void SequenceIsValid_IsNotNullOrEmpty_FalseCases(string text, char a, char b, char c)
         {
             var sequence = new Sequence(new Character(a), new Character(b),

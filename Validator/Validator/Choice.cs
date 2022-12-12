@@ -16,13 +16,14 @@ namespace Validator
             foreach (var pattern in patterns)
             {
                 var match = pattern.Match(text);
-                if (!string.IsNullOrEmpty(text) && match.Success())
+                if (match.Success())
                 {
                     return new SuccessMatch(text[1..]);
                 }
             }
 
             return new FailedMatch(text);
+
         }
 
     }

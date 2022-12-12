@@ -12,48 +12,19 @@ namespace Validator
 
         public IMatch Match(string text)
         {
-            if (string.IsNullOrEmpty(text))
+            string textInFirstInstance = text;
+            foreach (var pattern in patterns)
             {
-                return new FailedMatch(text);
-            }
-
-            bool hasInnerSequence = false;
-            int indexOfPattern = 0;
-            int indexOfInnerPattern = 0;
-            int textIndex = 0;
-            while (indexOfPattern < patterns.Length)
-            {
-                var pattern = patterns[indexOfPattern];
-                var match = pattern.Match(text[textIndex..]);
-                if (pattern.GetType() == typeof(Sequence))
-                {
-                    hasInnerSequence = true;
-                    Sequence innerSequence = (Sequence)pattern;
-                    while (indexOfInnerPattern < innerSequence.patterns.Length)
-                    {
-                        match = innerSequence.patterns[indexOfInnerPattern].Match(text[textIndex..]);
-                        if (!match.Success())
-                        {
-                            return new FailedMatch(text);
-                        }
-
-                        textIndex++;
-                        indexOfInnerPattern++;
-                    }
-
-                    textIndex--;
-                }
-
+                var match = pattern.Match(text);
                 if (!match.Success())
                 {
-                    return new FailedMatch(text);
+                    return new FailedMatch(textInFirstInstance);
                 }
-
-                indexOfPattern++;
-                textIndex++;
+                
+                text = match.RemainingText();
             }
 
-            return hasInnerSequence ? new SuccessMatch(text[textIndex..]) : new SuccessMatch(text[indexOfPattern..]);
+            return new SuccessMatch(text);
         }
     }
 }
