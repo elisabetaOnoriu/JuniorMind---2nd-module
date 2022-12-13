@@ -1,10 +1,10 @@
 ﻿namespace Validator
 {
-    public class Optionally : IPattern
+    public class Optional : IPattern
     {
         readonly IPattern pattern;
 
-        public Optionally(IPattern pattern)
+        public Optional(IPattern pattern)
         {
             this.pattern = pattern;
         }

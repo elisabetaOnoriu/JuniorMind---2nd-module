@@ -10,7 +10,7 @@ namespace Validator.OptionalFacts
 
         public void TextStartsWithTheGivenCharacter_TrueCases(string text, char a)
         {
-            var pattern = new Optionally(new Character(a));
+            var pattern = new Optional(new Character(a));
             var match = pattern.Match(text);
             Assert.True(match.Success());
             Assert.Equal(text[1..], match.RemainingText());
@@ -23,7 +23,7 @@ namespace Validator.OptionalFacts
 
         public void TextDoesNotStartWithTheGivenCharacter_TrueCases(string text, char a)
         {
-            var pattern = new Optionally(new Character(a));
+            var pattern = new Optional(new Character(a));
             var match = pattern.Match(text);
             Assert.True(match.Success());
             Assert.Equal(text, match.RemainingText());
