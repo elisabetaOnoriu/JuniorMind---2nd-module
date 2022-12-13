@@ -12,7 +12,8 @@
         public IMatch Match(string text)
         {
             return !string.IsNullOrEmpty(text) && accepted.Contains(text[0]) ?
-                   new SuccessMatch(text[1..]) : new FailedMatch(text);
+                   new SuccessMatch(text[1..]) :
+                   new FailedMatch(text);
         }
     }
 }

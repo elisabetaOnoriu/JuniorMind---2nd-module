@@ -12,7 +12,8 @@
         public IMatch Match(string text)
         {
             return !string.IsNullOrEmpty(text) && text.StartsWith(prefix) ?
-                   new SuccessMatch(text[prefix.Length..]) : new FailedMatch(text);
+                   new SuccessMatch(text[prefix.Length..]) :
+                   new FailedMatch(text);
         }
     }
 }
