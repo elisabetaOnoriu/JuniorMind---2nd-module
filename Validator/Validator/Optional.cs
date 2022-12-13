@@ -1,22 +1,17 @@
 ﻿namespace Validator
 {
-    public class Many : IPattern
+    public class Optionally : IPattern
     {
         readonly IPattern pattern;
 
-        public Many(IPattern pattern)
+        public Optionally(IPattern pattern)
         {
             this.pattern = pattern;
         }
 
         public IMatch Match(string text)
         {
-            IMatch match = new SuccessMatch(text);
-            while (match.Success())
-            {
-                match = pattern.Match(match.RemainingText());
-            }
-
+            var match = pattern.Match(text);
             return new SuccessMatch(match.RemainingText());
         }
     }
