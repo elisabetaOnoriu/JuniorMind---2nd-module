@@ -1,6 +1,4 @@
-﻿global using Xunit;
-
-namespace Validator.OneOrMoreFacts
+﻿namespace Validator.OneOrMoreFacts
 {
     public class TestProgram
     {
@@ -29,7 +27,7 @@ namespace Validator.OneOrMoreFacts
         [InlineData(null)]
         [InlineData("bc")]
 
-        public void TextDoesNotStartWithTheGivenCharacter_TrueCases(string text)
+        public void TextDoesNotStartWithTheGivenCharacter_FalseCases(string text)
         {
             var pattern = new OneOrMore(new Range('1', '9'));
             var match = pattern.Match(text);

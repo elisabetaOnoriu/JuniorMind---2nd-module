@@ -6,8 +6,7 @@
 
         public OneOrMore(IPattern pattern)
         {
-            IPattern patternConstructed = new Sequence(pattern, new Many(pattern));
-            this.pattern = patternConstructed;
+            this.pattern = new Sequence(pattern, new Many(pattern));
         }
 
         public IMatch Match(string text)
