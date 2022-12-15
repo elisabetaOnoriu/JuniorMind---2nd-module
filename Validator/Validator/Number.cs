@@ -6,17 +6,18 @@
 
         public Number()
         {
-            var digit = new Choice(new Character('0'), new Range('1', '9'));
+            var digit = new Range('0', '9');
+            var digits = new OneOrMore(digit);
             var integer = new Sequence(new Optional(new Character('-')),
                                        new Choice(new Character('0'),
-                                                  new OneOrMore(digit)));
+                                                  digits));
             var fraction = new Sequence(
                             new Character('.'),
-                            new OneOrMore(digit));
+                            digits);
             var exponent = new Sequence(
                             new Any("Ee"),
                             new Optional(new Any("+-")),
-                            new OneOrMore(digit));
+                            digits);
 
             pattern = new Sequence(
                     integer,

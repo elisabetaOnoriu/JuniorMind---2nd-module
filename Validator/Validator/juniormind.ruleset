@@ -113,7 +113,7 @@
     <Rule Id="CA1715" Action="Error" />
     <Rule Id="CA1716" Action="None" />
     <Rule Id="CA1717" Action="Error" />
-    <Rule Id="CA1720" Action="Error" />
+    <Rule Id="CA1720" Action="None" />
     <Rule Id="CA1721" Action="Error" />
     <Rule Id="CA1724" Action="Error" />
     <Rule Id="CA1725" Action="Error" />
@@ -852,5 +852,6 @@
   </Rules>
   <Rules AnalyzerId="Microsoft.CodeAnalysis.NetAnalyzers" RuleNamespace="Microsoft.CodeAnalysis.NetAnalyzers">
     <Rule Id="CA1716" Action="None" />
+    <Rule Id="CA1720" Action="None" />
   </Rules>
 </RuleSet>
