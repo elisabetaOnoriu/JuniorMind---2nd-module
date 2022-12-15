@@ -8,8 +8,8 @@
         {
             var digit = new Choice(new Character('0'), new Range('1', '9'));
             var integer = new Sequence(new Optional(new Character('-')),
-                                       new Choice(new OneOrMore(new Range('1', '9')),
-                                                  digit));
+                                       new Choice(new Character('0'),
+                                                  new OneOrMore(digit)));
             var fraction = new Sequence(
                             new Character('.'),
                             new OneOrMore(digit));

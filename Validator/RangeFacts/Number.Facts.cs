@@ -5,6 +5,7 @@
         [Theory]
         [InlineData("-0")]
         [InlineData("1234")]
+        [InlineData("1004")]
         public void IntegerIsValid_TrueCases(string integer)
         {
             var number = new Number();
@@ -127,7 +128,7 @@
         }
 
         [Theory]
-        [InlineData("12.34e3")]
+        [InlineData("12.34e30")]
         [InlineData("12.5E4")]
         public void FractionAndExponentAreValid_TrueCases(string fraction)
         {
