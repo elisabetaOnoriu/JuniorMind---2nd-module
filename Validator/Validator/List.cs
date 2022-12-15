@@ -1,6 +1,6 @@
 ﻿namespace Validator
 {
-    public class List
+    public class List : IPattern
     {
         readonly IPattern pattern;
 

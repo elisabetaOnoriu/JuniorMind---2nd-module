@@ -18,7 +18,7 @@ namespace Validator
                 var match = pattern.Match(text);
                 if (match.Success())
                 {
-                    return new SuccessMatch(text[1..]);
+                    return new SuccessMatch(match.RemainingText());
                 }
             }
 
