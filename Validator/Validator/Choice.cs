@@ -4,7 +4,7 @@ namespace Validator
 {
     public class Choice : IPattern
     {
-        readonly IPattern[] patterns;
+        IPattern[] patterns;
 
         public Choice(params IPattern[] patterns)
         {
