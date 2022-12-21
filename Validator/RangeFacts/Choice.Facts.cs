@@ -1,4 +1,5 @@
 ﻿global using Xunit;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Validator.ChoiceFacts
 {
@@ -94,6 +95,15 @@ namespace Validator.ChoiceFacts
             var match = hex.Match(text);
             Assert.False(match.Success());
             Assert.Equal(text, match.RemainingText());
+        }
+
+        [Fact]
+        public void AddMethodAddsAPatternToChoice()
+        {
+            var vowel = new Choice(new Character('a'), new Character('e'), new Character('i'), new Character('o'));
+            vowel.Add(new Character('u'));
+            var match = vowel.Match("u");
+            Assert.Equal("", match.RemainingText());
         }
     }
 }
