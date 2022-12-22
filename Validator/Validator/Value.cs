@@ -12,19 +12,24 @@
                             new Text("true"),
                             new Text("false"),
                             new Text("null"));
-
-            var whiteSpace = new Many(new Choice(new Character(' '), new Range('\t', '\n'), new Character('\r')));
+            var characterChoice = new Any(" \n\t\r");
+            var whiteSpace = new Many(characterChoice);
+            var element = new Sequence(whiteSpace, value, whiteSpace);
             var separator = new Sequence(new Character(','), whiteSpace);
-            var array = new Sequence(new Character('['),
-                                     whiteSpace, new List(value, separator),
-                                     new Character(']'));
-            var objectUnit = new Sequence(new String(), new Character(':'), whiteSpace, value);
-            var _object = new Sequence(new Character('{'),
-                                      whiteSpace, new List(objectUnit, separator),
-                                      new Character('}'));
+            var array = new Sequence(
+                              new Character('['),
+                              whiteSpace, new List(element, separator),
+                              new Character(']'));
+            var member = new Sequence(                            
+                              new String(), new Character(':'), element);
+            var @object = new Sequence(
+                              new Character('{'),
+                              whiteSpace,
+                              new List(member, separator),
+                              new Character('}'));
             value.Add(array);
-            value.Add(_object);
-            pattern = new Sequence(whiteSpace, value, whiteSpace);
+            value.Add(@object);
+            pattern = element;
         }
 
         public IMatch Match(string text)
