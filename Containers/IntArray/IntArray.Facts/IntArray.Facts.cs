@@ -1,6 +1,3 @@
-using System.Linq;
-using System.Runtime.CompilerServices;
-
 namespace IntArray.Facts
 {
     public class UnitTest1
