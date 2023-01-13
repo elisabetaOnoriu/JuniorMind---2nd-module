@@ -32,13 +32,13 @@ namespace IntArray.Facts
         public void SetElementMethod_ChangesValueAtGivenPositionWithNewGivenElement()
         {
             int[] array = new int[] { 1, 2, 3, 4, 5 };
-            int expectedElement = 22;
+            int[] expected = new int[] { 1, 2, 3, 4, 22 };
             array.SetElement(4, 22);
-            Assert.Equal(expectedElement, array);
+            Assert.Equal(expected, array);
         }
 
         [Fact(Skip = "Remove this Skip as you implement")]
-        public void ContainsMethod_ChangesValueAtGivenPositionWithNewGivenElement()
+        public void ContainsMethod_VerifiesIfTheElementExistsIntheArray()
         {
             int[] array = new int[] { 1, 2, 3, 4, 5 };
             Assert.True(array.Contains(3));
@@ -71,7 +71,7 @@ namespace IntArray.Facts
         }
 
         [Fact(Skip = "Remove this Skip as you implement")]
-        public void RemoveMethod_AddsANewElementAtTheGivenPosition()
+        public void RemoveMethod_RemovesFirstInstanceOfElement()
         {
             int[] array = new int[] { 1, 2, 4, 1 };
             int[] shouldEqual = new int[] { 2, 4, 1 };
@@ -80,7 +80,7 @@ namespace IntArray.Facts
         }
 
         [Fact(Skip = "Remove this Skip as you implement")]
-        public void RemoveAtMethod_AddsANewElementAtTheGivenPosition()
+        public void RemoveAtMethod_RemovesElementAtTheGivenPosition()
         {
             int[] array = new int[] { 1, 2, 4, 3 };
             int[] shouldEqual = new int[] { 1, 2, 3 };
