@@ -24,9 +24,10 @@ namespace IntArrayFacts
         [Fact]
         public void AddMethod_ItInsertsAnItemAtTheEnd()
         {
-            var array = new IntArray(new int[] { 1, 2, 3 });
+            var array = new IntArray(new int[] { 1, 2, 3, 0 });
             array.Add(4);
             Assert.Equal(4, array.Element(3));
+            Assert.Equal(4, array.Count());
         }
 
         [Fact]

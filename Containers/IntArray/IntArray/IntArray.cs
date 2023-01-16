@@ -2,7 +2,7 @@
 {
     public class IntArray
     {
-        int[] array;
+        int[] array = new int[4];
 
         public IntArray(int[] array)
         {
@@ -11,8 +11,20 @@
 
         public void Add(int element)
         {
-            Array.Resize(ref array, array.Length + 1);
-            array[^1] = element;
+            int index = array.Length - 1;
+            while (array[index] == 0)
+            {
+                index--;
+            }
+
+            if (index == array.Length - 1)
+            {
+                Array.Resize(ref array, array.Length * 2);
+            }
+            else
+            {
+                array[index + 1] = element;
+            }
         }
 
         public int Count()
