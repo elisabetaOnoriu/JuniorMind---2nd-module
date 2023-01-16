@@ -4,60 +4,115 @@
     {
         int[] array;
 
-        public IntArray()
+        public IntArray(int[] array)
         {
-            array = array;
+            this.array = array;
         }
 
         public void Add(int element)
         {
-            // adaugă un nou element la sfârșitul șirului 
+            Array.Resize(ref array, array.Length + 1);
+            array[^1] = element;
         }
 
         public int Count()
         {
-            // întorce numărul de elemente din șir
+            return array.Length;
         }
 
         public int Element(int index)
         {
-            // întoarce elementul de la indexul dat
+            return array[index];
         }
 
         public void SetElement(int index, int element)
         {
-            // modifică valoarea elementului de la indexul dat
+            array[index] = element;
         }
 
         public bool Contains(int element)
         {
-            // întoarce true dacă elementul dat există în șir
+            foreach (var item in array)
+            {
+                if (item == element)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public int IndexOf(int element)
         {
-            // întoarce indexul elementului sau -1 dacă elementul nu se
-            // regăsește în șir
+            for (int i = 0; i < array.Length; i++)
+            {
+                if(array[i] == element)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         public void Insert(int index, int element)
         {
-            // adaugă un nou element pe poziția dată
+            int[] result = new int[array.Length + 1];
+            result[index] = element;
+            int firstIndex = 0, secondIndex = 0;
+            while (secondIndex < result.Length)
+            {
+                if (array[firstIndex] == element)
+                {
+                    secondIndex++;
+                    continue;
+                }
+
+                result[secondIndex++] = array[firstIndex++];
+                array = result;
+            }
         }
 
         public void Clear()
         {
-            // șterge toate elementele din șir
+            Array.Resize(ref array, 0);
         }
 
         public void Remove(int element)
         {
-            // șterge prima apariție a elementului din șir	
+            int[] result = new int[array.Length - 1];
+            int firstIndex = 0, secondIndex = 0;
+            bool check = false;
+            while (secondIndex < array.Length)
+            {
+                if (array[firstIndex] == element && !check)
+                {
+                    secondIndex++;
+                    check = true;
+                }
+
+                result[firstIndex++] = array[secondIndex++];
+            }
+            
+            array = result;
         }
 
         public void RemoveAt(int index)
         {
-            // șterge elementul de pe poziția dată
+            int[] result = new int[array.Length - 1];
+            int firstIndex = 0, secondIndex = 0;
+            while (secondIndex < array.Length)
+            {
+                if (firstIndex == index)
+                {
+                    secondIndex++;
+                }
+
+                result[firstIndex++] = array[secondIndex++];   
+            }
+            
+            array = result;
         }
     }
 }
