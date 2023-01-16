@@ -81,38 +81,21 @@
 
         public void Remove(int element)
         {
-            int[] result = new int[array.Length - 1];
-            int firstIndex = 0, secondIndex = 0;
-            bool check = false;
-            while (secondIndex < array.Length)
-            {
-                if (array[firstIndex] == element && !check)
-                {
-                    secondIndex++;
-                    check = true;
-                }
-
-                result[firstIndex++] = array[secondIndex++];
-            }
-            
-            array = result;
+            RemoveAt(this.IndexOf(element));
         }
 
         public void RemoveAt(int index)
         {
-            int[] result = new int[array.Length - 1];
-            int firstIndex = 0, secondIndex = 0;
-            while (secondIndex < array.Length)
-            {
-                if (firstIndex == index)
-                {
-                    secondIndex++;
-                }
+            ShiftToLeft(index);
+            Array.Resize(ref array, array.Length - 1);
+        }
 
-                result[firstIndex++] = array[secondIndex++];   
+        private void ShiftToLeft(int index)
+        {
+            for (int i = index; i < array.Length - 1; i++)
+            {
+                array[i] = array[i + 1];
             }
-            
-            array = result;
         }
     }
 }
