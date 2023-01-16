@@ -58,20 +58,8 @@
 
         public void Insert(int index, int element)
         {
-            int[] result = new int[array.Length + 1];
-            result[index] = element;
-            int firstIndex = 0, secondIndex = 0;
-            while (secondIndex < result.Length)
-            {
-                if (array[firstIndex] == element)
-                {
-                    secondIndex++;
-                    continue;
-                }
-
-                result[secondIndex++] = array[firstIndex++];
-                array = result;
-            }
+            Array.Resize(ref array, array.Length + 1);
+            ShiftToRight(index, element);
         }
 
         public void Clear()
@@ -95,6 +83,14 @@
             for (int i = index; i < array.Length - 1; i++)
             {
                 array[i] = array[i + 1];
+            }
+        }
+
+        private void ShiftToRight(int index, int element)
+        {
+            for (int i = array.Length - 1; i >= index; i--)
+            {
+                array[i] = i == index ? element : array[i - 1];
             }
         }
     }
