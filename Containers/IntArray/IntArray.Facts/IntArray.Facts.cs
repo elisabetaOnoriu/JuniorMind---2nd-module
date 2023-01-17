@@ -16,26 +16,35 @@ namespace IntArrayFacts
         [Fact]
         public void ElementMethod_ItReturnsTheElementAtTheGivenPosition()
         {
-            var array = new IntArray(new int[] { 1, 2, 3, 4, 5 });
-            int expectedElement = 5;
-            Assert.Equal(expectedElement, array.Element(4));
+            var array = new IntArray(new int[] { 1, 2, 3, 4 });
+            int expectedElement = 2;
+            Assert.Equal(expectedElement, array.Element(1));
         }
 
         [Fact]
         public void AddMethod_ItInsertsAnItemAtTheEnd()
         {
-            var array = new IntArray(new int[] { 1, 2, 3, 0 });
+            var array = new IntArray(new int[] { 1, 2, 3 });
             array.Add(4);
             Assert.Equal(4, array.Element(3));
             Assert.Equal(4, array.Count());
         }
 
         [Fact]
+        public void AddMethod_ItInsertsAnItemAtTheEnd_ArraySizeIsDoubled()
+        {
+            var array = new IntArray(new int[] { 1, 2, 3, 4 });
+            array.Add(5);
+            Assert.Equal(5, array.Element(4));
+            Assert.Equal(5, array.Count());
+        }
+
+        [Fact]
         public void SetElementMethod_ChangesValueAtGivenPositionWithNewGivenElement()
         {
-            var array = new IntArray(new int[] { 1, 2, 3, 4, 5 });
-            array.SetElement(4, 22);
-            Assert.Equal(22, array.Element(4));
+            var array = new IntArray(new int[] { 1, 2, 3, 4 });
+            array.SetElement(3, 22);
+            Assert.Equal(22, array.Element(3));
         }
 
         [Fact]

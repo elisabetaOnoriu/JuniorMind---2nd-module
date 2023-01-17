@@ -2,34 +2,31 @@
 {
     public class IntArray
     {
-        int[] array = new int[4];
+        int[] array;
 
         public IntArray(int[] array)
         {
-            this.array = array;
+            Array.Resize(ref array, 4);
+            this.array = array;    
         }
 
         public void Add(int element)
         {
-            int index = array.Length - 1;
-            while (array[index] == 0)
+            if (array[^1] != 0)
             {
-                index--;
-            }
-
-            if (index == array.Length - 1)
-            {
+                int nextPosition = array.Length;
                 Array.Resize(ref array, array.Length * 2);
+                array[nextPosition] = element;
             }
             else
             {
-                array[index + 1] = element;
+                array[Array.IndexOf(array, 0)] = element;
             }
         }
 
         public int Count()
         {
-            return array.Length;
+            return array.Contains(0) ? Array.IndexOf(array, 0) : array.Length;
         }
 
         public int Element(int index)
@@ -87,7 +84,7 @@
         public void RemoveAt(int index)
         {
             ShiftToLeft(index);
-            Array.Resize(ref array, array.Length - 1);
+            array[^1] = 0;
         }
 
         private void ShiftToLeft(int index)
