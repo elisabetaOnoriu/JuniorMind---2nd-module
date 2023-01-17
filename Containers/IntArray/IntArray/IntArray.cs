@@ -2,47 +2,48 @@
 {
     public class IntArray
     {
-        int[] array;
+        public int[] numbers;
+        private int count;
 
-        public IntArray(int[] array)
+        public IntArray()
         {
-            Array.Resize(ref array, 4);
-            this.array = array;    
+            Array.Resize(ref numbers, 4);
         }
 
         public void Add(int element)
-        {
-            if (array[^1] != 0)
+        {      
+            if (count == 0 || count % 4 != 0)
             {
-                int nextPosition = array.Length;
-                Array.Resize(ref array, array.Length * 2);
-                array[nextPosition] = element;
+                numbers[count] = element;
             }
             else
             {
-                array[Array.IndexOf(array, 0)] = element;
+                Array.Resize(ref numbers, numbers.Length * 2);
+                numbers[count] = element;
             }
+
+            count++;
         }
 
         public int Count()
         {
-            return array.Contains(0) ? Array.IndexOf(array, 0) : array.Length;
+            return count;
         }
 
         public int Element(int index)
         {
-            return array[index];
+            return numbers[index];
         }
 
         public void SetElement(int index, int element)
         {
-            array[index] = element;
+            numbers[index] = element;
         }
         public int IndexOf(int element)
         {
-            for (int i = 0; i < array.Length; i++)
+            for (int i = 0; i < numbers.Length; i++)
             {
-                if(array[i] == element)
+                if(numbers[i] == element)
                 {
                     return i;
                 }
@@ -58,13 +59,15 @@
 
         public void Insert(int index, int element)
         {
-            Array.Resize(ref array, array.Length + 1);
+            Array.Resize(ref numbers, numbers.Length + 1);
             ShiftToRight(index, element);
+            count++;
         }
 
         public void Clear()
         {
-            Array.Resize(ref array, 0);
+            Array.Resize(ref numbers, 0);
+            count = 0;
         }
 
         public void Remove(int element)
@@ -78,22 +81,23 @@
         public void RemoveAt(int index)
         {
             ShiftToLeft(index);
-            array[^1] = 0;
+            numbers[^1] = 0;
+            count--;
         }
 
         private void ShiftToLeft(int index)
         {
-            for (int i = index; i < array.Length - 1; i++)
+            for (int i = index; i < numbers.Length - 1; i++)
             {
-                array[i] = array[i + 1];
+                numbers[i] = numbers[i + 1];
             }
         }
 
         private void ShiftToRight(int index, int element)
         {
-            for (int i = array.Length - 1; i >= index; i--)
+            for (int i = numbers.Length - 1; i >= index; i--)
             {
-                array[i] = i == index ? element : array[i - 1];
+                numbers[i] = i == index ? element : numbers[i - 1];
             }
         }
     }

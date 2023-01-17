@@ -4,96 +4,140 @@ namespace IntArrayFacts
 {
     public class TestProgram
     {  
+        [Theory]
+        [InlineData(1, 0)]
+        [InlineData(2, 1)]
+        [InlineData(3, 2)]
+        public void AddMethod_ItInsertsAnItemAtTheEnd(int expectedElement, int index)
+        {
+            var intArray = new IntArray();
+            intArray.Add(1);
+            intArray.Add(2);
+            intArray.Add(3);
+            Assert.Equal(expectedElement, intArray.numbers[index]);
+            Assert.Equal(3, intArray.Count());
+        }
+
+        [Theory]
+        [InlineData(1, 0)]
+        [InlineData(2, 1)]
+        [InlineData(3, 2)]
+        [InlineData(4, 3)]
+        [InlineData(5, 4)]
+        public void AddMethod_ItInsertsAnItemAtTheEnd_ArraySizeIsDoubled(int expectedElement, int index)
+        {
+            var intArray = new IntArray();
+            intArray.Add(1);
+            intArray.Add(2);
+            intArray.Add(3);
+            intArray.Add(4);
+            intArray.Add(5);
+            Assert.Equal(expectedElement, intArray.numbers[index]);
+            Assert.Equal(5, intArray.Count());
+            Assert.Equal(8, intArray.numbers.Length);
+        }
+
         [Fact]
         public void CountMethod_ItReturnsTheLength()
         {
-            var array = new IntArray(new int[] { 1, 2, 3 });
-            int expectedLength = 3;
-            
-            Assert.Equal(expectedLength, array.Count());
+            var intArray = new IntArray();
+            int expectedLength = 2;
+            intArray.Add(1);
+            intArray.Add(2);
+            Assert.Equal(expectedLength, intArray.Count());
         }
 
         [Fact]
         public void ElementMethod_ItReturnsTheElementAtTheGivenPosition()
         {
-            var array = new IntArray(new int[] { 1, 2, 3, 4 });
+            var intArray = new IntArray();
+            intArray.Add(1);
+            intArray.Add(2);
             int expectedElement = 2;
-            Assert.Equal(expectedElement, array.Element(1));
-        }
-
-        [Fact]
-        public void AddMethod_ItInsertsAnItemAtTheEnd()
-        {
-            var array = new IntArray(new int[] { 1, 2, 3 });
-            array.Add(4);
-            Assert.Equal(4, array.Element(3));
-            Assert.Equal(4, array.Count());
-        }
-
-        [Fact]
-        public void AddMethod_ItInsertsAnItemAtTheEnd_ArraySizeIsDoubled()
-        {
-            var array = new IntArray(new int[] { 1, 2, 3, 4 });
-            array.Add(5);
-            Assert.Equal(5, array.Element(4));
-            Assert.Equal(5, array.Count());
+            Assert.Equal(expectedElement, intArray.Element(1));
         }
 
         [Fact]
         public void SetElementMethod_ChangesValueAtGivenPositionWithNewGivenElement()
         {
-            var array = new IntArray(new int[] { 1, 2, 3, 4 });
-            array.SetElement(3, 22);
-            Assert.Equal(22, array.Element(3));
+            var intArray = new IntArray();
+            intArray.Add(1);
+            intArray.Add(2);
+            intArray.Add(3);
+            intArray.Add(4);
+            intArray.SetElement(3, 22);
+            Assert.Equal(22, intArray.Element(3));
         }
 
         [Fact]
         public void ContainsMethod_VerifiesIfTheElementExistsIntheArray()
         {
-            var array = new IntArray(new int[] { 1, 2, 3, 4, 5 });
-            Assert.True(array.Contains(3));
+            var intArray = new IntArray();
+            intArray.Add(1);
+            intArray.Add(2);
+            intArray.Add(3);
+            intArray.Add(4);
+            Assert.True(intArray.Contains(3));
         }
 
         [Fact]
         public void IndexOfMethod_ReturnsIndexOfGivenElement()
         {
-            var array = new IntArray(new int[] { 1, 2, 3, 4, 5 });
+            var intArray = new IntArray();
+            intArray.Add(1);
+            intArray.Add(2);
+            intArray.Add(3);
             int expectedIndex = 1;
-            Assert.Equal(expectedIndex, array.IndexOf(2));
+            Assert.Equal(expectedIndex, intArray.IndexOf(2));
         }
 
         [Fact]
         public void InsertMethod_AddsANewElementAtTheGivenPosition()
         {
-            var array = new IntArray(new int[] { 1, 2, 4 });
-            array.Insert(2, 3);
-            Assert.Equal(3, array.Element(2));
+            var intArray = new IntArray();
+            intArray.Add(1);
+            intArray.Add(2);
+            intArray.Add(4);
+            intArray.Insert(2, 3);
+            Assert.Equal(3, intArray.Element(2));
         }
 
         [Fact]
         public void ClearMethod_RemovesAllItemsFromArray()
         {
-            var array = new IntArray(new int[] { 1, 2, 3 });
-            array.Clear();
-            Assert.Equal(0, array.Count());
+            var intArray = new IntArray();
+            intArray.Add(1);
+            intArray.Add(2);
+            intArray.Add(3);
+            intArray.Clear();
+            Assert.Equal(0, intArray.Count());
         }
 
         [Fact]
         public void RemoveMethod_RemovesFirstInstanceOfElement()
         {
-            var array = new IntArray(new int[] { 1, 2, 4, 1, 4 });
-            array.Remove(1);
-            Assert.Equal(2, array.Element(0));
-            Assert.Equal(1, array.Element(2));
+            var intArray = new IntArray();
+            intArray.Add(1);
+            intArray.Add(2);
+            intArray.Add(4);
+            intArray.Add(1);
+            intArray.Add(4);
+            intArray.Remove(1);
+            Assert.Equal(2, intArray.Element(0));
+            Assert.Equal(1, intArray.Element(2));
         }
 
         [Fact]
         public void RemoveAtMethod_RemovesElementAtTheGivenPosition()
         {
-            var array = new IntArray(new int[] { 1, 2, 4, 3 });
-            array.RemoveAt(2);
-            Assert.Equal(3, array.Element(2));
-            Assert.Equal(3, array.Count());
+            var intArray = new IntArray();
+            intArray.Add(1);
+            intArray.Add(2);
+            intArray.Add(4);
+            intArray.Add(3);
+            intArray.RemoveAt(2);
+            Assert.Equal(3, intArray.Element(2));
+            Assert.Equal(3, intArray.Count());
         }
     }
 }
