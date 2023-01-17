@@ -39,6 +39,7 @@
         {
             numbers[index] = element;
         }
+
         public int IndexOf(int element)
         {
             for (int i = 0; i < numbers.Length; i++)
