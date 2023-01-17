@@ -38,20 +38,6 @@
         {
             array[index] = element;
         }
-
-        public bool Contains(int element)
-        {
-            foreach (var item in array)
-            {
-                if (item == element)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         public int IndexOf(int element)
         {
             for (int i = 0; i < array.Length; i++)
@@ -63,6 +49,11 @@
             }
 
             return -1;
+        }
+
+        public bool Contains(int element)
+        {
+            return this.IndexOf(element) > -1;
         }
 
         public void Insert(int index, int element)
@@ -78,7 +69,10 @@
 
         public void Remove(int element)
         {
-            RemoveAt(this.IndexOf(element));
+            if (this.IndexOf(element) > -1)
+            {
+                this.RemoveAt(this.IndexOf(element));
+            }
         }
 
         public void RemoveAt(int index)
