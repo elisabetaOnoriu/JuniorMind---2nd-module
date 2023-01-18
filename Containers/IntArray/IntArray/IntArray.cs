@@ -66,9 +66,9 @@
 
         public void Remove(int element)
         {
-            if (this.IndexOf(element) > -1)
+            if (IndexOf(element) > -1)
             {
-                this.RemoveAt(this.IndexOf(element));
+                RemoveAt(IndexOf(element));
             }
         }
 
