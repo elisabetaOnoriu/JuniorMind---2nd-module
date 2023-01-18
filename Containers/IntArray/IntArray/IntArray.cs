@@ -2,8 +2,8 @@
 {
     public class IntArray
     {
-        public int[] numbers;
-        private int count;
+        int[] numbers;
+        int count;
 
         public IntArray()
         {
@@ -59,8 +59,12 @@
         }
 
         public void Insert(int index, int element)
-        {
-            Array.Resize(ref numbers, numbers.Length + 1);
+        {        
+            if (count >= 4 && count % 4 == 0)
+            {
+                Array.Resize(ref numbers, numbers.Length * 2);
+            }
+
             ShiftToRight(index, element);
             count++;
         }

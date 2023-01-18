@@ -14,7 +14,7 @@ namespace IntArrayFacts
             intArray.Add(1);
             intArray.Add(2);
             intArray.Add(3);
-            Assert.Equal(expectedElement, intArray.numbers[index]);
+            Assert.Equal(expectedElement, intArray.Element(index));
             Assert.Equal(3, intArray.Count());
         }
 
@@ -32,9 +32,8 @@ namespace IntArrayFacts
             intArray.Add(3);
             intArray.Add(4);
             intArray.Add(5);
-            Assert.Equal(expectedElement, intArray.numbers[index]);
+            Assert.Equal(expectedElement, intArray.Element(index));
             Assert.Equal(5, intArray.Count());
-            Assert.Equal(8, intArray.numbers.Length);
         }
 
         [Fact]
@@ -100,6 +99,7 @@ namespace IntArrayFacts
             intArray.Add(4);
             intArray.Insert(2, 3);
             Assert.Equal(3, intArray.Element(2));
+            Assert.Equal(4, intArray.Count());
         }
 
         [Fact]
