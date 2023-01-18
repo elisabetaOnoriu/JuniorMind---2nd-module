@@ -12,16 +12,8 @@
 
         public void Add(int element)
         {      
-            if (count == 0 || count % 4 != 0)
-            {
-                numbers[count] = element;
-            }
-            else
-            {
-                DoubleUpCapacity();
-                numbers[count] = element;
-            }
-
+            EnsureCapacity();
+            numbers[count] = element;
             count++;
         }
 
@@ -42,7 +34,7 @@
 
         public int IndexOf(int element)
         {
-            for (int i = 0; i < numbers.Length; i++)
+            for (int i = 0; i < count; i++)
             {
                 if(numbers[i] == element)
                 {
@@ -60,13 +52,9 @@
 
         public void Insert(int index, int element)
         {
-            if (numbers.Length == count)
-            {
-                DoubleUpCapacity();
-            }
-
-            numbers[index] = element;
-            ShiftToRight(index, element);
+            EnsureCapacity();
+            ShiftToRight(index);
+            numbers[index] = element; 
             count++;
         }
 
@@ -93,23 +81,26 @@
 
         private void ShiftToLeft(int index)
         {
-            for (int i = index; i < numbers.Length - 1; i++)
+            for (int i = index; i < count - 1; i++)
             {
                 numbers[i] = numbers[i + 1];
             }
         }
 
-        private void ShiftToRight(int index, int element)
+        private void ShiftToRight(int index)
         {
-            for (int i = numbers.Length - 1; i > index; i--)
+            for (int i = count; i > index; i--)
             {
                 numbers[i] = numbers[i - 1];
             }
         }
 
-        private void DoubleUpCapacity()
+        private void EnsureCapacity()
         {
-            Array.Resize(ref numbers, numbers.Length * 2);
+            if (numbers.Length == count)
+            {
+                Array.Resize(ref numbers, count * 2); 
+            }
         }
     }
 }
