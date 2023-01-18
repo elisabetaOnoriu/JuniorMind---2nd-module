@@ -18,7 +18,7 @@
             }
             else
             {
-                Array.Resize(ref numbers, numbers.Length * 2);
+                DoubleUpCapacity();
                 numbers[count] = element;
             }
 
@@ -59,12 +59,13 @@
         }
 
         public void Insert(int index, int element)
-        {        
-            if (count >= 4 && count % 4 == 0)
+        {
+            if (numbers.Length == count)
             {
-                Array.Resize(ref numbers, numbers.Length * 2);
+                DoubleUpCapacity();
             }
 
+            numbers[index] = element;
             ShiftToRight(index, element);
             count++;
         }
@@ -100,10 +101,15 @@
 
         private void ShiftToRight(int index, int element)
         {
-            for (int i = numbers.Length - 1; i >= index; i--)
+            for (int i = numbers.Length - 1; i > index; i--)
             {
-                numbers[i] = i == index ? element : numbers[i - 1];
+                numbers[i] = numbers[i - 1];
             }
+        }
+
+        private void DoubleUpCapacity()
+        {
+            Array.Resize(ref numbers, numbers.Length * 2);
         }
     }
 }
