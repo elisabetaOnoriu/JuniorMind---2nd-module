@@ -17,19 +17,12 @@
             count++;
         }
 
-        public int Count()
-        {
-            return count;
-        }
+        public int Count { get { return count; } }
 
-        public int Element(int index)
+        public int this[int index]
         {
-            return numbers[index];
-        }
-
-        public void SetElement(int index, int element)
-        {
-            numbers[index] = element;
+            get => numbers[index];
+            set => numbers[index] = value;
         }
 
         public int IndexOf(int element)

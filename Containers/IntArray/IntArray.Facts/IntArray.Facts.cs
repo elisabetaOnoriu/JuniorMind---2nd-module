@@ -1,4 +1,6 @@
 using Collections;
+using System;
+using System.Reflection;
 
 namespace IntArrayFacts
 {
@@ -14,8 +16,8 @@ namespace IntArrayFacts
             intArray.Add(1);
             intArray.Add(2);
             intArray.Add(3);
-            Assert.Equal(expectedElement, intArray.Element(index));
-            Assert.Equal(3, intArray.Count());
+            Assert.Equal(expectedElement, intArray[index]);
+            Assert.Equal(3, intArray.Count);
         }
 
         [Theory]
@@ -32,8 +34,8 @@ namespace IntArrayFacts
             intArray.Add(3);
             intArray.Add(4);
             intArray.Add(5);
-            Assert.Equal(expectedElement, intArray.Element(index));
-            Assert.Equal(5, intArray.Count());
+            Assert.Equal(expectedElement, intArray[index]);
+            Assert.Equal(5, intArray.Count);
         }
 
         [Fact]
@@ -43,29 +45,29 @@ namespace IntArrayFacts
             int expectedLength = 2;
             intArray.Add(1);
             intArray.Add(2);
-            Assert.Equal(expectedLength, intArray.Count());
+            Assert.Equal(expectedLength, intArray.Count);
         }
 
         [Fact]
-        public void ElementMethod_ItReturnsTheElementAtTheGivenPosition()
+        public void Element_ItReturnsTheElementAtTheGivenPosition()
         {
             var intArray = new IntArray();
             intArray.Add(1);
             intArray.Add(2);
             int expectedElement = 2;
-            Assert.Equal(expectedElement, intArray.Element(1));
+            Assert.Equal(expectedElement, intArray[1]);
         }
 
         [Fact]
-        public void SetElementMethod_ChangesValueAtGivenPositionWithNewGivenElement()
+        public void SetElement_ChangesValueAtGivenPositionWithNewGivenElement()
         {
             var intArray = new IntArray();
             intArray.Add(1);
             intArray.Add(2);
             intArray.Add(3);
             intArray.Add(4);
-            intArray.SetElement(3, 22);
-            Assert.Equal(22, intArray.Element(3));
+            intArray[3] = 22;
+            Assert.Equal(22, intArray[3]);
         }
 
         [Fact]
@@ -98,8 +100,8 @@ namespace IntArrayFacts
             intArray.Add(2);
             intArray.Add(4);
             intArray.Insert(2, 3);
-            Assert.Equal(3, intArray.Element(2));
-            Assert.Equal(4, intArray.Count());
+            Assert.Equal(3, intArray[2]);
+            Assert.Equal(4, intArray.Count);
         }
 
         [Fact]
@@ -110,7 +112,7 @@ namespace IntArrayFacts
             intArray.Add(2);
             intArray.Add(3);
             intArray.Clear();
-            Assert.Equal(0, intArray.Count());
+            Assert.Equal(0, intArray.Count);
         }
 
         [Fact]
@@ -123,8 +125,8 @@ namespace IntArrayFacts
             intArray.Add(1);
             intArray.Add(4);
             intArray.Remove(1);
-            Assert.Equal(2, intArray.Element(0));
-            Assert.Equal(1, intArray.Element(2));
+            Assert.Equal(2, intArray[0]);
+            Assert.Equal(1, intArray[2]);
         }
 
         [Fact]
@@ -136,8 +138,8 @@ namespace IntArrayFacts
             intArray.Add(4);
             intArray.Add(3);
             intArray.RemoveAt(2);
-            Assert.Equal(3, intArray.Element(2));
-            Assert.Equal(3, intArray.Count());
+            Assert.Equal(3, intArray[2]);
+            Assert.Equal(3, intArray.Count);
         }
     }
 }
