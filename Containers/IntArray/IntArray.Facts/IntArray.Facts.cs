@@ -1,6 +1,4 @@
 using Collections;
-using System;
-using System.Reflection;
 
 namespace IntArrayFacts
 {

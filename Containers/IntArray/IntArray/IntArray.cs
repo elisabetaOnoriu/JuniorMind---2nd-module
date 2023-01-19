@@ -17,7 +17,7 @@
             count++;
         }
 
-        public int Count { get { return count; } }
+        public int Count { get => count; }
 
         public int this[int index]
         {
