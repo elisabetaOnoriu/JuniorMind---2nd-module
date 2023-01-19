@@ -66,9 +66,10 @@
 
         public void Remove(int element)
         {
-            if (IndexOf(element) > -1)
+            int elementIndex = IndexOf(element);
+            if (elementIndex > -1)
             {
-                RemoveAt(IndexOf(element));
+                RemoveAt(elementIndex);
             }
         }
 
