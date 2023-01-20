@@ -2,7 +2,7 @@
 {
     public class IntArray
     {
-        int[] numbers;
+        protected int[] numbers;
         int count;
 
         public IntArray()
@@ -10,7 +10,7 @@
             Array.Resize(ref numbers, 4);
         }
 
-        public void Add(int element)
+        public virtual void Add(int element)
         {      
             EnsureCapacity();
             numbers[count] = element;
@@ -19,7 +19,7 @@
 
         public int Count { get => count; }
 
-        public int this[int index]
+        public virtual int this[int index]
         {
             get => numbers[index];
             set => numbers[index] = value;
@@ -43,7 +43,7 @@
             return this.IndexOf(element) > -1;
         }
 
-        public void Insert(int index, int element)
+        public virtual void Insert(int index, int element)
         {
             EnsureCapacity();
             ShiftToRight(index);
@@ -57,7 +57,7 @@
             count = 0;
         }
 
-        public void Remove(int element)
+        public virtual void Remove(int element)
         {
             int elementIndex = IndexOf(element);
             if (elementIndex > -1)
@@ -66,7 +66,7 @@
             }
         }
 
-        public void RemoveAt(int index)
+        public virtual void RemoveAt(int index)
         {
             ShiftToLeft(index);
             numbers[^1] = 0;
