@@ -10,54 +10,32 @@
         public override void Add(int element)
         {
             base.Add(element);
-            this.numbers = Sort(this.numbers, 0, Count - 1);
+            InsertionSort();
         }
 
         public override int this[int index]
         {
             set {
                 base[index] = value;
-                this.numbers = Sort(this.numbers, 0, Count - 1);
+                InsertionSort();
             }
         }
 
         public override void Insert(int index, int element)
         {
             base.Insert(index, element);
-            this.numbers = Sort(this.numbers, 0, Count - 1);
+            InsertionSort();
         }
         
-        private int[] Sort(int[] array, int leftIndex, int rightIndex)
+        private void InsertionSort()
         {
-            var i = leftIndex;
-            var j = rightIndex;
-            var pivot = array[leftIndex];
-            while (i <= j)
+            for (int i = 1; i < Count && Count > 1; i++)
             {
-                while (array[i] < pivot)
+                for (int j = i; j >= 0 && this.numbers[j - 1] > this.numbers[j]; j--)
                 {
-                    i++;
-                }
-
-                while (array[j] > pivot)
-                {
-                    j--;
-                }
-                if (i <= j)
-                {
-                    int temp = array[i];
-                    array[i] = array[j];
-                    array[j] = temp;
-                    i++;
-                    j--;
+                    (this.numbers[j - 1], this.numbers[j]) = (this.numbers[j], this.numbers[j - 1]);
                 }
             }
-
-            if (leftIndex < j)
-                Sort(array, leftIndex, j);
-            if (i < rightIndex)
-                Sort(array, i, rightIndex);
-            return array;
         }
     }
 }
