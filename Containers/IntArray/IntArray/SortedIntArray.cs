@@ -16,15 +16,19 @@
         public override int this[int index]
         {
             set {
-                base[index] = value;
-                InsertionSort();
+                if (WillBeSortedAfterOperation(index + 1, value))
+                {
+                    base[index] = value;
+                }
             }
         }
 
         public override void Insert(int index, int element)
         {
-            base.Insert(index, element);
-            InsertionSort();
+            if (WillBeSortedAfterOperation(index, element))
+            {
+                base.Insert(index, element);
+            }
         }
         
         private void InsertionSort()
@@ -36,6 +40,17 @@
                     (this.numbers[j - 1], this.numbers[j]) = (this.numbers[j], this.numbers[j - 1]);
                 }
             }
+        }
+
+        private bool WillBeSortedAfterOperation(int index, int element)
+        {
+            if (index < Count - 1 && element > this.numbers[index] ||
+                index != 0 && element < this.numbers[index - 1])
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

@@ -45,7 +45,7 @@ namespace SortedIntArrayFacts
             sortedIntArray.Add(2);
             sortedIntArray.Add(3);
             sortedIntArray.Add(4);
-            sortedIntArray[2] = 22;
+            sortedIntArray[3] = 22;
             Assert.Equal(22, sortedIntArray[3]);
         }
 
@@ -55,10 +55,22 @@ namespace SortedIntArrayFacts
             var sortedIntArray = new SortedIntArray();
             sortedIntArray.Add(1);
             sortedIntArray.Add(2);
-            sortedIntArray.Add(3);
-            sortedIntArray.Insert(2, 4);
+            sortedIntArray.Add(4);
+            sortedIntArray.Insert(2, 3);
             Assert.Equal(3, sortedIntArray[2]);
             Assert.Equal(4, sortedIntArray.Count);
+        }
+
+        [Fact]
+        public void InsertMethod_ItIsNotWorkingIfPositionIsChangedAfterSorting()
+        {
+            var sortedIntArray = new SortedIntArray();
+            sortedIntArray.Add(1);
+            sortedIntArray.Add(2);
+            sortedIntArray.Add(4);
+            sortedIntArray.Insert(1, 5);
+            Assert.Equal(4, sortedIntArray[2]);
+            Assert.Equal(3, sortedIntArray.Count);
         }
     }
 }
