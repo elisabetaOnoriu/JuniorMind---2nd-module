@@ -16,7 +16,7 @@
         public override int this[int index]
         {
             set {
-                if (WillBeSortedAfterOperation(index + 1, value))
+                if (WillBeSortedAfterOperation(index + 1, index - 1, value))
                 {
                     base[index] = value;
                 }
@@ -25,7 +25,7 @@
 
         public override void Insert(int index, int element)
         {
-            if (WillBeSortedAfterOperation(index, element))
+            if (WillBeSortedAfterOperation(index, index - 1, element))
             {
                 base.Insert(index, element);
             }
@@ -42,10 +42,10 @@
             }
         }
 
-        private bool WillBeSortedAfterOperation(int index, int element)
+        private bool WillBeSortedAfterOperation(int nextIndex, int previousIndex, int element)
         {
-            if (index < Count - 1 && element > this.numbers[index] ||
-                index != 0 && element < this.numbers[index - 1])
+            if (nextIndex < Count - 1 && element > this.numbers[nextIndex] ||
+                nextIndex != 0 && element < this.numbers[previousIndex])
             {
                 return false;
             }
