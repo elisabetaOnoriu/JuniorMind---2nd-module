@@ -2,9 +2,9 @@
 {
     public class SortedIntArray : IntArray
     {
-        public SortedIntArray() 
+        public SortedIntArray()
             : base()
-        { 
+        {
         }
 
         public override void Add(int element)
@@ -15,7 +15,8 @@
 
         public override int this[int index]
         {
-            set {
+            set
+            {
                 if (WillBeSortedAfterOperation(index + 1, index - 1, value))
                 {
                     base[index] = value;
@@ -30,7 +31,7 @@
                 base.Insert(index, element);
             }
         }
-        
+
         private void InsertionSort()
         {
             for (int i = 1; i < Count && Count > 1; i++)
@@ -43,14 +44,9 @@
         }
 
         private bool WillBeSortedAfterOperation(int nextIndex, int previousIndex, int element)
-        {
-            if (nextIndex < Count - 1 && element > this.numbers[nextIndex] ||
-                nextIndex != 0 && element < this.numbers[previousIndex])
-            {
-                return false;
-            }
-
-            return true;
-        }
+        => nextIndex < Count - 1 ? (nextIndex != 0 ? element > this.numbers[previousIndex] &&
+            element < this.numbers[nextIndex] :
+                element < this.numbers[nextIndex]) :
+                element > this.numbers[previousIndex];
     }
 }

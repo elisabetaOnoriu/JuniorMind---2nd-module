@@ -1,4 +1,3 @@
-global using Xunit;
 using Collections;
 
 namespace IntArrayFacts

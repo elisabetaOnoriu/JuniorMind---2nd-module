@@ -49,15 +49,19 @@ namespace SortedIntArrayFacts
             Assert.Equal(22, sortedIntArray[3]);
         }
 
-        [Fact]
-        public void InsertMethod_AddsANewElementAtTheGivenPosition_ItSortsItselfAfterImplementation()
+        [Theory]
+        [InlineData(0, 0)]
+        [InlineData(1, 1)]
+        [InlineData(2, 2)]
+        [InlineData(4, 3)]
+        public void InsertMethod_AddsANewElementAtTheGivenPosition_ItSortsItselfAfterImplementation(int expectedElement, int index)
         {
             var sortedIntArray = new SortedIntArray();
             sortedIntArray.Add(1);
             sortedIntArray.Add(2);
             sortedIntArray.Add(4);
-            sortedIntArray.Insert(2, 3);
-            Assert.Equal(3, sortedIntArray[2]);
+            sortedIntArray.Insert(0, 0);
+            Assert.Equal(expectedElement, sortedIntArray[index]);
             Assert.Equal(4, sortedIntArray.Count);
         }
 
