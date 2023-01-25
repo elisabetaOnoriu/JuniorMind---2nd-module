@@ -44,9 +44,8 @@
         }
 
         private bool WillBeSortedAfterOperation(int nextIndex, int previousIndex, int element)
-        => nextIndex < Count - 1 ? (nextIndex != 0 ? element > this.numbers[previousIndex] &&
-            element < this.numbers[nextIndex] :
-                element < this.numbers[nextIndex]) :
-                element > this.numbers[previousIndex];
+        => nextIndex < Count - 1 && nextIndex != 0 ?
+            element > this.numbers[previousIndex] && element < this.numbers[nextIndex] :
+            (nextIndex < Count - 1 ? element < this.numbers[nextIndex] : element > this.numbers[previousIndex]);
     }
 }
