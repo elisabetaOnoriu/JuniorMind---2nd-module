@@ -96,7 +96,5 @@
                 Array.Resize(ref objects, count * 2);
             }
         }
-
-
     }
 }
