@@ -1,4 +1,6 @@
-﻿namespace Collections
+﻿using System.Xml.Linq;
+
+namespace Collections
 {
     public class SortedIntArray : IntArray
     {
@@ -44,8 +46,7 @@
         }
 
         private bool WillBeSortedAfterOperation(int nextIndex, int previousIndex, int element)
-        => nextIndex < Count - 1 && nextIndex != 0 ?
-            element > this.numbers[previousIndex] && element < this.numbers[nextIndex] :
-            (nextIndex < Count - 1 ? element < this.numbers[nextIndex] : element > this.numbers[previousIndex]);
+        => (nextIndex > Count - 1 || element < this.numbers[nextIndex]) &&
+        (previousIndex < 0 || element > this.numbers[previousIndex]);
     }
 }
