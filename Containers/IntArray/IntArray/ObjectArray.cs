@@ -1,4 +1,6 @@
-﻿namespace Collections
+﻿using System.Linq.Expressions;
+
+namespace Collections
 {
     public class ObjectArray
     {
@@ -29,7 +31,7 @@
         {
             for (int i = 0; i < count; i++)
             {       
-                if (objects[i] == element)
+                if (objects[i].Equals(element))
                 {
                     return i;
                 }

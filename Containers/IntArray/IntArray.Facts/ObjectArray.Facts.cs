@@ -72,12 +72,11 @@ namespace ObjectArrayFacts
         public void ContainsMethod_VerifiesIfTheElementExistsIntheArray()
         {
             var objectArray = new ObjectArray();
-            object first = 1, second = 2, third = 3, fourth = 4;
-            objectArray.Add(first);
-            objectArray.Add(second);
-            objectArray.Add(third);
-            objectArray.Add(fourth);
-            Assert.True(objectArray.Contains(third));
+            objectArray.Add(1);
+            objectArray.Add(2);
+            objectArray.Add(3);
+            objectArray.Add(4);
+            Assert.True(objectArray.Contains(4));
         }
 
         [Fact]
@@ -87,8 +86,7 @@ namespace ObjectArrayFacts
             objectArray.Add(1);
             objectArray.Add(2);
             objectArray.Add(3);
-            var searchedObject = objectArray[2];
-            Assert.Equal(2, objectArray.IndexOf(searchedObject));
+            Assert.Equal(1, objectArray.IndexOf(2));
         }
 
         [Theory]
