@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace Collections
+﻿namespace Collections
 {
     public class ObjectArray
     {
