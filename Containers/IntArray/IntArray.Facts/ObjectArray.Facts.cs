@@ -49,9 +49,9 @@ namespace ObjectArrayFacts
         [Fact]
         public void Element_ItReturnsTheElementAtTheGivenPosition()
         {
-            var objectArray = new ObjectArray();
-            objectArray.Add(1);
-            objectArray.Add(2);
+            var objectArray = new ObjectArray {1, 2, "abc" };
+            objectArray.Add(true);
+            objectArray.Add(5);
             int expectedElement = 2;
             Assert.Equal(expectedElement, objectArray[1]);
         }

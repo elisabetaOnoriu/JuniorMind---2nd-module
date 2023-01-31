@@ -1,6 +1,7 @@
-﻿namespace Collections
+﻿using System.Collections;
+namespace Collections
 {
-    public class ObjectArray
+    public class ObjectArray : IEnumerable
     {
         object[] objects;
         int count;
@@ -95,6 +96,16 @@
             {
                 Array.Resize(ref objects, count * 2);
             }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public ObjectArrayEnum GetEnumerator()
+        {
+            return new ObjectArrayEnum(objects);
         }
     }
 }
