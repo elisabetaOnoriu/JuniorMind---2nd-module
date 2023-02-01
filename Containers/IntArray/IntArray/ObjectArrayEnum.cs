@@ -4,33 +4,23 @@ namespace Collections
 {
     public class ObjectArrayEnum : IEnumerator
     {
-        object[] objects;
+        readonly ObjectArray objects;
         int position = -1;
 
-        public ObjectArrayEnum(object[] objects)
+        public ObjectArrayEnum(ObjectArray objects)
         {
             this.objects = objects;
         }
 
         public object Current
-        {
-            get
-            {
-                try
-                {
-                    return objects[position];
-                }
-                catch (IndexOutOfRangeException)
-                {
-                    throw new InvalidOperationException();
-                }
-            }
+        { 
+            get => objects[position];
         }
-
+        
         public bool MoveNext()
         {
             position++;
-            return position < objects.Length;
+            return position < objects.Count;
         }
 
         public void Reset()

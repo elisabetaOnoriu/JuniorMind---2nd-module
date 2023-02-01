@@ -105,7 +105,7 @@ namespace Collections
 
         public ObjectArrayEnum GetEnumerator()
         {
-            return new ObjectArrayEnum(objects);
+            return new ObjectArrayEnum(this);
         }
     }
 }
