@@ -29,7 +29,7 @@ namespace Collections
         public int IndexOf(object element)
         {
             for (int i = 0; i < count; i++)
-            {       
+            {
                 if (objects[i].Equals(element))
                 {
                     return i;
@@ -106,6 +106,14 @@ namespace Collections
         public ObjectArrayEnum GetEnumerator()
         {
             return new ObjectArrayEnum(this);
+        }
+
+        public IEnumerable Items()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                yield return objects[i];
+            }
         }
     }
 }

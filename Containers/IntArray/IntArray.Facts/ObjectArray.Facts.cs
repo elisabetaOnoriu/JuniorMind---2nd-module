@@ -143,5 +143,21 @@ namespace ObjectArrayFacts
             Assert.Equal(3, objectArray[2]);
             Assert.Equal(3, objectArray.Count);
         }
+
+        [Theory]
+        [InlineData("abc", 0)]
+        [InlineData(true, 1)]
+        [InlineData(3, 2)]
+        public void YieldKeywordWorksAsAnEnumerator(object expectedElement, int index)
+        {
+            var objectArray = new ObjectArray { "abc", true, 3 };
+            var toEnumerate = objectArray.Items();
+            object[] temporary = new object[3];
+            int i = 0;
+            foreach (var item in toEnumerate)
+            { temporary[i++] = item;}
+            Assert.Equal(expectedElement, temporary[index]);
+            Assert.Equal(3, temporary.Length);
+        }
     }
 }

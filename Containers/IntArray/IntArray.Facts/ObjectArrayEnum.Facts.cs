@@ -30,7 +30,7 @@ namespace ObjectArrayEnumFacts
             var objectArray = new ObjectArray { 1, 2, "abc" };
             int count = 0;
             var enumObjectArray = objectArray.GetEnumerator();
-            foreach (var obj in objectArray) { count++;}
+            foreach (var obj in objectArray) { count++; }
             Assert.Equal(3, count);
         }
     }
