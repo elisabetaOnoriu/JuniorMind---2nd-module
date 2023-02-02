@@ -19,8 +19,7 @@ namespace Collections
         
         public bool MoveNext()
         {
-            position++;
-            return position < objects.Count;
+            return position++ < objects.Count;
         }
 
         public void Reset()
