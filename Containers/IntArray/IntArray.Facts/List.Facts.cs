@@ -145,8 +145,13 @@ namespace ListFacts
         {
             var list = new Collections.List<object> { "abc", true, 3 };
             var toEnumerate = list.Items();
-            object[] temporary = new object[] { "abc", true, 3 };
-            Assert.Equal(temporary, toEnumerate);
+            var getEnum = toEnumerate.GetEnumerator();
+            getEnum.MoveNext();
+            Assert.Equal("abc", getEnum.Current);
+            getEnum.MoveNext();
+            Assert.Equal(true, getEnum.Current);
+            getEnum.MoveNext();
+            Assert.Equal(3, getEnum.Current);
         }
     }
 }
