@@ -2,25 +2,25 @@
 
 namespace Collections
 {
-    public class ObjectArrayEnum : IEnumerator
+    public class ListEnum<T> : IEnumerator
     {
-        readonly ObjectArray objects;
+        readonly List<T> items;
         int position = -1;
 
-        public ObjectArrayEnum(ObjectArray objects)
+        public ListEnum(List<T> items)
         {
-            this.objects = objects;
+            this.items = items;
         }
 
         public object Current
         { 
-            get => objects[position];
+            get => items[position];
         }
         
         public bool MoveNext()
         {
             position++;
-            return position < objects.Count;
+            return position < items.Count;
         }
 
         public void Reset()

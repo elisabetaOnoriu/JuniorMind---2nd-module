@@ -1,21 +1,18 @@
 ﻿using Collections;
 
-namespace ObjectArrayFacts
+namespace ListFacts
 {
     public class TestProgram
     {
         [Theory]
-        [InlineData("abc", 0)]
-        [InlineData(true, 1)]
+        [InlineData(1, 0)]
+        [InlineData(2, 1)]
         [InlineData(3, 2)]
         public void AddMethod_ItInsertsAnItemAtTheEnd(object expectedElement, int index)
         {
-            var objectArray = new ObjectArray();
-            objectArray.Add("abc");
-            objectArray.Add(true);
-            objectArray.Add(3);
-            Assert.Equal(expectedElement, objectArray[index]);
-            Assert.Equal(3, objectArray.Count);
+            var list = new Collections.List<int> { 1, 2, 3};
+            Assert.Equal(expectedElement, list[index]);
+            Assert.Equal(3, list.Count);
         }
 
         [Theory]
@@ -26,67 +23,67 @@ namespace ObjectArrayFacts
         [InlineData(5, 4)]
         public void AddMethod_ItInsertsAnItemAtTheEnd_ArraySizeIsDoubled(object expectedElement, int index)
         {
-            var objectArray = new ObjectArray();
-            objectArray.Add(1);
-            objectArray.Add(2);
-            objectArray.Add(3);
-            objectArray.Add(4);
-            objectArray.Add(5);
-            Assert.Equal(expectedElement, objectArray[index]);
-            Assert.Equal(5, objectArray.Count);
+            var list = new Collections.List<int>();
+            list.Add(1);
+            list.Add(2);
+            list.Add(3);
+            list.Add(4);
+            list.Add(5);
+            Assert.Equal(expectedElement, list[index]);
+            Assert.Equal(5, list.Count);
         }
 
         [Fact]
         public void CountMethod_ItReturnsTheLength()
         {
-            var objectArray = new ObjectArray();
+            var list = new Collections.List<object>();
             int expectedLength = 2;
-            objectArray.Add(1);
-            objectArray.Add(2);
-            Assert.Equal(expectedLength, objectArray.Count);
+            list.Add(true);
+            list.Add("abc");
+            Assert.Equal(expectedLength, list.Count);
         }
 
         [Fact]
         public void Element_ItReturnsTheElementAtTheGivenPosition()
         {
-            var objectArray = new ObjectArray();
-            objectArray.Add(1);
-            objectArray.Add(2);
-            int expectedElement = 2;
-            Assert.Equal(expectedElement, objectArray[1]);
+            var list = new Collections.List<string>();
+            list.Add("xyz");
+            list.Add("www");
+            string expectedElement = "www";
+            Assert.Equal(expectedElement, list[1]);
         }
 
         [Fact]
         public void SetElement_ChangesValueAtGivenPositionWithNewGivenElement()
         {
-            var objectArray = new ObjectArray();
-            objectArray.Add(1);
-            objectArray.Add(2);
-            objectArray.Add(3);
-            objectArray.Add(4);
-            objectArray[3] = 22;
-            Assert.Equal(22, objectArray[3]);
+            var list = new Collections.List<int>();
+            list.Add(1);
+            list.Add(2);
+            list.Add(3);
+            list.Add(4);
+            list[3] = 22;
+            Assert.Equal(22, list[3]);
         }
 
         [Fact]
         public void ContainsMethod_VerifiesIfTheElementExistsIntheArray()
         {
-            var objectArray = new ObjectArray();
-            objectArray.Add(1);
-            objectArray.Add(2);
-            objectArray.Add(3);
-            objectArray.Add(4);
-            Assert.True(objectArray.Contains(4));
+            var list = new Collections.List<int>();
+            list.Add(1);
+            list.Add(2);
+            list.Add(3);
+            list.Add(4);
+            Assert.True(list.Contains(4));
         }
 
         [Fact]
         public void IndexOfMethod_ReturnsIndexOfGivenElement()
         {
-            var objectArray = new ObjectArray();
-            objectArray.Add(1);
-            objectArray.Add(2);
-            objectArray.Add(3);
-            Assert.Equal(1, objectArray.IndexOf(2));
+            var list = new Collections.List<int>();
+            list.Add(1);
+            list.Add(2);
+            list.Add(3);
+            Assert.Equal(1, list.IndexOf(2));
         }
 
         [Theory]
@@ -96,68 +93,60 @@ namespace ObjectArrayFacts
         [InlineData(4, 3)]
         public void InsertMethod_AddsANewElementAtTheGivenPosition(int expectedElement, int index)
         {
-            var objectArray = new ObjectArray();
-            objectArray.Add(1);
-            objectArray.Add(2);
-            objectArray.Add(4);
-            objectArray.Insert(2, 3);
-            Assert.Equal(expectedElement, objectArray[index]);
-            Assert.Equal(4, objectArray.Count);
+            var list = new Collections.List<int>();
+            list.Add(1);
+            list.Add(2);
+            list.Add(4);
+            list.Insert(2, 3);
+            Assert.Equal(expectedElement, list[index]);
+            Assert.Equal(4, list.Count);
         }
 
         [Fact]
         public void ClearMethod_RemovesAllItemsFromArray()
         {
-            var objectArray = new ObjectArray();
-            objectArray.Add(1);
-            objectArray.Add(2);
-            objectArray.Add(3);
-            objectArray.Clear();
-            Assert.Equal(0, objectArray.Count);
+            var list = new Collections.List<int>();
+            list.Add(1);
+            list.Add(2);
+            list.Add(3);
+            list.Clear();
+            Assert.Equal(0, list.Count);
         }
 
         [Fact]
         public void RemoveMethod_RemovesFirstInstanceOfElement()
         {
-            var objectArray = new ObjectArray();
-            object first = 1;
-            objectArray.Add(first);
-            objectArray.Add(2);
-            objectArray.Add(4);
-            objectArray.Add(1);
-            objectArray.Add(4);
-            objectArray.Remove(first);
-            Assert.Equal(2, objectArray[0]);
-            Assert.Equal(1, objectArray[2]);
+            var list = new Collections.List<int>();
+            list.Add(1);
+            list.Add(2);
+            list.Add(4);
+            list.Add(1);
+            list.Add(4);
+            list.Remove(1);
+            Assert.Equal(2, list[0]);
+            Assert.Equal(1, list[2]);
         }
 
         [Fact]
         public void RemoveAtMethod_RemovesElementAtTheGivenPosition()
         {
-            var objectArray = new ObjectArray();
-            objectArray.Add(1);
-            objectArray.Add(2);
-            objectArray.Add(4);
-            objectArray.Add(3);
-            objectArray.RemoveAt(2);
-            Assert.Equal(3, objectArray[2]);
-            Assert.Equal(3, objectArray.Count);
+            var list = new Collections.List<int>();
+            list.Add(1);
+            list.Add(2);
+            list.Add(4);
+            list.Add(3);
+            list.RemoveAt(2);
+            Assert.Equal(3, list[2]);
+            Assert.Equal(3, list.Count);
         }
 
-        [Theory]
-        [InlineData("abc", 0)]
-        [InlineData(true, 1)]
-        [InlineData(3, 2)]
-        public void YieldKeywordWorksAsAnEnumerator(object expectedElement, int index)
+        [Fact]
+        public void YieldKeywordWorksAsAnEnumerator()
         {
-            var objectArray = new ObjectArray { "abc", true, 3 };
-            var toEnumerate = objectArray.Items();
-            object[] temporary = new object[3];
-            int i = 0;
-            foreach (var item in toEnumerate)
-            { temporary[i++] = item;}
-            Assert.Equal(expectedElement, temporary[index]);
-            Assert.Equal(3, temporary.Length);
+            var list = new Collections.List<object> { "abc", true, 3 };
+            var toEnumerate = list.Items();
+            object[] temporary = new object[] { "abc", true, 3 };
+            Assert.Equal(temporary, toEnumerate);
         }
     }
 }

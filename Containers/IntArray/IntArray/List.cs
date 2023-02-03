@@ -1,36 +1,37 @@
 ﻿using System.Collections;
+
 namespace Collections
 {
-    public class ObjectArray : IEnumerable
+    public class List<T> : IEnumerable
     {
-        object[] objects;
+        T[] items;
         int count;
 
-        public ObjectArray()
+        public List()
         {
-            Array.Resize(ref objects, 4);
+            Array.Resize(ref items, 4);
         }
 
-        public virtual void Add(object element)
+        public virtual void Add(T element)
         {
             EnsureCapacity();
-            objects[count] = element;
+            items[count] = element;
             count++;
         }
 
         public int Count { get => count; }
 
-        public virtual object this[int index]
+        public virtual T this[int index]
         {
-            get => objects[index];
-            set => objects[index] = value;
+            get => items[index];
+            set => items[index] = value;
         }
 
         public int IndexOf(object element)
         {
             for (int i = 0; i < count; i++)
             {
-                if (objects[i].Equals(element))
+                if (items[i].Equals(element))
                 {
                     return i;
                 }
@@ -39,26 +40,26 @@ namespace Collections
             return -1;
         }
 
-        public bool Contains(object element)
+        public bool Contains(T element)
         {
             return this.IndexOf(element) > -1;
         }
 
-        public virtual void Insert(int index, object element)
+        public virtual void Insert(int index, T element)
         {
             EnsureCapacity();
             ShiftToRight(index);
-            objects[index] = element;
+            items[index] = element;
             count++;
         }
 
         public void Clear()
         {
-            Array.Resize(ref objects, 0);
+            Array.Resize(ref items, 0);
             count = 0;
         }
 
-        public virtual void Remove(object element)
+        public virtual void Remove(T element)
         {
             int elementIndex = IndexOf(element);
             if (elementIndex > -1)
@@ -70,7 +71,7 @@ namespace Collections
         public virtual void RemoveAt(int index)
         {
             ShiftToLeft(index);
-            objects[^1] = 0;
+            items[^1] = default;
             count--;
         }
 
@@ -78,7 +79,7 @@ namespace Collections
         {
             for (int i = index; i < count - 1; i++)
             {
-                objects[i] = objects[i + 1];
+                items[i] = items[i + 1];
             }
         }
 
@@ -86,15 +87,15 @@ namespace Collections
         {
             for (int i = count; i > index; i--)
             {
-                objects[i] = objects[i - 1];
+                items[i] = items[i - 1];
             }
         }
 
         private void EnsureCapacity()
         {
-            if (objects.Length == count)
+            if (items.Length == count)
             {
-                Array.Resize(ref objects, count * 2);
+                Array.Resize(ref items, count * 2);
             }
         }
 
@@ -103,16 +104,16 @@ namespace Collections
             return GetEnumerator();
         }
 
-        public ObjectArrayEnum GetEnumerator()
+        public ListEnum<T> GetEnumerator()
         {
-            return new ObjectArrayEnum(this);
+            return new ListEnum<T>(this);
         }
 
         public IEnumerable Items()
         {
             for (int i = 0; i < Count; i++)
             {
-                yield return objects[i];
+                yield return items[i];
             }
         }
     }
