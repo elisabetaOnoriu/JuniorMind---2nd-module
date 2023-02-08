@@ -2,7 +2,7 @@
 
 namespace Collections
 {
-    public class List<T> : IEnumerable
+    public class List<T> : IEnumerable<T>
     {
         protected T[] items;
         int count;
@@ -99,9 +99,9 @@ namespace Collections
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
-            return (IEnumerator)GetEnumerator();
+            return (IEnumerator<T>)GetEnumerator();
         }
 
         public ListEnum<T> GetEnumerator()
@@ -109,12 +109,17 @@ namespace Collections
             return new ListEnum<T>(this);
         }
 
-        public IEnumerable Items()
+        public IEnumerable<T> Items()
         {
             for (int i = 0; i < Count; i++)
             {
                 yield return items[i];
             }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

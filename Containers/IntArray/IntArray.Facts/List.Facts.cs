@@ -141,15 +141,15 @@
         [Fact]
         public void YieldKeywordWorksAsAnEnumerator()
         {
-            var list = new Collections.List<object> { "abc", true, 3 };
+            var list = new Collections.List<string> { "abc", "def", "ghi" };
             var toEnumerate = list.Items();
             var getEnum = toEnumerate.GetEnumerator();
             getEnum.MoveNext();
             Assert.Equal("abc", getEnum.Current);
             getEnum.MoveNext();
-            Assert.Equal(true, getEnum.Current);
+            Assert.Equal("def", getEnum.Current);
             getEnum.MoveNext();
-            Assert.Equal(3, getEnum.Current);
+            Assert.Equal("ghi", getEnum.Current);
         }
     }
 }
