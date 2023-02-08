@@ -4,7 +4,7 @@ namespace Collections
 {
     public class List<T> : IEnumerable
     {
-        T[] items;
+        protected T[] items;
         int count;
 
         public List()
@@ -101,7 +101,7 @@ namespace Collections
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return (IEnumerator)GetEnumerator();
         }
 
         public ListEnum<T> GetEnumerator()

@@ -38,7 +38,7 @@ namespace Collections
         {
             for (int i = 1; i < Count && Count > 1; i++)
             {
-                for (int j = i; j >= 0 && this.numbers[j - 1] > this.numbers[j]; j--)
+                for (int j = i; j > 0 && this.numbers[j - 1] > this.numbers[j]; j--)
                 {
                     (this.numbers[j - 1], this.numbers[j]) = (this.numbers[j], this.numbers[j - 1]);
                 }

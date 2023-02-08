@@ -1,6 +1,4 @@
-﻿using Collections;
-
-namespace ListFacts
+﻿namespace ListFacts
 {
     public class TestProgram
     {
