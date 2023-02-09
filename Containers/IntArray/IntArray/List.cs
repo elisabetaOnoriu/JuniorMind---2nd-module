@@ -27,7 +27,7 @@ namespace Collections
             set => items[index] = value;
         }
 
-        public int IndexOf(object element)
+        public int IndexOf(T element)
         {
             for (int i = 0; i < count; i++)
             {
