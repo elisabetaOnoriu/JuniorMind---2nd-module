@@ -142,8 +142,7 @@ namespace SortedListFacts
         public void YieldKeywordWorksAsAnEnumerator()
         {
             var sortedList = new SortedList<string> { "abc", "bce", "tuv" };
-            var toEnumerate = sortedList.Items();
-            var getEnum = toEnumerate.GetEnumerator();
+            var getEnum = sortedList.GetEnumerator();
             getEnum.MoveNext();
             Assert.Equal("abc", getEnum.Current);
             getEnum.MoveNext();

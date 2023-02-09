@@ -142,8 +142,7 @@
         public void YieldKeywordWorksAsAnEnumerator()
         {
             var list = new Collections.List<string> { "abc", "def", "ghi" };
-            var toEnumerate = list.Items();
-            var getEnum = toEnumerate.GetEnumerator();
+            var getEnum = list.GetEnumerator();
             getEnum.MoveNext();
             Assert.Equal("abc", getEnum.Current);
             getEnum.MoveNext();

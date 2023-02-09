@@ -99,17 +99,7 @@ namespace Collections
             }
         }
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return (IEnumerator<T>)GetEnumerator();
-        }
-
-        public ListEnum<T> GetEnumerator()
-        {
-            return new ListEnum<T>(this);
-        }
-
-        public IEnumerable<T> Items()
+        public IEnumerator<T> GetEnumerator()
         {
             for (int i = 0; i < Count; i++)
             {
