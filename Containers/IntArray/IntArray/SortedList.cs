@@ -8,9 +8,9 @@
             InsertionSort();
         }
 
-        public override void Add(T element)
+        public override void Add(T item)
         {
-            base.Add(element);
+            base.Add(item);
             InsertionSort();
         }
 
@@ -25,11 +25,11 @@
             }
         }
 
-        public override void Insert(int index, T element)
+        public override void Insert(int index, T item)
         {
-            if (WillBeSortedAfterOperation(index, index - 1, element))
+            if (WillBeSortedAfterOperation(index, index - 1, item))
             {
-                base.Insert(index, element);
+                base.Insert(index, item);
             }
         }
 

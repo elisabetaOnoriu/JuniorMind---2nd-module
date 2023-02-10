@@ -2,7 +2,7 @@
 
 namespace Collections
 {
-    public class List<T> : IEnumerable<T>
+    public class List<T> : IEnumerable<T>, IList<T>
     {
         protected T[] items;
         int count;
@@ -12,26 +12,31 @@ namespace Collections
             Array.Resize(ref items, 4);
         }
 
-        public virtual void Add(T element)
+        public virtual void Add(T item)
         {
             EnsureCapacity();
-            items[count] = element;
+            items[count] = item;
             count++;
         }
 
         public int Count { get => count; }
 
-        public virtual T this[int index]
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
+
+    public virtual T this[int index]
         {
             get => items[index];
             set => items[index] = value;
         }
 
-        public int IndexOf(T element)
+        public int IndexOf(T item)
         {
             for (int i = 0; i < count; i++)
             {
-                if (items[i].Equals(element))
+                if (items[i].Equals(item))
                 {
                     return i;
                 }
@@ -40,16 +45,16 @@ namespace Collections
             return -1;
         }
 
-        public bool Contains(T element)
+        public bool Contains(T item)
         {
-            return this.IndexOf(element) > -1;
+            return this.IndexOf(item) > -1;
         }
 
-        public virtual void Insert(int index, T element)
+        public virtual void Insert(int index, T item)
         {
             EnsureCapacity();
             ShiftToRight(index);
-            items[index] = element;
+            items[index] = item;
             count++;
         }
 
@@ -59,13 +64,16 @@ namespace Collections
             count = 0;
         }
 
-        public virtual void Remove(T element)
+        public bool Remove(T item)
         {
-            int elementIndex = IndexOf(element);
+            int elementIndex = IndexOf(item);
             if (elementIndex > -1)
             {
                 RemoveAt(elementIndex);
+                return true;
             }
+
+            return false;
         }
 
         public virtual void RemoveAt(int index)
@@ -110,6 +118,14 @@ namespace Collections
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            for (int i = arrayIndex; i < arrayIndex + Count; i++)
+            {
+                array[arrayIndex++] = items[i];
+            }
         }
     }
 }
