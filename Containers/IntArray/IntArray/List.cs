@@ -38,14 +38,13 @@ namespace Collections
             get => items[index];
             set
             {
-                try
+                if (index < 0 || index >= Count)
                 {
-                    items[index] = value;
+                    throw new ArgumentOutOfRangeException("index");     
                 }
-                catch (IndexOutOfRangeException e)
+                else
                 {
-                    Console.WriteLine(e.Message);
-                    Console.WriteLine(e.StackTrace);
+                    items[index] = value; 
                 }
             }
         }
