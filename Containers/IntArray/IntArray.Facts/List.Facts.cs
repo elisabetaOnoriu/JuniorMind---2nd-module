@@ -35,6 +35,14 @@
         }
 
         [Fact]
+        public void AddMethod_ThrowsExceptionIfListIsReadonly()
+        {
+            var list = new Collections.List<int>();
+            list.IsReadOnly = true;
+            Assert.Throws<NotSupportedException>(() => list.Add(1));
+        }
+
+        [Fact]
         public void CountMethod_ItReturnsTheLength()
         {
             var list = new Collections.List<object>() { true, "abc" };
@@ -56,6 +64,13 @@
             var list = new Collections.List<int>() { 1, 2, 3, 4 };
             list[3] = 22;
             Assert.Equal(22, list[3]);
+        }
+
+        [Fact]
+        public void SetElement_ThrowsAnExceptionIfIndexIsOutsideTheBounds()
+        {
+            var list = new Collections.List<int>() { 1, 2, 3, 4 };
+            Assert.Throws<ArgumentOutOfRangeException>(() => list[4] = 22);
         }
 
         [Fact]
@@ -85,12 +100,37 @@
             Assert.Equal(4, list.Count);
         }
 
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(4)]
+        public void InsertMethod_ThrowsExceptionIfIndexIsOutsideTheBounds(int index)
+        {
+            var list = new Collections.List<int>() { 1, 2, 4 };
+            Assert.Throws<ArgumentOutOfRangeException>(() => list.Insert(index, 3));
+        }
+
+        [Fact]
+        public void InsertMethod_ThrowsExceptionIfListIsReadonly()
+        {
+            var list = new Collections.List<int>() { 1, 2, 4 };
+            list.IsReadOnly = true;
+            Assert.Throws<NotSupportedException>(() => list.Insert(2, 3));
+        }
+
         [Fact]
         public void ClearMethod_RemovesAllItemsFromArray()
         {
             var list = new Collections.List<int>() { 1, 2, 3};
             list.Clear();
             Assert.Equal(0, list.Count);
+        }
+
+        [Fact]
+        public void ClearMethod_ThrowsExceptionIfListIsReadonly()
+        {
+            var list = new Collections.List<int>() { 1, 2, 3 };
+            list.IsReadOnly = true;
+            Assert.Throws<NotSupportedException>(() => list.Clear());
         }
 
         [Fact]
@@ -109,6 +149,23 @@
             list.RemoveAt(2);
             Assert.Equal(3, list[2]);
             Assert.Equal(3, list.Count);
+        }
+
+        [Fact]
+        public void RemoveAtMethod_ThrowsExceptionIfListIsReadonly()
+        {
+            var list = new Collections.List<int>() { 1, 2, 4, 3 };
+            list.IsReadOnly = true;
+            Assert.Throws<NotSupportedException>(() => list.RemoveAt(2));
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(4)]
+        public void RemoveAtMethod_ThrowsExceptionIfIndexIsOutsideTheBounds(int index)
+        {
+            var list = new Collections.List<int>() { 1, 2, 4, 3 };
+            Assert.Throws<ArgumentOutOfRangeException>(() => list.RemoveAt(index));
         }
 
         [Fact]
@@ -136,6 +193,30 @@
             array[0] = 3;
             list.CopyTo(array, 1);
             Assert.Equal(list[index], array[index + 1]);
+        }
+
+        [Fact]
+        public void CopyTo_ThrowsExceptionIfArrayIsNull()
+        {
+            var list = new List<int>() { 4, 5, 6, 7 };
+            int[] array = null;
+            Assert.Throws<ArgumentNullException>(() => list.CopyTo(array, 0));
+        }
+
+        [Fact]
+        public void CopyTo_ThrowsExceptionIfArraysLengthIsInsufficient()
+        {
+            var list = new List<int>() { 4, 5, 6, 7 };
+            int[] array = new int[] { 1, 2, 3 };
+            Assert.Throws<ArgumentException>(() => list.CopyTo(array, 2));
+        }
+
+        [Fact]
+        public void CopyTo_ThrowsExceptionIfIndexIsOutsideTheBounds()
+        {
+            var list = new List<int>() { 4, 5, 6, 7 };
+            int[] array = new int[] { 1, 2, 3 };
+            Assert.Throws<ArgumentException>(() => list.CopyTo(array, 3));
         }
     }
 }

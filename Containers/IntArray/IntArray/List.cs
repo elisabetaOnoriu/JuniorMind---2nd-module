@@ -14,23 +14,17 @@ namespace Collections
 
         public virtual void Add(T item)
         {
-            if (IsReadOnly)
-            {
-                throw new NotSupportedException("Cannot modify the List because it is readonly");
-            }
-            else
-            {
-                EnsureCapacity();
-                items[count] = item;
-                count++;
-            }
+            ThrowExceptionIfListIsReadonly();
+            EnsureCapacity();
+            items[count] = item;
+            count++;
         }
 
         public int Count { get => count; }
 
         public bool IsReadOnly
         {
-            get { return false; }
+            get; set;
         }
 
     public virtual T this[int index]
@@ -38,14 +32,8 @@ namespace Collections
             get => items[index];
             set
             {
-                if (index < 0 || index >= Count)
-                {
-                    throw new ArgumentOutOfRangeException("index");     
-                }
-                else
-                {
-                    items[index] = value; 
-                }
+                ThrowExceptionIfArgumentIsOutOfRange(index, Count);
+                items[index] = value; 
             }
         }
 
@@ -68,35 +56,20 @@ namespace Collections
         }
 
         public virtual void Insert(int index, T item)
-        { 
-            if (index < 0 || index > Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), "Index is outside the bounds");
-            }
-            else if (IsReadOnly)
-            {
-                throw new NotSupportedException("Cannot modify the List because it is readonly");    
-            }       
-            else 
-            {
-                EnsureCapacity();
-                ShiftToRight(index);
-                items[index] = item;
-                count++;
-            }
+        {
+            ThrowExceptionIfArgumentIsOutOfRange(index, Count);
+            ThrowExceptionIfListIsReadonly();
+            EnsureCapacity();
+            ShiftToRight(index);
+            items[index] = item;
+            count++;
         }
 
         public void Clear()
         {
-            if (IsReadOnly)
-            {
-                throw new NotSupportedException(); 
-            }
-            else
-            {
-                Array.Resize(ref items, 0);
-                count = 0;
-            }
+            ThrowExceptionIfListIsReadonly();
+            Array.Resize(ref items, 0);
+            count = 0;
         }
 
         public bool Remove(T item)
@@ -113,20 +86,11 @@ namespace Collections
 
         public virtual void RemoveAt(int index)
         {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), "Index is outside of the bounds");
-            } 
-            else if (IsReadOnly)
-            {
-                throw new NotSupportedException();    
-            }
-            else
-            {
-                ShiftToLeft(index);
-                items[^1] = default;
-                count--;
-            }      
+            ThrowExceptionIfArgumentIsOutOfRange(index, Count - 1);
+            ThrowExceptionIfListIsReadonly();
+            ShiftToLeft(index);
+            items[^1] = default;
+            count--;     
         }
 
         private void ShiftToLeft(int index)
@@ -172,21 +136,33 @@ namespace Collections
             {
                 throw new ArgumentNullException("array");
             }
-            else if (arrayIndex < 0 || array.Length - arrayIndex < Count)
+
+            if (array.Length - arrayIndex - 1 < Count)
             {
-                throw new ArgumentOutOfRangeException("array");
+                throw new ArgumentException(null, nameof(array));
             }
-            else if (array is int[,])
+
+            ThrowExceptionIfArgumentIsOutOfRange(arrayIndex, Count);
+            for (int i = arrayIndex; i < arrayIndex + Count; i++)
             {
-                throw new ArgumentException("Array is multidimensional", nameof(array));
+                array[arrayIndex++] = items[i];
+            } 
+        }
+
+        private void ThrowExceptionIfListIsReadonly()
+        {
+            if (IsReadOnly)
+            {
+                throw new NotSupportedException("Cannot modify the List because it is readonly");
             }
-            else
+        }
+
+        private void ThrowExceptionIfArgumentIsOutOfRange(int index, int length)
+        {
+            if (index < 0 || index >= length)
             {
-                for (int i = arrayIndex; i < arrayIndex + Count; i++)
-                {
-                    array[arrayIndex++] = items[i];
-                }
-            }  
+                throw new ArgumentOutOfRangeException("index");
+            }
         }
     }
 }
