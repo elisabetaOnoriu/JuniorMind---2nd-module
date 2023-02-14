@@ -2,7 +2,7 @@
 
 namespace Collections
 {
-    public class List<T> : IEnumerable<T>, IList<T>
+    public class List<T> : IList<T>
     {
         protected T[] items;
         int count;
@@ -14,9 +14,17 @@ namespace Collections
 
         public virtual void Add(T item)
         {
-            EnsureCapacity();
-            items[count] = item;
-            count++;
+            try
+            {
+                EnsureCapacity();
+                items[count] = item;
+                count++;
+            }
+            catch (NotSupportedException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
         }
 
         public int Count { get => count; }
@@ -29,7 +37,18 @@ namespace Collections
     public virtual T this[int index]
         {
             get => items[index];
-            set => items[index] = value;
+            set
+            {
+                try
+                {
+                    items[index] = value;
+                }
+                catch (IndexOutOfRangeException e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
+                }
+            }
         }
 
         public int IndexOf(T item)
@@ -51,17 +70,38 @@ namespace Collections
         }
 
         public virtual void Insert(int index, T item)
-        {
-            EnsureCapacity();
-            ShiftToRight(index);
-            items[index] = item;
-            count++;
+        { 
+            try
+            {
+                EnsureCapacity();
+                ShiftToRight(index);
+                items[index] = item;
+                count++;
+            }
+            catch (NotSupportedException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
         }
 
         public void Clear()
         {
-            Array.Resize(ref items, 0);
-            count = 0;
+            try
+            {
+                Array.Resize(ref items, 0);
+                count = 0;
+            }
+            catch (NotSupportedException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
         }
 
         public bool Remove(T item)
@@ -78,9 +118,22 @@ namespace Collections
 
         public virtual void RemoveAt(int index)
         {
-            ShiftToLeft(index);
-            items[^1] = default;
-            count--;
+            try
+            {
+                ShiftToLeft(index);
+                items[^1] = default;
+                count--;
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+            catch (NotSupportedException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }         
         }
 
         private void ShiftToLeft(int index)
@@ -122,9 +175,27 @@ namespace Collections
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            for (int i = arrayIndex; i < arrayIndex + Count; i++)
+            try
             {
-                array[arrayIndex++] = items[i];
+                for (int i = arrayIndex; i < arrayIndex + Count; i++)
+                {
+                    array[arrayIndex++] = items[i];
+                }
+            }
+            catch (ArgumentNullException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
         }
     }
