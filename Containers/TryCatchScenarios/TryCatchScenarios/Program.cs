@@ -23,7 +23,6 @@
                 Console.WriteLine(e.Message);
             }
 
-            //OverflowException
             string stringNumber = "1234562347894354";
             try
             {
@@ -34,17 +33,6 @@
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
             }
-
-            //string tester;
-            //try
-            //{
-            //    Console.WriteLine(tester[0]);
-            //}
-            //catch (NullReferenceException e)
-            //{
-            //    Console.WriteLine(e.Message);
-            //}
-
         }
     }
 }

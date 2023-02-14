@@ -14,16 +14,15 @@ namespace Collections
 
         public virtual void Add(T item)
         {
-            try
+            if (IsReadOnly)
+            {
+                throw new NotSupportedException("Cannot modify the List because it is readonly");
+            }
+            else
             {
                 EnsureCapacity();
                 items[count] = item;
                 count++;
-            }
-            catch (NotSupportedException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
             }
         }
 
@@ -71,36 +70,33 @@ namespace Collections
 
         public virtual void Insert(int index, T item)
         { 
-            try
+            if (index < 0 || index > Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is outside the bounds");
+            }
+            else if (IsReadOnly)
+            {
+                throw new NotSupportedException("Cannot modify the List because it is readonly");    
+            }       
+            else 
             {
                 EnsureCapacity();
                 ShiftToRight(index);
                 items[index] = item;
                 count++;
             }
-            catch (NotSupportedException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-            }
         }
 
         public void Clear()
         {
-            try
+            if (IsReadOnly)
+            {
+                throw new NotSupportedException(); 
+            }
+            else
             {
                 Array.Resize(ref items, 0);
                 count = 0;
-            }
-            catch (NotSupportedException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
             }
         }
 
@@ -118,22 +114,20 @@ namespace Collections
 
         public virtual void RemoveAt(int index)
         {
-            try
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is outside of the bounds");
+            } 
+            else if (IsReadOnly)
+            {
+                throw new NotSupportedException();    
+            }
+            else
             {
                 ShiftToLeft(index);
                 items[^1] = default;
                 count--;
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-            }
-            catch (NotSupportedException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-            }         
+            }      
         }
 
         private void ShiftToLeft(int index)
@@ -175,28 +169,25 @@ namespace Collections
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            try
+            if (array == null)
+            {
+                throw new ArgumentNullException("array");
+            }
+            else if (arrayIndex < 0 || array.Length - arrayIndex < Count)
+            {
+                throw new ArgumentOutOfRangeException("array");
+            }
+            else if (array is int[,])
+            {
+                throw new ArgumentException("Array is multidimensional", nameof(array));
+            }
+            else
             {
                 for (int i = arrayIndex; i < arrayIndex + Count; i++)
                 {
                     array[arrayIndex++] = items[i];
                 }
-            }
-            catch (ArgumentNullException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-            }
-            catch (ArgumentException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-            }
+            }  
         }
     }
 }
