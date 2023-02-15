@@ -38,8 +38,8 @@
         public void AddMethod_ThrowsExceptionIfListIsReadonly()
         {
             var list = new Collections.List<int>();
-            list.IsReadOnly = true;
-            Assert.Throws<NotSupportedException>(() => list.Add(1));
+            var readOnlyList = list.ReadOnly();
+            Assert.Throws<NotSupportedException>(() => readOnlyList.Add(1));
         }
 
         [Fact]
@@ -113,8 +113,8 @@
         public void InsertMethod_ThrowsExceptionIfListIsReadonly()
         {
             var list = new Collections.List<int>() { 1, 2, 4 };
-            list.IsReadOnly = true;
-            Assert.Throws<NotSupportedException>(() => list.Insert(2, 3));
+            var readOnlyList = list.ReadOnly();
+            Assert.Throws<NotSupportedException>(() => readOnlyList.Insert(2, 3));
         }
 
         [Fact]
@@ -129,8 +129,8 @@
         public void ClearMethod_ThrowsExceptionIfListIsReadonly()
         {
             var list = new Collections.List<int>() { 1, 2, 3 };
-            list.IsReadOnly = true;
-            Assert.Throws<NotSupportedException>(() => list.Clear());
+            var readOnlyList = list.ReadOnly();
+            Assert.Throws<NotSupportedException>(() => readOnlyList.Clear());
         }
 
         [Fact]
@@ -155,8 +155,8 @@
         public void RemoveAtMethod_ThrowsExceptionIfListIsReadonly()
         {
             var list = new Collections.List<int>() { 1, 2, 4, 3 };
-            list.IsReadOnly = true;
-            Assert.Throws<NotSupportedException>(() => list.RemoveAt(2));
+            var readOnlyList = list.ReadOnly();
+            Assert.Throws<NotSupportedException>(() => readOnlyList.RemoveAt(2));
         }
 
         [Theory]
@@ -216,7 +216,7 @@
         {
             var list = new List<int>() { 4, 5, 6, 7 };
             int[] array = new int[] { 1, 2, 3 };
-            Assert.Throws<ArgumentException>(() => list.CopyTo(array, 3));
+            Assert.Throws<ArgumentOutOfRangeException>(() => list.CopyTo(array, -1));
         }
     }
 }

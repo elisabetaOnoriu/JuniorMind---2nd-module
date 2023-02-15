@@ -1,11 +1,10 @@
 ﻿using System.Collections;
-
 namespace Collections
 {
     public class List<T> : IList<T>
     {
         protected T[] items;
-        int count;
+        protected int count;
 
         public List()
         {
@@ -22,18 +21,24 @@ namespace Collections
 
         public int Count { get => count; }
 
-        public bool IsReadOnly
-        {
-            get; set;
+        public virtual bool IsReadOnly { get; }
+
+        public ReadOnlyList<T> ReadOnly()
+        {  
+            return new(this);
         }
 
-    public virtual T this[int index]
+        public virtual T this[int index]
         {
-            get => items[index];
+            get
+            {
+                ThrowExceptionIfArgumentIsOutOfRange(index, Count);
+                return items[index];
+            }
             set
             {
                 ThrowExceptionIfArgumentIsOutOfRange(index, Count);
-                items[index] = value; 
+                items[index] = value;
             }
         }
 
@@ -132,20 +137,21 @@ namespace Collections
 
         public void CopyTo(T[] array, int arrayIndex)
         {
+            
             if (array == null)
             {
                 throw new ArgumentNullException("array");
             }
-
-            if (array.Length - arrayIndex - 1 < Count)
+                   
+            if (array.Length - arrayIndex < Count)
             {
                 throw new ArgumentException(null, nameof(array));
             }
-
+            
             ThrowExceptionIfArgumentIsOutOfRange(arrayIndex, Count);
             for (int i = arrayIndex; i < arrayIndex + Count; i++)
             {
-                array[arrayIndex++] = items[i];
+                array[arrayIndex] = items[i];
             } 
         }
 
@@ -161,8 +167,20 @@ namespace Collections
         {
             if (index < 0 || index >= length)
             {
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException($"{ index }");
             }
         }
+
+    }
+    public class ReadOnlyList<T> : List<T>
+    {
+        public ReadOnlyList(List<T> list)
+            : base()
+        {
+            this.count = list.Count;
+            this.items = list.ToArray();
+        }
+
+        public override bool IsReadOnly { get => true; }
     }
 }
