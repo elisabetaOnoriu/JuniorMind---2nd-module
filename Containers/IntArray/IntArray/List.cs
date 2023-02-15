@@ -170,18 +170,5 @@ namespace Collections
                 throw new ArgumentOutOfRangeException($"{ index }");
             }
         }
-
-    }
-
-    public class ReadOnlyList<T> : List<T>
-    {
-        public ReadOnlyList(List<T> list)
-            : base()
-        {
-            this.count = list.Count;
-            this.items = list.ToArray();
-        }
-
-        public override bool IsReadOnly { get => true; }
     }
 }
