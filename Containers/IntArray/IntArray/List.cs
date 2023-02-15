@@ -122,7 +122,7 @@ namespace Collections
             }
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public virtual IEnumerator<T> GetEnumerator()
         {
             for (int i = 0; i < Count; i++)
             {

@@ -26,10 +26,20 @@
         public void ElementsArePreserved_ShouldReturnTrue(int index)
         {
             var list = new List<int>() { 4, 5, 6, 7 };
-            var readOnlyList = list.ReadOnly();
-            Assert.Equal(list[index], readOnlyList[index]);
+            Assert.Equal(list[index], list.ReadOnly()[index]);
         }
 
-
+        [Fact]
+        public void YieldKeywordWorksAsAnEnumerator()
+        {
+            var list = new Collections.List<string> { "abc", "def", "ghi" };
+            var getEnum = list.ReadOnly().GetEnumerator();
+            getEnum.MoveNext();
+            Assert.Equal("abc", getEnum.Current);
+            getEnum.MoveNext();
+            Assert.Equal("def", getEnum.Current);
+            getEnum.MoveNext();
+            Assert.Equal("ghi", getEnum.Current);
+        }
     }
 }
