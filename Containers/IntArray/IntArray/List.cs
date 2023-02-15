@@ -172,6 +172,7 @@ namespace Collections
         }
 
     }
+
     public class ReadOnlyList<T> : List<T>
     {
         public ReadOnlyList(List<T> list)
