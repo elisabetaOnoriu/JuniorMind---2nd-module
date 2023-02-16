@@ -28,7 +28,7 @@ namespace Collections
             return new(this);
         }
 
-        public virtual T this[int index]
+        public T this[int index]
         {
             get
             {
@@ -37,12 +37,13 @@ namespace Collections
             }
             set
             {
-                ThrowExceptionIfArgumentIsOutOfRange(index, Count);
+                ThrowExceptionIfListIsReadonly();
+                ThrowExceptionIfArgumentIsOutOfRange(index, Count);    
                 items[index] = value;
             }
         }
 
-        public virtual int IndexOf(T item)
+        public int IndexOf(T item)
         {
             for (int i = 0; i < count; i++)
             {
@@ -60,7 +61,7 @@ namespace Collections
             return this.IndexOf(item) > -1;
         }
 
-        public virtual void Insert(int index, T item)
+        public void Insert(int index, T item)
         {
             ThrowExceptionIfArgumentIsOutOfRange(index, Count);
             ThrowExceptionIfListIsReadonly();
