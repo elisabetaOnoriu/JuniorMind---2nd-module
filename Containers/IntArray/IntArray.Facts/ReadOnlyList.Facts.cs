@@ -55,7 +55,5 @@
             getEnum.MoveNext();
             Assert.Equal("ghi", getEnum.Current);
         }
-
-
     }
 }
