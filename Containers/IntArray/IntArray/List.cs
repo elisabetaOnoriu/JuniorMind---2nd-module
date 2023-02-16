@@ -19,7 +19,7 @@ namespace Collections
             count++;
         }
 
-        public int Count { get => count; }
+        public virtual int Count { get => count; }
 
         public virtual bool IsReadOnly { get; }
 
@@ -42,7 +42,7 @@ namespace Collections
             }
         }
 
-        public int IndexOf(T item)
+        public virtual int IndexOf(T item)
         {
             for (int i = 0; i < count; i++)
             {

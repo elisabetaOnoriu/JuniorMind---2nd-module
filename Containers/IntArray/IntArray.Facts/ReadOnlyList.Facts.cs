@@ -30,6 +30,20 @@
         }
 
         [Fact]
+        public void IndexOf_ReturnsTheRightIndex()
+        {
+            var list = new List<int>() { 4, 5, 6, 7 };
+            Assert.Equal(0, list.ReadOnly().IndexOf(4));
+        }
+
+        [Fact]
+        public void Contains_ReturnsTrue_IfReadOnlyListContainsTheGivenElement()
+        {
+            var list = new List<int>() { 4, 5, 6, 7 };
+            Assert.True(list.ReadOnly().Contains(5));
+        }
+
+        [Fact]
         public void YieldKeywordWorksAsAnEnumerator()
         {
             var list = new Collections.List<string> { "abc", "def", "ghi" };
