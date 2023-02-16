@@ -4,9 +4,9 @@ namespace Collections
 {
     public class ReadOnlyList<T> : IList<T>
     {
-        readonly List<T> list;
+        readonly IList<T> list;
 
-        public ReadOnlyList(List<T> list)
+        public ReadOnlyList(IList<T> list)
         {
             this.list = list; 
         }
@@ -22,34 +22,18 @@ namespace Collections
 
         public T this[int index]
         {
-            get
-            {
-                ThrowExceptionIfArgumentIsOutOfRange(index, Count);
-                return list[index];
-            }
-            set
-            {
-                ThrowExceptionIfListIsReadonly();
-            }
+            get => list[index];
+            set => ThrowExceptionIfListIsReadonly();
         }
-
 
         public int IndexOf(T item)
         {
-            for (int i = 0; i < Count; i++)
-            {
-                if (list[i].Equals(item))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
+            return list.IndexOf(item);
         }
 
         public bool Contains(T item)
         {
-            return this.IndexOf(item) > -1;
+            return list.Contains(item);
         }
 
         public void Insert(int index, T item)
@@ -74,49 +58,22 @@ namespace Collections
 
         public IEnumerator<T> GetEnumerator()
         {
-            for (int i = 0; i < Count; i++)
-            {
-                yield return list[i];
-            }
+            return list.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
+
         public void CopyTo(T[] array, int arrayIndex)
         {
-            if (array == null)
-            {
-                throw new ArgumentNullException("array");
-            }
-
-            if (array.Length - arrayIndex < Count)
-            {
-                throw new ArgumentException(null, nameof(array));
-            }
-
-            ThrowExceptionIfArgumentIsOutOfRange(arrayIndex, Count);
-            for (int i = arrayIndex; i < arrayIndex + Count; i++)
-            {
-                array[arrayIndex] = list[i];
-            }
+            list.CopyTo(array, arrayIndex);
         }
 
         private void ThrowExceptionIfListIsReadonly()
         {
-            if (IsReadOnly)
-            {
-                throw new NotSupportedException("Cannot modify the List because it is readonly");
-            }
-        }
-
-        private void ThrowExceptionIfArgumentIsOutOfRange(int index, int length)
-        {
-            if (index < 0 || index >= length)
-            {
-                throw new ArgumentOutOfRangeException($"{index}");
-            }
+            throw new NotSupportedException("Cannot modify the List because it is readonly");
         }
     }
 }

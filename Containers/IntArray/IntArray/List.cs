@@ -13,7 +13,6 @@ namespace Collections
 
         public virtual void Add(T item)
         {
-            ThrowExceptionIfListIsReadonly();
             EnsureCapacity();
             items[count] = item;
             count++;
@@ -21,14 +20,14 @@ namespace Collections
 
         public virtual int Count { get => count; }
 
-        public virtual bool IsReadOnly { get; }
+        public virtual bool IsReadOnly { get => false; }
 
         public ReadOnlyList<T> ReadOnly()
         {  
             return new(this);
         }
 
-        public T this[int index]
+        public virtual T this[int index]
         {
             get
             {
@@ -37,7 +36,6 @@ namespace Collections
             }
             set
             {
-                ThrowExceptionIfListIsReadonly();
                 ThrowExceptionIfArgumentIsOutOfRange(index, Count);    
                 items[index] = value;
             }
@@ -61,10 +59,9 @@ namespace Collections
             return this.IndexOf(item) > -1;
         }
 
-        public void Insert(int index, T item)
+        public virtual void Insert(int index, T item)
         {
             ThrowExceptionIfArgumentIsOutOfRange(index, Count);
-            ThrowExceptionIfListIsReadonly();
             EnsureCapacity();
             ShiftToRight(index);
             items[index] = item;
@@ -73,7 +70,6 @@ namespace Collections
 
         public void Clear()
         {
-            ThrowExceptionIfListIsReadonly();
             Array.Resize(ref items, 0);
             count = 0;
         }
@@ -93,7 +89,6 @@ namespace Collections
         public virtual void RemoveAt(int index)
         {
             ThrowExceptionIfArgumentIsOutOfRange(index, Count - 1);
-            ThrowExceptionIfListIsReadonly();
             ShiftToLeft(index);
             items[^1] = default;
             count--;     
@@ -123,7 +118,7 @@ namespace Collections
             }
         }
 
-        public virtual IEnumerator<T> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             for (int i = 0; i < Count; i++)
             {
@@ -137,8 +132,7 @@ namespace Collections
         }
 
         public void CopyTo(T[] array, int arrayIndex)
-        {
-            
+        {  
             if (array == null)
             {
                 throw new ArgumentNullException("array");
@@ -154,14 +148,6 @@ namespace Collections
             {
                 array[arrayIndex] = items[i];
             } 
-        }
-
-        private void ThrowExceptionIfListIsReadonly()
-        {
-            if (IsReadOnly)
-            {
-                throw new NotSupportedException("Cannot modify the List because it is readonly");
-            }
         }
 
         private void ThrowExceptionIfArgumentIsOutOfRange(int index, int length)
