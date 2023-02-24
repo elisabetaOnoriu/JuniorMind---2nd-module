@@ -16,7 +16,7 @@ namespace Streams
 
             if (crypt)
             {
-                stream = new CryptoStream(stream, aes.CreateEncryptor(aes.Key, aes.IV), CryptoStreamMode.Write);
+                stream = new CryptoStream(stream, aes.CreateEncryptor(), CryptoStreamMode.Write);
             }
 
             StreamWriter streamWriter = new(stream);
