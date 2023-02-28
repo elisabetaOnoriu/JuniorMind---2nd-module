@@ -4,43 +4,121 @@ namespace LinkedList
     public class CircularDoublyLinkedList<T> : ICollection<T>
     {
         int count;
-        Node<T> first = null;
-        Node<T> last = null;
+        Node<T> sentinel = new(default);
+
+        public CircularDoublyLinkedList()
+        {
+            sentinel.Next = sentinel;
+            sentinel.Previous = sentinel;
+        }
 
         public int Count { get => count; }
 
-        public Node<T> First { get => first; }
+        public Node<T> First { get => sentinel.Next; }
 
-        public Node<T> Last { get => last; }
+        public Node<T> Last { get => sentinel.Previous; }
 
         public bool IsReadOnly { get => false; }
+
+        public void AddAfter(Node<T> node, Node<T> newNode)
+        {
+            if (node == Last)
+            {
+                Add(newNode);
+            }
+
+            node.Next.Previous = newNode;
+            newNode.Next = node.Next;
+            node.Next = newNode;
+            newNode.Previous = node;
+            count++;
+        }
+
+        public void AddAfter(Node<T> node, T item)
+        { 
+            if (node == Last)
+            {
+                Add(item);
+            }
+
+            Node<T> newNode = new(item);
+            node.Next.Previous = newNode;
+            newNode.Next = node.Next;
+            node.Next = newNode;
+            newNode.Previous = node;
+            count++;
+        }
+
+        public void AddBefore(Node<T> node, Node<T> newNode)
+        {
+            if (node == First)
+            {
+                Add(node);
+            }
+
+            newNode.Previous = node.Previous;
+            newNode.Next = node;
+            node.Previous.Next = newNode;
+            node.Previous = newNode;
+            count++;
+        }
+
+        public void AddBefore(Node<T> node, T item)
+        {
+            if (node == First)
+            {
+                Add(node);
+            }
+
+            Node<T> newNode = new Node<T>(item);
+            newNode.Previous = node.Previous;
+            newNode.Next = node;
+            node.Previous.Next = newNode;
+            node.Previous = newNode;
+            count++;
+        }
+
+        public void AddFirst(Node<T> newNode)
+        {
+            newNode.Next = sentinel.Next;
+            sentinel.Next.Previous = newNode;
+            newNode.Previous = sentinel;
+            sentinel.Next = newNode;
+            count++;
+        }
+
+        public void AddFirst(T item)
+        {
+            Node<T> newNode = new(item);
+            newNode.Next = sentinel.Next;
+            sentinel.Next.Previous = newNode;
+            newNode.Previous = sentinel;
+            sentinel.Next = newNode;
+            count++;
+        }
+       public void Add(Node<T> newNode)
+        {
+            Last.Next = newNode;
+            newNode.Next = sentinel;
+            newNode.Previous = Last;
+            sentinel.Previous = newNode;
+            count++;
+        }
 
         public void Add(T item)
         {
             Node<T> newNode = new(item);
-            if (first == null && last == null)
-            {
-                newNode.Next = newNode;
-                newNode.Previous = newNode;
-                first = newNode;
-                last = newNode;
-            }
-            else
-            {
-                last.Next = newNode;
-                newNode.Next = first;
-                newNode.Previous = last;
-                first.Previous = newNode;
-                last = newNode;
-            }
-
+            Last.Next = newNode;
+            newNode.Next = sentinel;
+            newNode.Previous = Last;
+            sentinel.Previous = newNode;
             count++;
         }
 
         public void Clear()
         {
-            first = null;
-            last = null;
+            sentinel.Next = sentinel;
+            sentinel.Previous = sentinel;
             count = 0;
         }
 
@@ -75,7 +153,7 @@ namespace LinkedList
                 throw new ArgumentOutOfRangeException($"{arrayIndex}");
             }
 
-            var current = first;
+            var current = First;
             for (int i = arrayIndex; i < arrayIndex + Count; i++)
             {
                 array[i] = current.Data;
@@ -83,37 +161,68 @@ namespace LinkedList
             }
         }
 
+        public Node<T> Find(T value)
+        {
+            var Current = First;
+            while (Current != sentinel)
+            {
+                if (Current.Data.Equals(value))
+                {
+                    return Current;
+                }
+
+                Current = Current.Next;
+            }
+
+            return null;
+        }
+
+        public Node<T> FindLast(T value)
+        {
+            var Current = Last;
+            while (Current != sentinel)
+            {
+                if (Current.Data.Equals(value))
+                {
+                    return Current;
+                }
+
+                Current = Current.Previous;
+            }
+
+            return null;
+        }
+
         public IEnumerator<T> GetEnumerator()
         {
-            Node<T> Current = first;
+            Node<T> Current = First;
             for (int i = 0; i < Count; i++)
             {
                 yield return Current.Data;
                 Current = Current.Next;
             }
         }
+        
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void Remove(Node<T> node)
+        {
+            node.Previous.Next = node.Next;
+            node.Next.Previous = node.Previous;
+            node = null;
+        }
 
         public bool Remove(T item)
         {
-            var current = first;
+            var current = First;
             for (int i = 0; i < count; i++)
             {
                 if (current.Data.Equals(item))
                 {
-                    if (current == first)
-                    {
-                        current.Next = first;
-                    }
-
-                    if (current == last)
-                    {
-                        current.Previous = last;
-                    }
-                    else
-                    {
-                        current.Previous.Next = current.Next;
-                    }
-
+                    Remove(current);
                     return true;
                 }
 
@@ -121,11 +230,6 @@ namespace LinkedList
             }
 
             return false;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }
