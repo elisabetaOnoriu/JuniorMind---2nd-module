@@ -30,6 +30,38 @@ namespace CircularDoublyLinkedListFacts
         }
 
         [Fact]
+        public void AddAfter_NodeIsNull_ThrowsException()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>();
+            Node<int> toAdd = new Node<int>(3);    
+            Assert.Throws<ArgumentNullException> (() => linkedList.AddAfter(linkedList.First, toAdd));
+        }
+
+        [Fact]
+        public void AddAfter_ToAddNodeIsNull_ThrowsException()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3};
+            Node<int> toAdd = null;
+            Assert.Throws<ArgumentNullException>(() => linkedList.AddAfter(linkedList.First, toAdd));
+        }
+
+        [Fact]
+        public void AddAfter_NodeBelongsToOtherList_ThrowsException()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3 };
+            var otherLinkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3 };
+            Assert.Throws<InvalidOperationException>(() => linkedList.AddAfter(otherLinkedList.First, linkedList.First));
+        }
+
+        [Fact]
+        public void AddAfter_ToAddNodeBelongsToOtherList_ThrowsException()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3 };
+            var otherLinkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3 };
+            Assert.Throws<InvalidOperationException>(() => linkedList.AddAfter(linkedList.First, otherLinkedList.First));
+        }
+
+        [Fact]
         public void AddAfter_AddsByValue()
         {
             var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 4 };
@@ -111,6 +143,13 @@ namespace CircularDoublyLinkedListFacts
             Assert.False(linkedList.Contains(4));
         }
 
+        [Fact]
+        public void Contains_ListIsEmpty()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>();
+            Assert.False(linkedList.Contains(4));
+        }
+
         [Theory]
         [InlineData(0, 1)]
         [InlineData(1, 2)]
@@ -187,6 +226,21 @@ namespace CircularDoublyLinkedListFacts
         }
 
         [Fact]
+        public void Remove_NodeIsNull_ThrowsException()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>();
+            Assert.Throws<ArgumentNullException> (() => linkedList.Remove(linkedList.First));
+        }
+
+        [Fact]
+        public void Remove_NodeBelongsToOtherList_ThrowsException()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3 };
+            var otherLinkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3 };
+            Assert.Throws<InvalidOperationException>(() => linkedList.Remove(otherLinkedList.First));
+        }
+
+        [Fact]
         public void Remove_RemovesByValue()
         {
             var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3 };
@@ -210,6 +264,16 @@ namespace CircularDoublyLinkedListFacts
             Assert.Equal(2, enumerator.Current);
             enumerator.MoveNext();
             Assert.Equal(3, enumerator.Current);
+        }
+
+        [Fact]
+        public void RemoveFirst_ListIsEmpty_ListIsStillCircularAfterReuse()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>();
+            linkedList.RemoveFirst();
+            linkedList.Add(1);
+            linkedList.Add(2);
+            Assert.Equal(1, linkedList.Last.Next.Next.Data);
         }
 
         [Fact]

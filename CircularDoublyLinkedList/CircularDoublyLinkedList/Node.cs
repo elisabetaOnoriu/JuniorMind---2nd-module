@@ -12,6 +12,12 @@
             this.data = data;
         }
 
+        public CircularDoublyLinkedList<T> List 
+        { 
+            get => list; 
+            set => list = value; 
+        }
+
         public Node<T> Next 
         { 
             get => next;

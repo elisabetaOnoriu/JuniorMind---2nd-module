@@ -10,18 +10,30 @@ namespace LinkedList
         {
             sentinel.Next = sentinel;
             sentinel.Previous = sentinel;
+            sentinel.List = this;
         }
 
         public int Count { get => count; }
 
-        public Node<T> First => sentinel.Next == sentinel ? null : sentinel.Next;
+        public Node<T> First => count == 0 ? null : sentinel.Next;
 
-        public Node<T> Last => sentinel.Next == sentinel ? null : sentinel.Previous;
+        public Node<T> Last => count == 0 ? null : sentinel.Previous;
 
         public bool IsReadOnly { get => false; }
 
         public void AddAfter(Node<T> node, Node<T> newNode)
         {
+            if (node == null || newNode == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (node.List != this || newNode.List != null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            newNode.List = this;
             node.Next.Previous = newNode;   
             newNode.Next = node.Next;    
             node.Next = newNode;           
@@ -56,7 +68,7 @@ namespace LinkedList
 
         public bool Contains(T item)
         {
-            for (var current = First; current != sentinel; current = current.Next)
+            for (var current = sentinel.Next; current != sentinel; current = current.Next)
             {
                 if (current.Data.Equals(item))
                 {
@@ -93,7 +105,7 @@ namespace LinkedList
 
         public Node<T> Find(T value)
         {
-            for (var current = First; current != sentinel; current = current.Next)
+            for (var current = sentinel.Next; current != sentinel; current = current.Next)
             {
                 if (current.Data.Equals(value))
                 {
@@ -106,7 +118,7 @@ namespace LinkedList
 
         public Node<T> FindLast(T value)
         {
-            for (var current = Last; current != sentinel; current = current.Previous)
+            for (var current = sentinel.Previous; current != sentinel; current = current.Previous)
             {
                 if (current.Data.Equals(value))
                 {
@@ -119,7 +131,7 @@ namespace LinkedList
 
         public IEnumerator<T> GetEnumerator()
         {
-            for (var current = First; current != sentinel; current = current.Next)
+            for (var current = sentinel.Next; current != sentinel; current = current.Next)
             {
                 yield return current.Data;
             }
@@ -129,20 +141,38 @@ namespace LinkedList
 
         public void Remove(Node<T> node)
         {
-            node.Previous.Next = node.Next;
-            node.Next.Previous = node.Previous;
-            node = null;
+            if (node == null)
+            {
+                throw new ArgumentNullException(nameof(node));
+            }
+
+            if (node.List != this)
+            {
+                throw new InvalidOperationException();
+            }
+
+            if (First != null)
+            {
+                node.Previous.Next = node.Next;
+                node.Next.Previous = node.Previous;
+                node = null;
+            } 
         }
 
         public bool Remove(T item)
         {
-            bool itemExists = this.Contains(item);
-            Remove(Find(item));
-            return itemExists;
+            var searchedNode = Find(item);
+            if (searchedNode != null)
+            {
+                Remove(searchedNode);
+                return true;
+            }
+            
+            return false;
         }
 
-        public void RemoveFirst() => Remove(First);
+        public void RemoveFirst() => Remove(sentinel.Next);
 
-        public void RemoveLast() => Remove(Last);
+        public void RemoveLast() => Remove(sentinel.Previous);
     }
 }
