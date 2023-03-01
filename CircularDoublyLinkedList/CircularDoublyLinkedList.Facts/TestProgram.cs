@@ -194,10 +194,24 @@ namespace CircularDoublyLinkedListFacts
         }
 
         [Fact]
+        public void Find_NodeIsNotThere()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3, 1 };
+            Assert.Equal(null, linkedList.Find(4));
+        }
+
+        [Fact]
         public void FindLast_ReturnsLastNodeThatHoldsThatData()
         {
             var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3, 1 };
             Assert.Equal(linkedList.Last, linkedList.FindLast(1));
+        }
+
+        [Fact]
+        public void FindLast_NodeIsNotThere()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3, 1 };
+            Assert.Equal(null, linkedList.Find(4));
         }
 
         [Fact]
