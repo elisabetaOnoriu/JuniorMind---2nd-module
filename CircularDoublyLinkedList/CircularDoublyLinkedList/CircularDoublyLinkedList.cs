@@ -96,7 +96,7 @@ namespace LinkedList
                 throw new ArgumentOutOfRangeException($"{arrayIndex}");
             }
 
-            var current = First;
+            var current = sentinel.Next;
             for (int i = arrayIndex; i < arrayIndex + Count; i++, current = current.Next)
             {
                 array[i] = current.Data;
