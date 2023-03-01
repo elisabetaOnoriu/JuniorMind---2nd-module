@@ -136,8 +136,9 @@ namespace LinkedList
 
         public bool Remove(T item)
         {
+            bool itemExists = this.Contains(item);
             Remove(Find(item));
-            return true;
+            return itemExists;
         }
 
         public void RemoveFirst() => Remove(First);
