@@ -151,12 +151,8 @@ namespace LinkedList
                 throw new InvalidOperationException();
             }
 
-            if (First != null)
-            {
-                node.Previous.Next = node.Next;
-                node.Next.Previous = node.Previous;
-                node = null;
-            } 
+            node.Previous.Next = node.Next;
+            node.Next.Previous = node.Previous;
         }
 
         public bool Remove(T item)
