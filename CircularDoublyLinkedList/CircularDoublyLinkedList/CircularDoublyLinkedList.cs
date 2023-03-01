@@ -146,7 +146,7 @@ namespace LinkedList
                 throw new ArgumentNullException(nameof(node));
             }
 
-            if (node.List != this)
+            if (node.List != this || count == 0)
             {
                 throw new InvalidOperationException();
             }

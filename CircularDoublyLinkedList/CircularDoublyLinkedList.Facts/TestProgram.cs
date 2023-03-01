@@ -281,13 +281,10 @@ namespace CircularDoublyLinkedListFacts
         }
 
         [Fact]
-        public void RemoveFirst_ListIsEmpty_ListIsStillCircularAfterReuse()
+        public void RemoveFirst_ListIsEmpty_ThrowsException()
         {
             var linkedList = new CircularDoublyLinkedList<int>();
-            linkedList.RemoveFirst();
-            linkedList.Add(1);
-            linkedList.Add(2);
-            Assert.Equal(1, linkedList.Last.Next.Next.Data);
+            Assert.Throws<InvalidOperationException>(() => linkedList.RemoveFirst());
         }
 
         [Fact]
@@ -304,6 +301,13 @@ namespace CircularDoublyLinkedListFacts
             Assert.Equal(3, enumerator.Current);
             enumerator.MoveNext();
             Assert.False(enumerator.MoveNext());
+        }
+
+        [Fact]
+        public void RemoveLast_ListIsEmpty_ThrowsException()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>();
+            Assert.Throws<InvalidOperationException>(() => linkedList.RemoveLast());
         }
     }
 }
