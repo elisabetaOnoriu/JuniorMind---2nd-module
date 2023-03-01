@@ -22,11 +22,6 @@ namespace LinkedList
 
         public void AddAfter(Node<T> node, Node<T> newNode)
         {
-            if (node == Last)
-            {
-                Add(newNode);
-            }
-
             node.Next.Previous = newNode;
             newNode.Next = node.Next;
             node.Next = newNode;
@@ -34,86 +29,23 @@ namespace LinkedList
             count++;
         }
 
-        public void AddAfter(Node<T> node, T item)
-        { 
-            if (node == Last)
-            {
-                Add(item);
-            }
+        public void AddAfter(Node<T> node, T item) => AddAfter(node, new Node<T>(item));
 
-            Node<T> newNode = new(item);
-            node.Next.Previous = newNode;
-            newNode.Next = node.Next;
-            node.Next = newNode;
-            newNode.Previous = node;
-            count++;
-        }
+        public void AddBefore(Node<T> node, Node<T> newNode) => AddAfter(node.Previous, newNode);
 
-        public void AddBefore(Node<T> node, Node<T> newNode)
-        {
-            if (node == First)
-            {
-                Add(node);
-            }
+        public void AddBefore(Node<T> node, T item) => AddBefore(node, new Node<T>(item));
 
-            newNode.Previous = node.Previous;
-            newNode.Next = node;
-            node.Previous.Next = newNode;
-            node.Previous = newNode;
-            count++;
-        }
+        public void AddFirst(Node<T> newNode) => AddAfter(sentinel, newNode);
 
-        public void AddBefore(Node<T> node, T item)
-        {
-            if (node == First)
-            {
-                Add(node);
-            }
+        public void AddFirst(T item) => AddFirst(new Node<T>(item));
 
-            Node<T> newNode = new Node<T>(item);
-            newNode.Previous = node.Previous;
-            newNode.Next = node;
-            node.Previous.Next = newNode;
-            node.Previous = newNode;
-            count++;
-        }
+        public void AddLast(Node<T> newNode) => AddAfter(Last, newNode);
 
-        public void AddFirst(Node<T> newNode)
-        {
-            newNode.Next = sentinel.Next;
-            sentinel.Next.Previous = newNode;
-            newNode.Previous = sentinel;
-            sentinel.Next = newNode;
-            count++;
-        }
+        public void AddLast(T item) => AddLast(new Node<T>(item));
 
-        public void AddFirst(T item)
-        {
-            Node<T> newNode = new(item);
-            newNode.Next = sentinel.Next;
-            sentinel.Next.Previous = newNode;
-            newNode.Previous = sentinel;
-            sentinel.Next = newNode;
-            count++;
-        }
-       public void Add(Node<T> newNode)
-        {
-            Last.Next = newNode;
-            newNode.Next = sentinel;
-            newNode.Previous = Last;
-            sentinel.Previous = newNode;
-            count++;
-        }
+        public void Add(Node<T> newNode) => AddLast(newNode);
 
-        public void Add(T item)
-        {
-            Node<T> newNode = new(item);
-            Last.Next = newNode;
-            newNode.Next = sentinel;
-            newNode.Previous = Last;
-            sentinel.Previous = newNode;
-            count++;
-        }
+        public void Add(T item) => AddLast(item);
 
         public void Clear()
         {
@@ -124,10 +56,9 @@ namespace LinkedList
 
         public bool Contains(T item)
         {
-            var enumerator = this.GetEnumerator();
-            while (enumerator.MoveNext())
+            for (var current = sentinel; current != Last; current = current.Next)
             {
-                if (enumerator.Current.Equals(item))
+                if (current.Next.Data.Equals(item))
                 {
                     return true;
                 }
@@ -154,24 +85,20 @@ namespace LinkedList
             }
 
             var current = First;
-            for (int i = arrayIndex; i < arrayIndex + Count; i++)
+            for (int i = arrayIndex; i < arrayIndex + Count; i++, current = current.Next)
             {
                 array[i] = current.Data;
-                current = current.Next;
             }
         }
 
         public Node<T> Find(T value)
         {
-            var Current = First;
-            while (Current != sentinel)
+            for (var current = sentinel; current != Last; current = current.Next)
             {
-                if (Current.Data.Equals(value))
+                if (current.Next.Data.Equals(value))
                 {
-                    return Current;
+                    return current.Next;
                 }
-
-                Current = Current.Next;
             }
 
             return null;
@@ -179,15 +106,12 @@ namespace LinkedList
 
         public Node<T> FindLast(T value)
         {
-            var Current = Last;
-            while (Current != sentinel)
+            for (var current = Last; current != sentinel; current = current.Previous)
             {
-                if (Current.Data.Equals(value))
+                if (current.Data.Equals(value))
                 {
-                    return Current;
+                    return current;
                 }
-
-                Current = Current.Previous;
             }
 
             return null;
@@ -195,11 +119,9 @@ namespace LinkedList
 
         public IEnumerator<T> GetEnumerator()
         {
-            Node<T> Current = First;
-            for (int i = 0; i < Count; i++)
+            for (var current = sentinel; current != Last; current = current.Next)
             {
-                yield return Current.Data;
-                Current = Current.Next;
+                yield return current.Next.Data;
             }
         }
         
@@ -217,19 +139,28 @@ namespace LinkedList
 
         public bool Remove(T item)
         {
-            var current = First;
-            for (int i = 0; i < count; i++)
+            for (var current = sentinel; current != Last; current = current.Next)
             {
-                if (current.Data.Equals(item))
+                if (current.Next.Data.Equals(item))
                 {
-                    Remove(current);
+                    Remove(current.Next);
                     return true;
                 }
-
-                current = current.Next;
             }
 
             return false;
+        }
+
+        public void RemoveFirst()
+        {
+            sentinel.Next = First.Next;
+            sentinel.Next.Previous = sentinel;
+        }
+
+        public void RemoveLast()
+        {
+            Last.Previous.Next = sentinel;
+            sentinel.Previous = Last.Previous;
         }
     }
 }

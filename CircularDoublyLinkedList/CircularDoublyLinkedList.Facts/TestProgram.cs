@@ -197,5 +197,35 @@ namespace CircularDoublyLinkedListFacts
             enumerator.MoveNext();
             Assert.Equal(3, enumerator.Current);
         }
+
+        [Fact]
+        public void RemoveFirst_RemovesFirstNode()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>() { 3, 1, 2, 3 };
+            linkedList.RemoveFirst();
+            var enumerator = linkedList.GetEnumerator();
+            enumerator.MoveNext();
+            Assert.Equal(1, enumerator.Current);
+            enumerator.MoveNext();
+            Assert.Equal(2, enumerator.Current);
+            enumerator.MoveNext();
+            Assert.Equal(3, enumerator.Current);
+        }
+
+        [Fact]
+        public void RemoveLast_RemovesLastNode()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3, 1 };
+            linkedList.RemoveLast();
+            var enumerator = linkedList.GetEnumerator();
+            enumerator.MoveNext();
+            Assert.Equal(1, enumerator.Current);
+            enumerator.MoveNext();
+            Assert.Equal(2, enumerator.Current);
+            enumerator.MoveNext();
+            Assert.Equal(3, enumerator.Current);
+            enumerator.MoveNext();
+            Assert.False(enumerator.MoveNext());
+        }
     }
 }
