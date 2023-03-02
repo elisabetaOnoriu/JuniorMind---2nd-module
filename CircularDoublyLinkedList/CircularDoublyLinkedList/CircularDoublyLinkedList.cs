@@ -8,9 +8,9 @@ namespace LinkedList
 
         public CircularDoublyLinkedList()
         {
-            sentinel.SetNext = sentinel;
-            sentinel.SetPrevious = sentinel;
-            sentinel.SetList = this;
+            sentinel.Next = sentinel;
+            sentinel.Previous = sentinel;
+            sentinel.List = this;
         }
 
         public int Count { get => count; }
@@ -30,11 +30,11 @@ namespace LinkedList
                 throw new InvalidOperationException();
             }
 
-            newNode.SetList = this;
-            node.Next.SetPrevious = newNode;   
-            newNode.SetNext = node.Next;    
-            node.SetNext = newNode;           
-            newNode.SetPrevious = node;
+            newNode.List = this;
+            node.Next.Previous = newNode;   
+            newNode.Next = node.Next;    
+            node.Next = newNode;           
+            newNode.Previous = node;
             count++;
         }
 
@@ -66,8 +66,8 @@ namespace LinkedList
 
         public void Clear()
         {
-            sentinel.SetNext = sentinel;
-            sentinel.SetPrevious = sentinel;
+            sentinel.Next = sentinel;
+            sentinel.Previous = sentinel;
             count = 0;
         }
 
@@ -140,8 +140,8 @@ namespace LinkedList
                 throw new InvalidOperationException();
             }
 
-            node.Previous.SetNext = node.Next;
-            node.Next.SetPrevious = node.Previous;
+            node.Previous.Next = node.Next;
+            node.Next.Previous = node.Previous;
         }
 
         public bool Remove(T item)

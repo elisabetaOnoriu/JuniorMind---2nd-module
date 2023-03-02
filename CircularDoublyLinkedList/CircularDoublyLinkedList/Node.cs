@@ -12,18 +12,13 @@
             this.data = data;
         }
 
-        public CircularDoublyLinkedList<T> List { get => list; }
+        public CircularDoublyLinkedList<T> List { get => list; internal set => list = value; }
 
-        internal CircularDoublyLinkedList<T> SetList { set => list = value; }
-
-        public Node<T> Next { get => next; }
-
-        internal Node<T> SetNext { set => next = value; }
+        public Node<T> Next { get => next; internal set => next = value;}
 
         public T Data { get => data; }
 
-        public Node<T> Previous { get => previous; }
+        public Node<T> Previous { get => previous; internal set => previous = value;}
 
-        internal Node<T> SetPrevious { set => previous = value; }
     }
 }
