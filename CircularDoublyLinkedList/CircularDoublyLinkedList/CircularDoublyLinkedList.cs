@@ -160,7 +160,7 @@ namespace LinkedList
 
         public void RemoveLast() => Remove(sentinel.Previous);
 
-        public void ThrowExceptionIfArgumentIsNull<T>(T element)
+        private void ThrowExceptionIfArgumentIsNull<T>(T element)
         {
             if (element == null)
             {
