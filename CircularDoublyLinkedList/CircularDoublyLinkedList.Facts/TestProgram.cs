@@ -17,6 +17,7 @@ namespace CircularDoublyLinkedListFacts
             var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 3 };
             Assert.Equal(1, linkedList.Last.Next.Next.Data);
             Assert.Equal(3, linkedList.First.Previous.Previous.Data);
+            Node<int> node = new(3);
         }
 
         [Fact]
