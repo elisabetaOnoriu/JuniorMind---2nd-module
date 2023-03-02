@@ -81,6 +81,14 @@ namespace CircularDoublyLinkedListFacts
         }
 
         [Fact]
+        public void AddBefore_NodeIsNull()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 4 };
+            Node<int> toAdd = new Node<int>(3);
+            Assert.Throws<NullReferenceException>(() => linkedList.AddBefore(null, toAdd));
+        }
+
+        [Fact]
         public void AddBefore_AddsByValue()
         {
             var linkedList = new CircularDoublyLinkedList<int>() { 1, 2, 4 };
@@ -99,6 +107,12 @@ namespace CircularDoublyLinkedListFacts
             Assert.Equal(linkedList.Last.Next.Next, toAdd);
         }
 
+        [Fact]
+        public void AddFirst_NodeIsNull()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>() { 2, 3, 4 };
+            Assert.Throws<ArgumentNullException>(() => linkedList.AddFirst(null));
+        }
 
         [Fact]
         public void AddFirst_AddsByValue()
@@ -115,6 +129,13 @@ namespace CircularDoublyLinkedListFacts
             var linkedList = new CircularDoublyLinkedList<int>() { 1 };
             linkedList.Add(2);
             Assert.Equal(2, linkedList.Last.Data);
+        }
+
+        [Fact]
+        public void AddLast_NodeIsNull()
+        {
+            var linkedList = new CircularDoublyLinkedList<int>();
+            Assert.Throws<ArgumentNullException>(() => linkedList.AddLast(null));
         }
 
         [Fact]

@@ -43,7 +43,15 @@ namespace LinkedList
 
         public void AddAfter(Node<T> node, T item) => AddAfter(node, new Node<T>(item));
 
-        public void AddBefore(Node<T> node, Node<T> newNode) => AddAfter(node.Previous, newNode);
+        public void AddBefore(Node<T> node, Node<T> newNode)
+        {
+            if (node == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            AddAfter(node.Previous, newNode);
+        }
 
         public void AddBefore(Node<T> node, T item) => AddBefore(node, new Node<T>(item));
 
