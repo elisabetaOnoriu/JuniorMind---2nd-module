@@ -2,7 +2,6 @@
 {
     public class Node<T>
     {
-        CircularDoublyLinkedList<T> list;
         Node<T> next;
         Node<T> previous;
         T data;
@@ -12,11 +11,7 @@
             this.data = data;
         }
 
-        public CircularDoublyLinkedList<T> List 
-        { 
-            get => list; 
-            set => list = value; 
-        }
+        public CircularDoublyLinkedList<T> List { get; set; } = null;
 
         public Node<T> Next 
         { 

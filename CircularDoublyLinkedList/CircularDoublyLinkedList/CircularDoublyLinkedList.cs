@@ -23,11 +23,8 @@ namespace LinkedList
 
         public void AddAfter(Node<T> node, Node<T> newNode)
         {
-            if (node == null || newNode == null)
-            {
-                throw new ArgumentNullException();
-            }
-
+            ThrowExceptionIfArgumentIsNull(node);
+            ThrowExceptionIfArgumentIsNull(newNode);
             if (node.List != this || newNode.List != null)
             {
                 throw new InvalidOperationException();
@@ -59,7 +56,7 @@ namespace LinkedList
 
         public void AddFirst(T item) => AddFirst(new Node<T>(item));
 
-        public void AddLast(Node<T> newNode) => AddAfter(sentinel.Previous, newNode);
+        public void AddLast(Node<T> newNode) => AddBefore(sentinel, newNode);
 
         public void AddLast(T item) => AddLast(new Node<T>(item));
 
@@ -76,24 +73,12 @@ namespace LinkedList
 
         public bool Contains(T item)
         {
-            for (var current = sentinel.Next; current != sentinel; current = current.Next)
-            {
-                if (current.Data.Equals(item))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return Find(item) != null;
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-
+            ThrowExceptionIfArgumentIsNull(array);
             if (array.Length - arrayIndex < Count)
             {
                 throw new ArgumentException(null, nameof(array));
@@ -149,11 +134,7 @@ namespace LinkedList
 
         public void Remove(Node<T> node)
         {
-            if (node == null)
-            {
-                throw new ArgumentNullException(nameof(node));
-            }
-
+            ThrowExceptionIfArgumentIsNull(node);
             if (node.List != this || count == 0)
             {
                 throw new InvalidOperationException();
@@ -178,5 +159,13 @@ namespace LinkedList
         public void RemoveFirst() => Remove(sentinel.Next);
 
         public void RemoveLast() => Remove(sentinel.Previous);
+
+        public void ThrowExceptionIfArgumentIsNull<T>(T element)
+        {
+            if (element == null)
+            {
+                throw new ArgumentNullException(nameof(element));
+            }
+        }
     }
 }
