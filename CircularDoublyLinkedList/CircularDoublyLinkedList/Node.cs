@@ -18,5 +18,5 @@
         public T Data { get; set; }
 
         public Node<T> Previous { get => previous; internal set => previous = value;}
-    }
+    }   
 }
