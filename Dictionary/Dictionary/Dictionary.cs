@@ -6,8 +6,8 @@ namespace Dictionary
     public class MyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         int[] buckets;
-        Entry<TKey, TValue>[] entries;
         int count;
+        Entry<TKey, TValue>[] entries;      
         Entry<TKey, TValue> freeEntries;
 
         public MyDictionary(int capacity)
@@ -79,8 +79,8 @@ namespace Dictionary
 
         public int GetHashCode(TKey key)
         {
-            int keyNumber = Convert.ToInt32(key);
-            return keyNumber >= buckets.Length ? key.GetHashCode() % buckets.Length : Math.Abs(keyNumber);
+            int keyNumber = Math.Abs(Convert.ToInt32(key));
+            return keyNumber >= buckets.Length ? key.GetHashCode() % buckets.Length : keyNumber;
         }
 
         public void Add(TKey key, TValue value)
