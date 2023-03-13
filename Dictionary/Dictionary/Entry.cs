@@ -2,7 +2,7 @@
 {
     internal class Entry<TKey, TValue>
     {
-        Entry<TKey, TValue> next = null;
+        int next = -1;
 
         internal Entry(TKey key, TValue value)
         {
@@ -14,7 +14,7 @@
 
         internal TValue Value { get; set; }
 
-        internal Entry<TKey,TValue> Next { get => next; set => next = value; }
+        internal int Next { get => next; set => next = value; }
 
         internal KeyValuePair<TKey, TValue> KeyValue()
         {
