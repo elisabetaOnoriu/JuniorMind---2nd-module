@@ -145,7 +145,7 @@ namespace Dictionary
                 throw new ArgumentOutOfRangeException($"{arrayIndex}");
             }
 
-            int i = 0;
+            int i = arrayIndex;
             foreach (var item in this)
             {
                 array[i++] = item;
@@ -199,6 +199,7 @@ namespace Dictionary
             if (buckets[index] == -1)
             {
                 value = default;
+
                 return false;
             }
 
