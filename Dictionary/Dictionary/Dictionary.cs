@@ -13,16 +13,8 @@ namespace Dictionary
         public MyDictionary(int capacity)
         {
             buckets = new int[capacity];
+            Array.Fill(buckets, -1);
             entries = new Entry<TKey, TValue>[capacity];
-            SetInitialBuckets();
-        }
-
-        private void SetInitialBuckets()
-        {
-            for (int i = 0; i < buckets.Length; i++)
-            {
-                buckets[i] = -1;
-            }
         }
 
         public TValue this[TKey key]
