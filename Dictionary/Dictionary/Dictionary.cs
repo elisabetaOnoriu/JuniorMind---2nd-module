@@ -5,14 +5,24 @@ namespace Dictionary
 {
     public class MyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
-        int count;
-        Bucket<TKey, TValue>[] buckets;      
         Entry<TKey, TValue>[] entries;
-        Entry<TKey, TValue> freeEntries;
-
+        int[] buckets;
+        int freeIndex;
+        int count;
+        
         public MyDictionary(int capacity)
         {
-            buckets = new Bucket<TKey, TValue>[capacity];
+            buckets = new int[capacity];
+            entries = new Entry<TKey, TValue>[capacity];
+            SetInitialBuckets();
+        }
+
+        private void SetInitialBuckets()
+        {
+            for (int i = 0; i < buckets.Length; i++)
+            {
+                buckets[i] = -1;
+            }
         }
 
         public TValue this[TKey key]
@@ -69,8 +79,8 @@ namespace Dictionary
 
         public int GetHashCode(TKey key)
         {
-            int keyNumber = Math.Abs(Convert.ToInt32(key));
-            return keyNumber >= buckets.Length ? key.GetHashCode() % buckets.Length : keyNumber;
+            int keyHash = Math.Abs(key.GetHashCode());
+            return keyHash >= buckets.Length ? keyHash % buckets.Length : keyHash;
         }
 
         public void Add(TKey key, TValue value)
@@ -85,13 +95,8 @@ namespace Dictionary
             count++;
             int index = GetIndex(key);
             Entry<TKey, TValue> newEntry = new(key, value);
-            newEntry.Next  = buckets[index].FirstElementIndex;
-            buckets[index].FirstElementIndex = count - 1;
-            buckets[index].Entry = newEntry;
-            if (count == entries.Length)
-            {
-                //freeEntries
-            }
+            newEntry.Next  = buckets[index];
+            buckets[index] = count - 1;
             entries[count - 1] = newEntry;     
         }
 
@@ -101,7 +106,7 @@ namespace Dictionary
         {
             for (int i = 0; i < buckets.Length; i++)
             {
-                buckets[i].FirstElementIndex = -1;
+                buckets[i] = -1;
                 entries[i] = null;
             }
 
@@ -110,7 +115,7 @@ namespace Dictionary
 
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            for (var current = buckets[GetIndex(item.Key)].Entry; current != default; current = entries[current.Next])
+            for (var current = entries[buckets[GetIndex(item.Key)]]; current != default; current = entries[current.Next])
             {
                 if (current.KeyValue().Equals(item))
                 {
@@ -149,12 +154,14 @@ namespace Dictionary
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            for (int i = 0; i <= count; i++)
+            for (int i = 0; i < entries.Length; i++)
             {
-                for (var current = buckets[i].Entry; current != default; current = entries[current.Next])
+                if (entries[i] == default)
                 {
-                    yield return current.KeyValue();
+                    break;
                 }
+
+                yield return entries[i].KeyValue();                
             }
         }
 
@@ -163,12 +170,18 @@ namespace Dictionary
             ThrowExceptionIfArgumentIsNull(key);
             ThrowExceptionIfDictionaryIsReadOnly();
             var index = GetIndex(key);
-            for (var current = buckets[index].Entry; current != default; current = entries[current.Next])
+            for (var current = entries[buckets[index]]; current != default; current = entries[current.Next])
             {
+                if (current == entries[buckets[index]] && current.Key.Equals(key))
+                {
+                    buckets[index] = current.Next;
+                    entries[buckets[index]] = default;
+                    freeIndex = Array.IndexOf(entries, current);
+                }
+
                 if (current.Key.Equals(key))
                 {
-                    buckets[index].FirstElementIndex--;
-                    //entries[current.Next]
+                    buckets[index]--;
                     count--;
                     return true;
                 }
@@ -181,19 +194,25 @@ namespace Dictionary
 
         public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
         {
+            ThrowExceptionIfArgumentIsNull(key);
             var index = GetIndex(key);
-            if (buckets[index].FirstElementIndex == -1)
+            if (buckets[index] == -1)
             {
                 value = default;
                 return false;
             }
 
-            for (var current = buckets[index].Entry; current != default; current = entries[current.Next])
+            for (var current = entries[buckets[index]]; current != default; current = entries[current.Next])
             {
                 if (current.Key.Equals(key))
                 {
                     value = current.Value;
                     return true;
+                }
+
+                if (current.Next == -1)
+                {
+                    break;
                 }
             }
             
