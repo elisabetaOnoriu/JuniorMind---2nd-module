@@ -38,6 +38,15 @@ namespace DictionaryFacts
             Assert.Throws<ArgumentNullException>(() => dictionary[null]);
         }
 
+        [Fact]
+        public void IndexProperty_KeyIsNotPresent_ThrowsException()
+        {
+            MyDictionary<string, string> dictionary = new(3);
+            dictionary.Add("a", "Ana");
+            dictionary.Add("b", "Any");
+            Assert.Throws<KeyNotFoundException>(() => dictionary["l"]);
+        }
+
         [Theory]
         [InlineData(2, "Ana")]
         [InlineData(1, "Any")]
@@ -46,6 +55,18 @@ namespace DictionaryFacts
             MyDictionary<int, string> dictionary = new(3);
             dictionary[2] = "Ana";
             dictionary[1] = "Any";
+            Assert.Equal(value, dictionary[key]);
+        }
+
+        [Theory]
+        [InlineData(2, "Ana")]
+        [InlineData(1, "Bob")]
+        public void SetIndexProperty_ChangesValueForSpecifiedKey(int key, string value)
+        {
+            MyDictionary<int, string> dictionary = new(3);
+            dictionary[2] = "Ana";
+            dictionary[1] = "Any";
+            dictionary[1] = "Bob";
             Assert.Equal(value, dictionary[key]);
         }
 
@@ -158,6 +179,31 @@ namespace DictionaryFacts
             enumerator.MoveNext();
             Assert.Equal(dictionary[6], enumerator.Current.Value);
             Assert.False(enumerator.MoveNext());
+        }
+
+        [Fact]
+        public void Remove_RemovesElement()
+        {
+            MyDictionary<int, string> dictionary = new(3);
+            dictionary.Add(2, "Ana");
+            dictionary.Add(1, "Any");
+            dictionary.Remove(2);
+            Assert.Throws<KeyNotFoundException>(() => dictionary[2]);
+        }
+
+        [Theory]
+        [InlineData(1, "Any")]
+        [InlineData(0, "Bob")]
+        [InlineData(5, "John")]
+        public void Remove_FreePositionsCanBeReused(int key, string value)
+        {
+            MyDictionary<int, string> dictionary = new(3);
+            dictionary.Add(2, "Ana");
+            dictionary.Add(1, "Any");
+            dictionary.Add(0, "Bob");
+            dictionary.Remove(2);
+            dictionary.Add(5, "John");
+            Assert.Equal(dictionary[key], value);
         }
     }
 }
