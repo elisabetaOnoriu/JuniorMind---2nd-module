@@ -141,15 +141,7 @@ namespace Dictionary
 
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            for (int i = buckets[BucketIndex(item.Key)]; i != -1 ; i = entries[i].Next)
-            {
-                if (entries[i].KeyValue().Equals(item))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return TryGetValue(item.Key, out var value) && item.Value.Equals(value);
         }
 
         public bool ContainsKey(TKey key)
