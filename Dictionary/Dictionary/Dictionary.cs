@@ -43,21 +43,6 @@ namespace Dictionary
             }
         }
 
-        private bool TryFindEntryIndex(TKey key, out int index)
-        {
-            for (int i = buckets[BucketIndex(key)]; i != -1; i = entries[i].Next)
-            {
-                if (entries[i].Key.Equals(key))
-                {
-                    index = i;
-                    return true;
-                }
-            }
-
-            index = default;
-            return false;
-        }
-
         public ICollection<TKey> Keys
         {
             get
@@ -95,12 +80,6 @@ namespace Dictionary
             return new(this);
         }
 
-        internal int BucketIndex(TKey key)
-        {
-            int keyHash = Math.Abs(key.GetHashCode());
-            return keyHash >= buckets.Length ? keyHash % buckets.Length : keyHash;
-        }
-
         public void Add(TKey key, TValue value)
         {
             ThrowExceptionIfArgumentIsNull(key);
@@ -117,18 +96,6 @@ namespace Dictionary
             buckets[bucketIndex] = index;
             entries[index] = newEntry; 
             count++;   
-        }
-
-        private int GetNextFreePosition()
-        {
-            if (freeIndex != -1)
-            {
-                int index = freeIndex;
-                freeIndex = entries[freeIndex].Next;
-                return index;
-            }
-
-            return count;
         }
 
         public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
@@ -195,7 +162,14 @@ namespace Dictionary
                     entries[entryIndex].Key = default;
                     entries[entryIndex].Value = default;
                 }
-
+                else
+                {
+                    var keys = (List<TKey>)Keys;
+                    var previousKeyIndex = keys.IndexOf(key) - 1;
+                    TryFindEntryIndex(keys[previousKeyIndex], out int previousIndex);
+                    entries[previousIndex].Next = entries[entryIndex].Next;
+                }
+                
                 entries[entryIndex].Next = freeIndex;
                 freeIndex = entryIndex;
                 count--;            
@@ -218,13 +192,10 @@ namespace Dictionary
         public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
         {
             ThrowExceptionIfArgumentIsNull(key);
-            for (int i = buckets[BucketIndex(key)]; i != -1; i = entries[i].Next)
+            if (TryFindEntryIndex(key, out int index))
             {
-                if (entries[i].Key.Equals(key))
-                {
-                    value = entries[i].Value;
-                    return true;
-                }
+                value = entries[index].Value;
+                return true;
             }
             
             value = default;
@@ -247,6 +218,39 @@ namespace Dictionary
             {
                 throw new NotSupportedException();
             }
+        } 
+
+        private int BucketIndex(TKey key)
+        {
+            int keyHash = Math.Abs(key.GetHashCode());
+            return keyHash >= buckets.Length ? keyHash % buckets.Length : keyHash;
+        }
+
+        private bool TryFindEntryIndex(TKey key, out int index)
+        {
+            for (int i = buckets[BucketIndex(key)]; i != -1; i = entries[i].Next)
+            {
+                if (entries[i].Key.Equals(key))
+                {
+                    index = i;
+                    return true;
+                }
+            }
+
+            index = default;
+            return false;
+        } 
+        
+        private int GetNextFreePosition()
+        {
+            if (freeIndex != -1)
+            {
+                int index = freeIndex;
+                freeIndex = entries[freeIndex].Next;
+                return index;
+            }
+
+            return count;
         }
     }
 }
