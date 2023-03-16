@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Dictionary
@@ -154,21 +155,13 @@ namespace Dictionary
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            int nextFreeIndex = freeIndex;
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < buckets.Length; i++)
             {
-                if (i == nextFreeIndex)
+                for (int j = buckets[i]; j != -1; j = entries[j].Next)
                 {
-                    if (nextFreeIndex != -1)
-                    {
-                        nextFreeIndex = entries[nextFreeIndex].Next;
-                    }
-                    
-                    continue;
+                    yield return entries[j].KeyValue();                
                 }
-
-                yield return entries[i].KeyValue();                
-            }
+            }       
         }
 
         public bool Remove(TKey key)

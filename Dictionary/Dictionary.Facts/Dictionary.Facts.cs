@@ -87,9 +87,9 @@ namespace DictionaryFacts
         }
 
         [Theory]
-        [InlineData(0, "Ana")]
+        [InlineData(0, "Bob")]
         [InlineData(1, "Any")]
-        [InlineData(2, "Bob")]
+        [InlineData(2, "Ana")]
         public void CopyTo_ElementsAreCopiedToArray(int index, string value)
         {
             MyDictionary<int, string> dictionary = new(3);
@@ -173,11 +173,11 @@ namespace DictionaryFacts
             MyDictionary<int, string> dictionary = new(3) { keyValue, keyValue2, keyValue3 };
             var enumerator = dictionary.GetEnumerator();
             enumerator.MoveNext();
-            Assert.Equal(dictionary[2], enumerator.Current.Value);
+            Assert.Equal(dictionary[6], enumerator.Current.Value);
             enumerator.MoveNext();
             Assert.Equal(dictionary[1], enumerator.Current.Value);
             enumerator.MoveNext();
-            Assert.Equal(dictionary[6], enumerator.Current.Value);
+            Assert.Equal(dictionary[2], enumerator.Current.Value);
             Assert.False(enumerator.MoveNext());
         }
 
