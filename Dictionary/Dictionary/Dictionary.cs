@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Dictionary
@@ -30,15 +29,34 @@ namespace Dictionary
 
                 return value;
             }
+
             set
-            {   
-                if (ContainsKey(key))
+            {
+                if (TryFindEntryIndex(key, out int index))
                 {
-                    Remove(key);
+                    entries[index].Value = value;
                 }
 
-                Add(key, value); 
+                else
+                {
+                    Add(key, value);
+                }
             }
+        }
+
+        private bool TryFindEntryIndex(TKey key, out int index)
+        {
+            for (int i = buckets[BucketIndex(key)]; i != -1; i = entries[i].Next)
+            {
+                if (entries[i].Key.Equals(key))
+                {
+                    index = i;
+                    return true;
+                }
+            }
+
+            index = default;
+            return false;
         }
 
         public ICollection<TKey> Keys
@@ -93,24 +111,32 @@ namespace Dictionary
                 throw new ArgumentException();
             }
 
+            int index = GetNextFreePosition();
             int bucketIndex = BucketIndex(key);           
             Entry<TKey, TValue> newEntry = new(key, value);
             newEntry.Next  = buckets[bucketIndex];
-            int index = freeIndex == -1? count : freeIndex;
             buckets[bucketIndex] = index;
             entries[index] = newEntry; 
             count++;   
+        }
+
+        private int GetNextFreePosition()
+        {
+            if (freeIndex != -1)
+            {
+                int index = freeIndex;
+                freeIndex = entries[freeIndex].Next;
+                return index;
+            }
+
+            return count;
         }
 
         public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
 
         public void Clear()
         {
-            for (int i = 0; i < buckets.Length; i++)
-            {
-                buckets[i] = -1;
-            }
-
+            Array.Fill(buckets, -1);
             count = 0;
         }
 
@@ -169,26 +195,19 @@ namespace Dictionary
             ThrowExceptionIfArgumentIsNull(key);
             ThrowExceptionIfDictionaryIsReadOnly();
             var index = BucketIndex(key);
-            var found = false;
-            for (int i = buckets[index]; i != -1 && !found; i = entries[i].Next)
+            bool found = TryFindEntryIndex(key, out int entryIndex);
+            if (found)
             {
-                var previousNext = entries[i].Next;
-                if (entries[i].Key.Equals(key))
+                if (entryIndex == buckets[index])
                 {
-                    entries[i].Next = freeIndex;
-                    freeIndex = i;
-                    count--;
-                    found = true;
+                    buckets[index] = entries[entryIndex].Next;
+                    entries[entryIndex].Key = default;
+                    entries[entryIndex].Value = default;
                 }
 
-                if (i == buckets[index] && found)
-                {
-                    int previousFirstIndex = buckets[index];
-                    buckets[index] = previousNext;
-                    entries[previousFirstIndex] = default;
-                    break;
-                }
-              
+                entries[entryIndex].Next = freeIndex;
+                freeIndex = entryIndex;
+                count--;            
             }
 
             return found;           
@@ -197,7 +216,12 @@ namespace Dictionary
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
             ThrowExceptionIfArgumentIsNull(item);
-            return Remove(item.Key);
+            if (this[item.Key].Equals(item.Value))
+            {
+                return Remove(item.Key);
+            }
+
+            return false;
         }
 
         public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
