@@ -32,7 +32,7 @@ namespace Dictionary
 
             set
             {
-                if (TryFindEntryIndex(key, out _, out int index))
+                if (TryFindEntryIndex(key, out int index))
                 {
                     entries[index].Value = value;
                 }
@@ -189,7 +189,7 @@ namespace Dictionary
         public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
         {
             ThrowExceptionIfArgumentIsNull(key);
-            if (TryFindEntryIndex(key, out _, out int index))
+            if (TryFindEntryIndex(key, out int index))
             {
                 value = entries[index].Value;
                 return true;
@@ -229,21 +229,23 @@ namespace Dictionary
             previousIndex = -1;
             for (int i = buckets[BucketIndex(key)]; i != -1; i = entries[i].Next)
             {
-                if (entries[i].Next != -1 && entries[entries[i].Next].Key.Equals(key))
-                {
-                    previousIndex = i;
-                }
-
                 if (entries[i].Key.Equals(key))
                 {
                     index = i;
                     return true;
                 }
+
+                if (entries[i].Next != -1 && entries[entries[i].Next].Key.Equals(key))
+                {
+                    previousIndex = i;
+                }
             }
 
             return false;
-        } 
-        
+        }
+
+        private bool TryFindEntryIndex(TKey key, out int index) => TryFindEntryIndex(key, out _, out index);
+
         private int GetNextFreePosition()
         {
             if (freeIndex != -1)
