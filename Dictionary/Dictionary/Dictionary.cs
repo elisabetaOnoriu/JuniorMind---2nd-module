@@ -153,26 +153,26 @@ namespace Dictionary
             ThrowExceptionIfArgumentIsNull(key);
             ThrowExceptionIfDictionaryIsReadOnly();
             var index = BucketIndex(key);
-            bool found = TryFindEntryIndex(key, out int previousIndex, out int entryIndex);
-            if (found)
+            if (!TryFindEntryIndex(key, out int previousIndex, out int entryIndex))
             {
-                if (entryIndex == buckets[index])
-                {
-                    buckets[index] = entries[entryIndex].Next;
-                    entries[entryIndex].Key = default;
-                    entries[entryIndex].Value = default;
-                }
-                else
-                {
-                    entries[previousIndex].Next = entries[entryIndex].Next;
-                }
-                
-                entries[entryIndex].Next = freeIndex;
-                freeIndex = entryIndex;
-                count--;            
+                return false;
             }
 
-            return found;           
+            if (entryIndex == buckets[index])
+            {
+                buckets[index] = entries[entryIndex].Next;
+                entries[entryIndex].Key = default;
+                entries[entryIndex].Value = default;
+            }
+            else
+            {
+                entries[previousIndex].Next = entries[entryIndex].Next;
+            }
+                
+            entries[entryIndex].Next = freeIndex;
+            freeIndex = entryIndex;
+            count--;           
+            return true;           
         }
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
