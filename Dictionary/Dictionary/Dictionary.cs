@@ -32,7 +32,7 @@ namespace Dictionary
 
             set
             {
-                if (TryFindEntryIndex(key, out int index))
+                if (TryFindEntryIndex(key, out _, out int index))
                 {
                     entries[index].Value = value;
                 }
@@ -153,7 +153,7 @@ namespace Dictionary
             ThrowExceptionIfArgumentIsNull(key);
             ThrowExceptionIfDictionaryIsReadOnly();
             var index = BucketIndex(key);
-            bool found = TryFindEntryIndex(key, out int entryIndex);
+            bool found = TryFindEntryIndex(key, out int previousIndex, out int entryIndex);
             if (found)
             {
                 if (entryIndex == buckets[index])
@@ -164,9 +164,6 @@ namespace Dictionary
                 }
                 else
                 {
-                    var keys = (List<TKey>)Keys;
-                    var previousKeyIndex = keys.IndexOf(key) - 1;
-                    TryFindEntryIndex(keys[previousKeyIndex], out int previousIndex);
                     entries[previousIndex].Next = entries[entryIndex].Next;
                 }
                 
@@ -192,7 +189,7 @@ namespace Dictionary
         public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
         {
             ThrowExceptionIfArgumentIsNull(key);
-            if (TryFindEntryIndex(key, out int index))
+            if (TryFindEntryIndex(key, out _, out int index))
             {
                 value = entries[index].Value;
                 return true;
@@ -226,10 +223,17 @@ namespace Dictionary
             return keyHash >= buckets.Length ? keyHash % buckets.Length : keyHash;
         }
 
-        private bool TryFindEntryIndex(TKey key, out int index)
+        private bool TryFindEntryIndex(TKey key, out int previousIndex, out int index)
         {
+            index = -1;
+            previousIndex = -1;
             for (int i = buckets[BucketIndex(key)]; i != -1; i = entries[i].Next)
             {
+                if (entries[i].Next != -1 && entries[entries[i].Next].Key.Equals(key))
+                {
+                    previousIndex = i;
+                }
+
                 if (entries[i].Key.Equals(key))
                 {
                     index = i;
@@ -237,7 +241,6 @@ namespace Dictionary
                 }
             }
 
-            index = default;
             return false;
         } 
         
