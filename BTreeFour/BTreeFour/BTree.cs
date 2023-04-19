@@ -101,19 +101,24 @@
         {
             if (node == root)
             {
-                ReplaceWith_Inorder_PredecessorOrSuccessor(index);
+                ReplaceItWith_Inorder_PredecessorOrSuccessor(index);
             }
             else if (!ReplaceWithChildKey(node, index))
             {
                 MergeChildren(node, index);
                 if (node.KeysCount == 0)
                 {
-                    ManageInternalNode(node.Parent, index);
+                    node.Keys[index] = node.Parent.Keys[index];
+                    MergeNeighboursInItsPlace(node);
+                    if (node.Parent == root && node.Parent.KeysCount == 0)
+                    {
+                        root = node;
+                    }
                 }
             }
         }
 
-        private void ReplaceWith_Inorder_PredecessorOrSuccessor(int index)
+        private void ReplaceItWith_Inorder_PredecessorOrSuccessor(int index)
         {
             if (FindInOrderPredecessorAndRemoveIt(out int lastKey))
             {
