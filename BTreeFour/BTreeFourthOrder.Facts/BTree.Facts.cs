@@ -20,5 +20,19 @@ namespace BTreeFourthOrderFacts
             bTree.Insert(22);
             Assert.True(bTree.Search(key));
         }
+
+        [Fact]
+        public void DeletingKeyInBTree()
+        {
+            BTreeFourthOrder bTree = new();
+            bTree.Insert(5);
+            bTree.Insert(3);
+            bTree.Insert(21);
+            bTree.Insert(1);
+            bTree.Insert(4);
+            bTree.Insert(22);
+            bTree.Remove(4);
+            Assert.True(!bTree.Search(4));
+        }
     }
 }

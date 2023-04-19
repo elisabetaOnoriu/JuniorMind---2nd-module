@@ -1,4 +1,6 @@
-﻿namespace BTreeFour
+﻿using System.Xml.Linq;
+
+namespace BTreeFour
 {
     internal class Node
     {
@@ -20,6 +22,10 @@
         internal Node[] Children { get => children; set => children = value; }
 
         internal Node Parent { get => parent; set => parent = value; }
+
+        internal Node[] Siblings { get => this.Parent.Children; set => this.Parent.Children = value; }
+
+        internal int IndexAsChild { get => Array.IndexOf(Siblings, this); }
 
         internal void AddKey(int key)
         {
@@ -50,7 +56,11 @@
 
         internal bool IsLeaf => CountChildren() == 0;
 
-        internal bool HasMinimumChildren(Node node) =>  CountChildren() >= 2;
+        internal bool HasJustMinimumChildren { get => CountChildren() == 1; }
+
+        internal bool HasExtraKeys { get => KeysCount > 1; }
+
+        internal bool HasMaximumKeys { get => KeysCount == 3; }
 
         private void InsertionSort()
         {
@@ -61,6 +71,16 @@
                     (keys[j - 1], keys[j]) = (keys[j], keys[j - 1]);
                 }
             }
+        }
+
+        internal void RemoveChild(int index)
+        {
+            for (int i = index; i < CountChildren() - 1; i++)
+            {
+                children[i] = children[i + 1];
+            }
+
+            children[CountChildren() - 1] = null;
         }
 
         private int CountChildren()
