@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace BTreeFour
+﻿namespace BTreeFour
 {
     internal class Node
     {
@@ -56,11 +54,7 @@ namespace BTreeFour
 
         internal bool IsLeaf => CountChildren() == 0;
 
-        internal bool HasJustMinimumChildren { get => CountChildren() == 1; }
-
         internal bool HasExtraKeys { get => KeysCount > 1; }
-
-        internal bool HasMaximumKeys { get => KeysCount == 3; }
 
         private void InsertionSort()
         {
