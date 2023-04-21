@@ -1,19 +1,19 @@
 ﻿namespace BTreeFour
 {
-    public class BTreeFourthOrder
+    public class BTreeFourthOrder<T> where T : IComparable<T>
     {
-        Node root;
+        Node<T> root;
    
         public BTreeFourthOrder()
         {
-            root = new Node();
+            root = new Node<T>();
         }
 
-        public bool Search(int key) => Search(root, key, out _) != null;
+        public bool Search(T key) => Search(root, key, out _) != null;
 
-        public void Insert(int key) => Insert(root, key);
+        public void Insert(T key) => Insert(root, key);
        
-        public bool Remove(int key)
+        public bool Remove(T key)
         {
             var node = Search(root, key, out int index);
             if (node == null)
@@ -27,13 +27,13 @@
             }
             else
             {
-                ManageInternalNode(node, key); 
+                ManageInternalNode(node, index); 
             }
             
             return true;
         }
 
-        private void ManageLeafNode(Node node, int key, int index)
+        private void ManageLeafNode(Node<T> node, T key, int index)
         {
             if (node.HasExtraKeys)
             {
@@ -42,11 +42,11 @@
 
             if (!CanRotate(node, index))
             {
-                MergeNeighboursInItsPlace(node);
+                MergeParentAndBrotherInItsPlace(node);
             }              
         }     
         
-        private bool CanRotate(Node node, int index)
+        private bool CanRotate(Node<T> node, int index)
         {
             if (node.IndexAsChild != 0 && node.Siblings[node.IndexAsChild - 1].HasExtraKeys)
             {
@@ -62,42 +62,42 @@
             return false;
         }
 
-        private void LeftRotate(Node node, int index)
+        private void LeftRotate(Node<T> node, int index)
         {
             node.Keys[index] = node.Parent.Keys[node.IndexAsChild];
             node.Parent.Keys[node.IndexAsChild] = node.Siblings[node.IndexAsChild + 1].Keys[0];
             node.Siblings[node.IndexAsChild + 1].RemoveKey(node.Siblings[node.IndexAsChild + 1].Keys[0]);   
         }
 
-        private void RightRotate(Node node, int index)
+        private void RightRotate(Node<T> node, int index)
         {
             node.Keys[index] = node.Parent.Keys[node.IndexAsChild - 1];
             node.Parent.Keys[node.IndexAsChild - 1] = node.Siblings[node.IndexAsChild - 1].Keys[^1];
             node.Siblings[node.IndexAsChild - 1].RemoveKey(node.Siblings[node.IndexAsChild - 1].Keys[^1]);       
         }
 
-        private void MergeNeighboursInItsPlace(Node node)
+        private void MergeParentAndBrotherInItsPlace(Node<T> node)
         {
             if (node.IndexAsChild != node.Siblings.Length - 1)
             {
                 node.Siblings[node.IndexAsChild + 1].AddKey(node.Parent.Keys[node.IndexAsChild]);
-                node.Parent.RemoveKey(node.IndexAsChild);
+                node.Parent.RemoveKey(node.Keys[node.IndexAsChild]);
                 node.Parent.RemoveChild(node.IndexAsChild);
             }
             else if (node.IndexAsChild != 0)
             {
                 node.Siblings[node.IndexAsChild - 1].AddKey(node.Parent.Keys[node.IndexAsChild - 1]);
-                node.Parent.RemoveKey(node.IndexAsChild - 1);
+                node.Parent.RemoveKey(node.Keys[node.IndexAsChild - 1]);
                 node.Parent.RemoveChild(node.IndexAsChild);         
             }
             
             if (node.Parent != null && node.Parent.KeysCount == 0 && !CanRotate(node.Parent, 0))
             {
-                MergeNeighboursInItsPlace(node.Parent);
+                MergeParentAndBrotherInItsPlace(node.Parent);
             }
         }
 
-        private void ManageInternalNode(Node node, int index)
+        private void ManageInternalNode(Node<T> node, int index)
         {
             if (node == root)
             {
@@ -108,43 +108,44 @@
                 MergeChildren(node, index);
                 if (node.KeysCount == 0)
                 {
-                    node.Keys[index] = node.Parent.Keys[index];
-                    MergeNeighboursInItsPlace(node);
-                    if (node.Parent == root && node.Parent.KeysCount == 0)
-                    {
-                        root = node;
-                    }
+                    MergeParentAndBrotherInItsPlace(node);     
                 }
+            }
+            
+            if (node.Parent == root && node.Parent.KeysCount == 0)
+            {
+                node.Parent = null;
+                root = node;
             }
         }
 
         private void ReplaceItWith_Inorder_PredecessorOrSuccessor(int index)
         {
-            if (FindInOrderPredecessorAndRemoveIt(out int lastKey))
+            if (FindInOrderPredecessorAndRemoveIt(out T lastKey))
             {
                 root.Keys[index] = lastKey;
             }
-            else if (FindInOrderSuccessorAndRemoveIt(out int firstKey))
+            else if (FindInOrderSuccessorAndRemoveIt(out T firstKey))
             {
                 root.Keys[index] = firstKey;
             }
         }
 
-        private bool FindInOrderPredecessorAndRemoveIt(out int key)
+        private bool FindInOrderPredecessorAndRemoveIt(out T key)
         {
-            Node node = FindInOrderPredecessorOrSuccessor(true);
+            Node<T> node = FindInOrderPredecessorOrSuccessor(true);
             key = node.Keys[^1];
             return DeleteKey(node, key);
         }
 
-        private bool FindInOrderSuccessorAndRemoveIt(out int key)
+        private bool FindInOrderSuccessorAndRemoveIt(out T key)
         {
-            Node node = FindInOrderPredecessorOrSuccessor(false);
+            Node<T> node = FindInOrderPredecessorOrSuccessor(false);
             key = node.Keys[0];
             return DeleteKey(node, key);
         }
 
-        private bool DeleteKey(Node node, int key)
+        private bool DeleteKey(Node<T> node, T key)
         {
             if (node.HasExtraKeys)
             {
@@ -155,9 +156,9 @@
             return false;
         }
 
-        private Node FindInOrderPredecessorOrSuccessor(bool left)
+        private Node<T> FindInOrderPredecessorOrSuccessor(bool left)
         {
-            for (Node current = root; !current.IsLeaf; current = left ? current.Children[^1] : current.Children[0])
+            for (Node<T> current = root; !current.IsLeaf; current = left ? current.Children[^1] : current.Children[0])
             {
                 if (current.IsLeaf)
                 { 
@@ -168,7 +169,7 @@
             return root;
         }
 
-        private bool ReplaceWithChildKey(Node node, int index)
+        private bool ReplaceWithChildKey(Node<T> node, int index)
         {
             if (node.IndexAsChild != 0 && node.Siblings[node.IndexAsChild - 1].HasExtraKeys)
             {
@@ -184,55 +185,48 @@
             return false;
         }
 
-        private void ChooseReplacer(Node node, int index, int keyIndex, int predecessorOrSuccessor)
+        private void ChooseReplacer(Node<T> node, int index, int keyIndex, int predecessorOrSuccessor)
         {
-            int siblingKeyToGet = node.Siblings[index + predecessorOrSuccessor].Keys[keyIndex];
+            T siblingKeyToGet = node.Siblings[index + predecessorOrSuccessor].Keys[keyIndex];
             node.Keys[index] = siblingKeyToGet;
             node.Siblings[index + predecessorOrSuccessor].RemoveKey(siblingKeyToGet);
         }
 
-        private void MergeChildren(Node node, int index)
+        private void MergeChildren(Node<T> node, int index)
         {
             node.RemoveKey(node.Keys[index]);
             node.Children[index].AddKey(node.Children[index + 1].Keys[0]);
             node.RemoveChild(index + 1);
         }
 
-        private Node Search(Node node, int key, out int index)
+        private Node<T> Search(Node<T> node, T key, out int index)
         {
             for (index = 0; index <= node.KeysCount - 1; index++)
             {
-                if (node.Keys[index] == key)
+                if (node.Keys[index].Equals(key))
                 {
                     return node;
                 }
 
-                Node foundThroughChildren = LiesThroughChildren(node, key, index);
-                if (foundThroughChildren != null)
-                {
-                    return foundThroughChildren;
-                }
+                LiesThroughChildren(node, key, index);    
             }
 
-            index = 0;
             return null;
         }
 
-        private Node LiesThroughChildren(Node node, int key, int i)
+        private void LiesThroughChildren(Node<T> node, T key, int i)
         {
-            if (node.Keys[i] > key && !node.IsLeaf)
+            if (node.Keys[i].CompareTo(key) == 1 && !node.IsLeaf)
             {
-                return Search(node.Children[i], key, out _);
+                Search(node.Children[i], key, out _);
             }
-            else if (node.Keys[i] < key && i == node.KeysCount - 1 && !node.IsLeaf)
+            else if (node.Keys[i].CompareTo(key) == -1 && i == node.KeysCount - 1 && !node.IsLeaf)
             {
-                return Search(node.Children[i + 1], key, out _);
+                Search(node.Children[i + 1], key, out _);
             }
-
-            return null;
         }
 
-        private void Insert(Node node, int key)
+        private void Insert(Node<T> node, T key)
         {
             if (node.IsLeaf)
             {
@@ -243,16 +237,16 @@
             InsertInChildren(node, key);
         }
 
-        private void InsertInChildren(Node node, int key)
+        private void InsertInChildren(Node<T> node, T key)
         {
             for (int i = 0; i <= node.KeysCount - 1; i++)
             {
-                if (key > node.Keys[i] && i == node.KeysCount - 1)
+                if (key.CompareTo(node.Keys[i]) == 1 && i == node.KeysCount - 1)
                 {
                     Insert(node.Children[i + 1], key);
                     return;
                 }
-                else if (key < node.Keys[i])
+                else if (key.CompareTo(node.Keys[i]) == -1)
                 {
                     Insert(node.Children[i], key);
                     return;
@@ -260,7 +254,7 @@
             }                    
         }
 
-        private void AddKeyInNode(Node node, int key)
+        private void AddKeyInNode(Node<T> node, T key)
         {  
             if (node.KeysCount < 3)
             {
@@ -272,15 +266,15 @@
             }                    
         }
 
-        private void SplitKeys(Node node, int key)
+        private void SplitKeys(Node<T> node, T key)
         { 
             if (node.Parent == null)
             {
-                node.Parent = new Node();
+                node.Parent = new Node<T>();
                 root = node.Parent;
             }
 
-            int[] temporary = SetUpTemporaryKeysArray(node, key, out int keyToGoUp);
+            T[] temporary = SetUpTemporaryKeysArray(node, key, out T keyToGoUp);
             AddKeyInNode(node.Parent, keyToGoUp);    
             node.ClearKeys();
             node.AddKey(temporary[0]);
@@ -288,7 +282,7 @@
             ReestablishNodesConnections(node, splited, keyToGoUp);
         }
 
-        private void ReestablishNodesConnections(Node node, Node splited, int keyToGoUp)
+        private void ReestablishNodesConnections(Node<T> node, Node<T> splited, T keyToGoUp)
         {
             int keyIndexInParent = Array.IndexOf(node.Parent.Keys, keyToGoUp);       
             node.Parent.Children[keyIndexInParent] = node;
@@ -296,17 +290,17 @@
             splited.Parent = node.Parent;
         }
 
-        private Node SetUpRightChildAfterSplit(int[] temporary)
+        private Node<T> SetUpRightChildAfterSplit(T[] temporary)
         {
-            Node splited = new Node();
+            Node<T> splited = new Node<T>();
             splited.AddKey(temporary[2]);
             splited.AddKey(temporary[3]);
             return splited;
         }
 
-        private int[] SetUpTemporaryKeysArray(Node node, int key, out int keyToGoUp)
+        private T[] SetUpTemporaryKeysArray(Node<T> node, T key, out T keyToGoUp)
         {
-            int[] temporary = new int[4];
+            T[] temporary = new T[4];
             node.Keys.CopyTo(temporary, 0);
             temporary[^1] = key;
             Array.Sort(temporary);

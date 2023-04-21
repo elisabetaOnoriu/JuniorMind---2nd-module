@@ -1,44 +1,44 @@
 ﻿namespace BTreeFour
 {
-    internal class Node
+    internal class Node<T> where T : IComparable<T>
     {
-        Node[] children;
-        Node parent;
-        int[] keys;
+        Node<T>[] children;
+        Node<T> parent;
+        T[] keys;
         int keysCount;
 
         internal Node()
         {
-            children = new Node[4];
-            keys = new int[3];
+            children = new Node<T>[4];
+            keys = new T[3];
         }
 
-        internal int[] Keys { get => keys; set => keys = value; }
+        internal T[] Keys { get => keys; set => keys = value; }
 
         internal int KeysCount { get => keysCount; set => KeysCount = value; }
 
-        internal Node[] Children { get => children; set => children = value; }
+        internal Node<T>[] Children { get => children; set => children = value; }
 
-        internal Node Parent { get => parent; set => parent = value; }
+        internal Node<T> Parent { get => parent; set => parent = value; }
 
-        internal Node[] Siblings { get => this.Parent.Children; set => this.Parent.Children = value; }
+        internal Node<T>[] Siblings { get => this.Parent.Children; set => this.Parent.Children = value; }
 
         internal int IndexAsChild { get => Array.IndexOf(Siblings, this); }
 
-        internal void AddKey(int key)
+        internal void AddKey(T key)
         {
             keys[keysCount++] = key;
             InsertionSort();
         }
 
-        internal void RemoveKey(int key)
+        internal void RemoveKey(T key)
         {
             for (int i = Array.IndexOf(Keys, key); i < KeysCount - 1; i++)
             {
                 Keys[i] = Keys[i + 1];
             }
 
-            Keys[KeysCount - 1] = 0;
+            Keys[KeysCount - 1] = default;
             KeysCount--;
         }
 
@@ -46,7 +46,7 @@
         {
             for (int i = 0; i < KeysCount; i++)
             {
-                keys[i] = 0;
+                keys[i] = default;
             }
 
             keysCount = 0;
@@ -60,7 +60,7 @@
         {
             for (int i = 1; i < KeysCount && KeysCount > 1; i++)
             {
-                for (int j = i; j > 0 && keys[j - 1] > keys[j]; j--)
+                for (int j = i; j > 0 && keys[j - 1].CompareTo(keys[j]) == 1; j--)
                 {
                     (keys[j - 1], keys[j]) = (keys[j], keys[j - 1]);
                 }
