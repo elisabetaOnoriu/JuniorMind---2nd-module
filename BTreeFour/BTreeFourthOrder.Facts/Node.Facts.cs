@@ -78,7 +78,7 @@ namespace NodeFacts
         }
 
         [Fact]
-        public void LeftRotate()
+        public void FindInOrderSuccessor_ForRoot()
         {
             BTreeFourthOrder<int> bTree = new();
             bTree.Insert(1);
@@ -86,6 +86,21 @@ namespace NodeFacts
             bTree.Insert(3);
             bTree.Insert(4);
             Assert.True(bTree.Remove(2));
+        }
+
+        [Theory]
+        [InlineData(0, 21)]
+        [InlineData(1, 23)]
+        public void InsertChild_ItSortsItself(int index, int key)
+        {
+            Node<int> node = new();
+            Node<int> childNode = new();
+            childNode.AddKey(23);
+            Node<int> childNode2 = new();
+            childNode2.AddKey(21);
+            node.InsertChild(childNode);
+            node.InsertChild(childNode2);
+            Assert.True(node.Children[index].Keys[0] == key);
         }
     }
 }

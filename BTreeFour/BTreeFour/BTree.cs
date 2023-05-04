@@ -86,7 +86,7 @@
         private bool FindInOrderPredecessorAndRemoveIt(out T key)
         {
             Node<T> node = FindInOrderPredecessorOrSuccessor(true);
-            key = node.Keys[^1];
+            key = node.Keys[node.KeysCount - 1];
             return node.DeleteKey(key);
         }
 
@@ -99,7 +99,8 @@
 
         private Node<T> FindInOrderPredecessorOrSuccessor(bool left)
         {
-            for (Node<T> current = root; !current.IsLeaf; current = left ? current.Children[^1] : current.Children[0])
+            var firstChildToFind = left ? root.Children[0] : root.Children[root.CountChildren() - 1];
+            for (var current = firstChildToFind; current != null; current = left ? current.Children[current.CountChildren() - 1] : current.Children[0])
             {
                 if (current.IsLeaf)
                 { 
@@ -196,15 +197,18 @@
             node.AddKey(temporary[0]);
             var splited = SetUpRightChildAfterSplit(temporary);
             AddKeyInNode(node.Parent, keyToGoUp);
-            ReestablishNodesConnections(node, splited);           
+            ReestablishNodesConnections(node, splited, keyToGoUp);           
         }
 
-        private void ReestablishNodesConnections(Node<T> node, Node<T> splited)
+        private void ReestablishNodesConnections(Node<T> node, Node<T> splited, T keyToGoUp)
         {           
-            if (node.Parent != null)
+            splited.Parent = Search(Root, keyToGoUp);       
+            while (!node.IsLeaf && node.CountChildren() > node.KeysCount + 1)
             {
-                splited.Parent = node.Parent.Siblings == null ? node.Parent : node.Parent.Siblings[node.Parent.IndexAsChild - 1];
-            }             
+                int childrenCount = node.CountChildren();
+                splited.InsertChild(node.Children[childrenCount - 1]);
+                node.RemoveChild(childrenCount - 1);
+            }
         }
 
         private Node<T> SetUpRightChildAfterSplit(T[] temporary)

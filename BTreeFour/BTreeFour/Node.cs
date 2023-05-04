@@ -41,12 +41,12 @@
             }
         }
 
-        private void InsertChild(Node<T> node)
+        public void InsertChild(Node<T> node)
         {
             Children[CountChildren()] = node;
             for (int i = 0; i < CountChildren() - 1; i++)
             {
-                if (Children[i].Keys[^1].CompareTo(Children[i + 1].Keys[0]) == 1)
+                if (Children[i].Keys[Children[i].KeysCount - 1].CompareTo(Children[i + 1].Keys[0]) == 1)
                 {
                     (Children[i], Children[i + 1]) = (Children[i + 1], Children[i]);
                 }
