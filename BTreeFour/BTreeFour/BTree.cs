@@ -1,23 +1,21 @@
 ﻿namespace BTreeFour
 {
     public class BTreeFourthOrder<T> where T : IComparable<T>
-    {
-        Node<T> root;
-   
+    { 
         public BTreeFourthOrder()
         {
-            root = new Node<T>();
+            Root = new Node<T>();
         }
 
-        public Node<T> Root { get => root; }
+        public Node<T> Root { get; set; }
 
-        public bool Search(T key) => Search(root, key) != null;
+        public bool Search(T key) => Search(Root, key) != null;
 
-        public void Insert(T key) => Insert(root, key);
+        public void Insert(T key) => Insert(Root, key);
        
         public bool Remove(T key)
         {
-            var node = Search(root, key);
+            var node = Search(Root, key);
             if (node == null)
             {
                 return false;
@@ -51,11 +49,7 @@
 
         private void ManageInternalNode(Node<T> node, int index)
         {
-            if (node == root)
-            {
-                ReplaceItWith_Inorder_PredecessorOrSuccessor(index);
-            }
-            else if (!node.ReplaceWithPredecessorOrSuccessor(index))
+            if (!node.ReplaceItWith_Inorder_PredecessorOrSuccessor(index))
             {
                 node.MergeChildWithNextOne(index);
                 if (node.KeysCount == 0)
@@ -64,51 +58,11 @@
                 }
             }
             
-            if (node.Parent == root && node.Parent.KeysCount == 0)
+            if (node.Parent == Root && Root.KeysCount == 0)
             {
                 node.Parent = null;
-                root = node;
+                Root = node;
             }
-        }
-
-        private void ReplaceItWith_Inorder_PredecessorOrSuccessor(int index)
-        {
-            if (FindInOrderPredecessorAndRemoveIt(out T lastKey))
-            {
-                root.Keys[index] = lastKey;
-            }
-            else if (FindInOrderSuccessorAndRemoveIt(out T firstKey))
-            {
-                root.Keys[index] = firstKey;
-            }
-        }
-
-        private bool FindInOrderPredecessorAndRemoveIt(out T key)
-        {
-            Node<T> node = FindInOrderPredecessorOrSuccessor(true);
-            key = node.Keys[node.KeysCount - 1];
-            return node.DeleteKey(key);
-        }
-
-        private bool FindInOrderSuccessorAndRemoveIt(out T key)
-        {
-            Node<T> node = FindInOrderPredecessorOrSuccessor(false);
-            key = node.Keys[0];
-            return node.DeleteKey(key);
-        }
-
-        private Node<T> FindInOrderPredecessorOrSuccessor(bool left)
-        {
-            var firstChildToFind = left ? root.Children[0] : root.Children[root.CountChildren() - 1];
-            for (var current = firstChildToFind; current != null; current = left ? current.Children[current.CountChildren() - 1] : current.Children[0])
-            {
-                if (current.IsLeaf)
-                { 
-                    return current;
-                }
-            }
-
-            return root;
         }
 
         private Node<T> Search(Node<T> node, T key)
@@ -189,7 +143,7 @@
             if (node.Parent == null)
             {
                 node.Parent = new Node<T>();
-                root = node.Parent;
+                Root = node.Parent;
             }
 
             T[] temporary = SetUpTemporaryKeysArray(node, key, out T keyToGoUp);          
@@ -206,7 +160,7 @@
             while (!node.IsLeaf && node.CountChildren() > node.KeysCount + 1)
             {
                 int childrenCount = node.CountChildren();
-                splited.InsertChild(node.Children[childrenCount - 1]);
+                node.Children[childrenCount - 1].Parent = splited;
                 node.RemoveChild(childrenCount - 1);
             }
         }

@@ -78,6 +78,24 @@ namespace NodeFacts
         }
 
         [Fact]
+        public void MergeParentAndBrotherInItsPlace_RightBrother()
+        {
+            BTreeFourthOrder<int> bTree = new();
+            bTree.Insert(5);
+            bTree.Insert(3);
+            bTree.Insert(21);
+            bTree.Insert(1);
+            bTree.Insert(4);
+            bTree.Insert(22);
+            bTree.Insert(23);
+            bTree.Insert(24);
+            bTree.Insert(25);
+            bTree.Insert(26);
+            bTree.Remove(21);
+            Assert.Equal(new int[] { 22, 23, 0 }, bTree.Root.Children[1].Children[0].Keys);
+        }
+
+        [Fact]
         public void FindInOrderSuccessor_ForRoot()
         {
             BTreeFourthOrder<int> bTree = new();
