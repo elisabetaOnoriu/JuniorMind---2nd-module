@@ -30,7 +30,8 @@
             {
                 ManageInternalNode(node, index); 
             }
-            
+
+            ReduceHeightIfNecesarry(node);
             return true;
         }
 
@@ -40,28 +41,33 @@
             {
                 node.RemoveKey(key);
             }
-
-            if (!node.CanRotate(index))
+            else if (!node.CanRotate(index))
             {
                 node.MergeParentAndBrotherInItsPlace();
-            }              
+            }
+
         }     
 
         private void ManageInternalNode(Node<T> node, int index)
         {
-            if (!node.ReplaceItWith_Inorder_PredecessorOrSuccessor(index))
+            if (node.ReplaceItWith_Inorder_PredecessorOrSuccessor(index))
             {
-                node.MergeChildWithNextOne(index);
-                if (node.KeysCount == 0)
-                {
-                    node.MergeParentAndBrotherInItsPlace();     
-                }
+                return;        
             }
             
-            if (node.Parent == Root && Root.KeysCount == 0)
+            node.MergeChildWithNextOne(index);
+            if (node.KeysCount == 0 && node != Root && !node.CanRotate(index))
             {
-                node.Parent = null;
-                Root = node;
+                node.MergeParentAndBrotherInItsPlace();
+            }
+        }
+
+        private void ReduceHeightIfNecesarry(Node<T> node)
+        {
+            if (node == Root && Root.KeysCount == 0)
+            {
+                Root = node.Children[0];
+                node = null;                
             }
         }
 

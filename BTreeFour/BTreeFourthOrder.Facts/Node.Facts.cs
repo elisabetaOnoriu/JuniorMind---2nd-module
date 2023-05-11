@@ -1,5 +1,6 @@
 global using Xunit;
 using BTreeFour;
+
 namespace NodeFacts
 {
     public class TestProgram
@@ -56,25 +57,25 @@ namespace NodeFacts
             bTree.Insert(1);
             bTree.Insert(4);
             bTree.Insert(22);
-            Assert.Equal(bTree.Root.CountChildren(), 3);           
+            Assert.Equal(bTree.Root.CountChildren(), 3);
             bTree.Root.RemoveChild(0);
             Assert.Equal(bTree.Root.CountChildren(), 2);
-            Assert.NotEqual(bTree.Root.Children[0], null);            
+            Assert.NotEqual(bTree.Root.Children[0], null);
         }
 
         [Fact]
         public void MergeParentAndBrotherInItsPlace_LeftBrother()
         {
             BTreeFourthOrder<int> bTree = new();
-            bTree.Insert (1);
+            bTree.Insert(1);
             bTree.Insert(2);
             bTree.Insert(3);
             bTree.Insert(4);
             bTree.Insert(5);
             bTree.Insert(6);
-            bTree.Root.Children[2].RemoveKey(6);
-            bTree.Root.Children[1].MergeParentAndBrotherInItsPlace();
-            Assert.Equal( new int[] { 1, 2, 0 }, bTree.Root.Children[0].Keys);
+            bTree.Remove(6);
+            bTree.Remove(3);
+            Assert.Equal(new int[] { 1, 2, 0 }, bTree.Root.Children[0].Keys);
         }
 
         [Fact]
@@ -95,6 +96,26 @@ namespace NodeFacts
             Assert.Equal(new int[] { 22, 23, 0 }, bTree.Root.Children[1].Children[0].Keys);
         }
 
+        [Theory]
+        [InlineData(new int[] {1, 3, 0}, 0, 0)]
+        [InlineData(new int[] {21, 0, 0}, 0, 1)]
+        public void MergeParentAndBrotherInItsPlace_RebalanceParent(int[] level, int index, int index2)
+        {
+            BTreeFourthOrder<int> bTree = new();
+            bTree.Insert(5);
+            bTree.Insert(3);
+            bTree.Insert(21);
+            bTree.Insert(1);
+            bTree.Insert(4);
+            bTree.Insert(22);
+            bTree.Insert(23);
+            bTree.Insert(24);
+            bTree.Insert(25);
+            bTree.Insert(26);
+            bTree.Remove(4);
+            Assert.Equal(level, bTree.Root.Children[index].Children[index2].Keys);
+        }
+
         [Fact]
         public void FindInOrderSuccessor_ForRoot()
         {
@@ -103,7 +124,88 @@ namespace NodeFacts
             bTree.Insert(2);
             bTree.Insert(3);
             bTree.Insert(4);
-            Assert.True(bTree.Remove(2));
+            bTree.Remove(2);
+            Assert.Equal(new int[] { 3, 0, 0 }, bTree.Root.Keys);
+            Assert.Equal(new int[] { 1, 0, 0 }, bTree.Root.Children[0].Keys);
+        }
+
+        [Fact]
+        public void FindInOrderPredecessor()
+        {
+            BTreeFourthOrder<int> bTree = new();
+            bTree.Insert(5);
+            bTree.Insert(3);
+            bTree.Insert(6);
+            bTree.Insert(7);
+            bTree.Insert(4);
+            bTree.Remove(5);
+            Assert.Equal(new int[] { 4, 0, 0}, bTree.Root.Keys);
+            Assert.Equal(new int[] { 3, 0, 0}, bTree.Root.Children[0].Keys);
+        }
+
+        [Fact]
+        public void MergeChildWithNextOne()
+        {
+            BTreeFourthOrder<int> bTree = new();
+            bTree.Insert(1);
+            bTree.Insert(2);
+            bTree.Insert(3);
+            bTree.Insert(4);
+            bTree.Insert(5);
+            bTree.Insert(6);
+            bTree.Remove(2);
+            Assert.Equal(new int[] { 4, 0, 0 }, bTree.Root.Keys);
+            Assert.Equal(new int[] { 1, 3, 0 }, bTree.Root.Children[0].Keys);
+            Assert.Equal(new int[] { 5, 6, 0 }, bTree.Root.Children[1].Keys);
+        }
+
+        [Theory]
+        [InlineData(new int[] { 1, 4, 0 }, 0, 0)]
+        [InlineData(new int[] { 21, 0, 0 }, 0, 1)]
+        public void MergeChildWithNextOne_HasNoMoreKeys_CanRotate(int[] level, int index, int index2)
+        {
+            BTreeFourthOrder<int> bTree = new();
+            bTree.Insert(5);
+            bTree.Insert(3);
+            bTree.Insert(21);
+            bTree.Insert(1);
+            bTree.Insert(4);
+            bTree.Insert(22);
+            bTree.Insert(23);
+            bTree.Insert(24);
+            bTree.Insert(25);
+            bTree.Insert(26);
+            bTree.Remove(3);
+            Assert.Equal(level, bTree.Root.Children[index].Children[index2].Keys);
+        }
+
+        [Fact]
+        public void MergeChildWithNextOne_HasNoMoreKeys_CannotRotate()
+        {
+            BTreeFourthOrder<int> bTree = new();
+            bTree.Insert(5);
+            bTree.Insert(3);
+            bTree.Insert(21);
+            bTree.Insert(1);
+            bTree.Insert(4);
+            bTree.Insert(22);
+            bTree.Remove(3);
+            Assert.Equal(new int[] {5, 0, 0}, bTree.Root.Keys);
+            Assert.Equal(new int[] {1, 4, 0}, bTree.Root.Children[0].Keys);
+        }
+
+        [Fact]
+        public void MergeChildWithNextOne_HeightShrinks()
+        {
+            BTreeFourthOrder<int> bTree = new();
+            bTree.Insert(5);
+            bTree.Insert(3);
+            bTree.Insert(21);
+            bTree.Insert(1);
+            bTree.Remove(21);
+            bTree.Remove(3);
+            Assert.Equal(new int[] { 1, 5, 0 }, bTree.Root.Keys);
+            Assert.Equal(0, bTree.Root.CountChildren());
         }
 
         [Theory]

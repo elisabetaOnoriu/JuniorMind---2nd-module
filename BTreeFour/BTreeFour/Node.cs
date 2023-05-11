@@ -123,13 +123,15 @@
             {
                 Siblings[IndexAsChild - 1].AddKey(Parent.Keys[IndexAsChild - 1]);
                 Parent.RemoveKey(Parent.Keys[IndexAsChild - 1]);
-                Parent.RemoveChild(IndexAsChild);
+                TransferSiblingsChildIfIsInternal(-1, Siblings[IndexAsChild - 1].KeysCount - 1);
+                Parent.RemoveChild(IndexAsChild);               
             }
             else
             {
                 Siblings[IndexAsChild + 1].AddKey(Parent.Keys[IndexAsChild]);
                 Parent.RemoveKey(Parent.Keys[IndexAsChild]);
                 Parent.RemoveChild(IndexAsChild);
+                TransferSiblingsChildIfIsInternal(1, 0);
             }
             
             if (Parent.KeysCount == 0 && Parent.Parent != null)
@@ -146,15 +148,16 @@
                 return;
             }
 
-            Parent.MergeParentAndBrotherInItsPlace();
-            TransferSiblingsChildren(IndexAsChild != 0 ? IndexAsChild - 1 : IndexAsChild);           
+            Parent.MergeParentAndBrotherInItsPlace();          
             Parent.KeysCount++;
         }
 
-        private void TransferSiblingsChildren(int childIndex)
+        private void TransferSiblingsChildIfIsInternal(int leftOrRight, int childIndex)
         {
-            InsertChild(Siblings[childIndex].Children[0]);
-            InsertChild(Siblings[childIndex].Children[1]);
+            if (!IsLeaf)
+            {
+                Siblings[IndexAsChild + leftOrRight].Children[childIndex].Parent = this;
+            }
         }
 
         public void MergeChildWithNextOne(int index)
@@ -171,7 +174,7 @@
                 RightRotate(index);
                 return true;
             }
-            else if (IndexAsChild != Siblings.Length - 1 && Siblings[IndexAsChild + 1].HasExtraKeys)
+            else if (IndexAsChild != Parent.CountChildren() - 1 && Siblings[IndexAsChild + 1].HasExtraKeys)
             {
                 LeftRotate(index);
                 return true;
@@ -182,7 +185,7 @@
 
         internal bool ReplaceItWith_Inorder_PredecessorOrSuccessor(int index)
         {
-            if (FindInOrderPredecessorAndRemoveIt(out T key) || FindInOrderSuccessorAndRemoveIt(out key))
+            if (FindInOrderPredecessorAndRemoveIt(index, out T key) || FindInOrderSuccessorAndRemoveIt(index, out key))
             {
                 Keys[index] = key;
                 return true;
@@ -191,23 +194,23 @@
             return false;
         }
 
-        private bool FindInOrderPredecessorAndRemoveIt(out T key)
+        private bool FindInOrderPredecessorAndRemoveIt(int index, out T key)
         {
-            Node<T> predecessor = FindInOrderPredecessorOrSuccessor(true);
-            key = predecessor.Keys[KeysCount - 1];
+            Node<T> predecessor = FindInOrderPredecessorOrSuccessor(true, index);
+            key = predecessor.Keys[predecessor.KeysCount - 1];
             return predecessor.DeleteKey(key);
         }
 
-        private bool FindInOrderSuccessorAndRemoveIt(out T key)
+        private bool FindInOrderSuccessorAndRemoveIt(int index, out T key)
         {
-            Node<T> successor = FindInOrderPredecessorOrSuccessor(false);
+            Node<T> successor = FindInOrderPredecessorOrSuccessor(false, index);
             key = successor.Keys[0];
             return successor.DeleteKey(key);
         }
 
-        private Node<T> FindInOrderPredecessorOrSuccessor(bool left)
+        private Node<T> FindInOrderPredecessorOrSuccessor(bool left, int index)
         {
-            var firstChildToFind = left ? Children[0] : Children[CountChildren() - 1];
+            var firstChildToFind = Children[left ? index : index + 1];
             for (var current = firstChildToFind; current != null; current = left ? current.Children[current.CountChildren() - 1] : current.Children[0])
             {
                 if (current.IsLeaf)
@@ -224,10 +227,7 @@
             Keys[index] = Parent.Keys[IndexAsChild];
             Parent.Keys[IndexAsChild] = Siblings[IndexAsChild + 1].Keys[0];
             Siblings[IndexAsChild + 1].RemoveKey(Siblings[IndexAsChild + 1].Keys[0]);
-            if (!IsLeaf)
-            {
-                InsertChild(Siblings[IndexAsChild + 1].Children[0]);
-            }
+            TransferSiblingsChildIfIsInternal(1, 0);
         }
 
         private void RightRotate(int index)
@@ -236,10 +236,7 @@
             Keys[index] = Parent.Keys[IndexAsChild - 1];
             Parent.Keys[IndexAsChild - 1] = sibling.Keys[sibling.KeysCount - 1];
             Siblings[IndexAsChild - 1].RemoveKey(sibling.Keys[sibling.KeysCount - 1]);
-            if (!IsLeaf)
-            {
-                InsertChild(sibling.Children[sibling.CountChildren() - 1]);
-            }
+            TransferSiblingsChildIfIsInternal(-1, Siblings[IndexAsChild - 1].KeysCount - 1);
         }
     }
 }
