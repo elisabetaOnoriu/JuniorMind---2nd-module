@@ -4,6 +4,8 @@
     {
         public static bool All<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
+            ThrowArgumentNullExceptionIfNecessary(source);
+            ThrowArgumentNullExceptionIfNecessary(predicate);
             foreach (TSource item in source)
             {
                 if (!predicate(item))
@@ -17,6 +19,7 @@
 
         public static bool Any<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
+            ThrowArgumentNullExceptionIfNecessary(source);
             foreach (TSource item in source)
             {
                 if (predicate(item))
@@ -30,6 +33,7 @@
 
         public static TSource First<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
+            ThrowArgumentNullExceptionIfNecessary(source);
             foreach (TSource item in source)
             {
                 if (predicate(item))
@@ -44,6 +48,8 @@
         public static IEnumerable<TResult> Select<TSource, TResult>
             (this IEnumerable<TSource> source, Func<TSource, TResult> selector)
         {
+            ThrowArgumentNullExceptionIfNecessary(source);
+            ThrowArgumentNullExceptionIfNecessary(selector);
             foreach (var item in source)
             {
                 yield return selector(item);
@@ -53,6 +59,8 @@
         public static IEnumerable<TResult> SelectMany<TSource, TResult>
             (this IEnumerable<TSource> source, Func<TSource, IEnumerable<TResult>> selector)
         {
+            ThrowArgumentNullExceptionIfNecessary(source);
+            ThrowArgumentNullExceptionIfNecessary(selector);
             foreach (var item in source)
             {
                 foreach (var result in selector(item))
@@ -65,6 +73,8 @@
         public static IEnumerable<TSource> Where<TSource>
             (this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
+            ThrowArgumentNullExceptionIfNecessary(source);
+            ThrowArgumentNullExceptionIfNecessary(predicate);
             foreach (var item in source)
             {
                 if (predicate(item))
@@ -79,9 +89,19 @@
             Func<TSource, TKey> keySelector,
             Func<TSource, TElement> elementSelector)
         {
+            ThrowArgumentNullExceptionIfNecessary(source);
+            ThrowArgumentNullExceptionIfNecessary(keySelector);
+            ThrowArgumentNullExceptionIfNecessary(elementSelector);
             var dictionary = new Dictionary<TKey, TElement>();
             foreach (var item in source)
             {
+                var key = keySelector(item);
+                if (dictionary.ContainsKey(key))
+                {
+                    throw new ArgumentException();
+                }
+
+                ThrowArgumentNullExceptionIfNecessary(keySelector(item));
                 dictionary.Add(keySelector(item), elementSelector(item));
             }
 
@@ -93,6 +113,8 @@
              IEnumerable<TSecond> second,
               Func<TFirst, TSecond, TResult> resultSelector)
         {
+            ThrowArgumentNullExceptionIfNecessary(first);
+            ThrowArgumentNullExceptionIfNecessary(second);
             var firstEnumerator = first.GetEnumerator();
             var secondEnumerator = second.GetEnumerator();
             while (firstEnumerator.MoveNext() && secondEnumerator.MoveNext())
@@ -106,6 +128,8 @@
             TAccumulate seed,
             Func<TAccumulate, TSource, TAccumulate> func)
         {
+            ThrowArgumentNullExceptionIfNecessary(source);
+            ThrowArgumentNullExceptionIfNecessary(func);
             var result = seed;
             foreach (var item in source)
             {
@@ -122,6 +146,11 @@
           Func<TInner, TKey> innerKeySelector,
           Func<TOuter, TInner, TResult> resultSelector)
         {
+            ThrowArgumentNullExceptionIfNecessary(outer);
+            ThrowArgumentNullExceptionIfNecessary(inner);
+            ThrowArgumentNullExceptionIfNecessary(outerKeySelector);
+            ThrowArgumentNullExceptionIfNecessary(innerKeySelector);
+            ThrowArgumentNullExceptionIfNecessary(resultSelector);
             foreach (var item in outer)
             {
                 foreach (var innerItem in inner)
@@ -138,6 +167,7 @@
          this IEnumerable<TSource> source,
          IEqualityComparer<TSource> comparer)
         {
+            ThrowArgumentNullExceptionIfNecessary(source);
             var distinct = new HashSet<TSource>(comparer);
             foreach (var item in source)
             {
@@ -153,6 +183,8 @@
          IEnumerable<TSource> second,
             IEqualityComparer<TSource> comparer)
         {
+            ThrowArgumentNullExceptionIfNecessary(first);
+            ThrowArgumentNullExceptionIfNecessary(second);
             var distinct = new HashSet<TSource>(comparer);
             foreach (var item in first)
             {
@@ -176,6 +208,8 @@
          IEnumerable<TSource> second,
          IEqualityComparer<TSource> comparer)
         {
+            ThrowArgumentNullExceptionIfNecessary(first);
+            ThrowArgumentNullExceptionIfNecessary(second);
             foreach (var item in first)
             {
                 foreach (var item2 in second)
@@ -193,6 +227,8 @@
           IEnumerable<TSource> second,
           IEqualityComparer<TSource> comparer)
         {
+            ThrowArgumentNullExceptionIfNecessary(first);
+            ThrowArgumentNullExceptionIfNecessary(second);
             var distinct = new HashSet<TSource>(second, comparer);
             foreach (var item in first)
             {
@@ -210,18 +246,23 @@
           Func<TKey, IEnumerable<TElement>, TResult> resultSelector,
           IEqualityComparer<TKey> comparer)
         {
+            ThrowArgumentNullExceptionIfNecessary(source);
+            ThrowArgumentNullExceptionIfNecessary(keySelector);
+            ThrowArgumentNullExceptionIfNecessary(elementSelector);
+            ThrowArgumentNullExceptionIfNecessary(resultSelector);
             Dictionary<TKey, List<TElement>> groups = new(comparer);
             foreach (var item in source)
             {
                 TKey key = keySelector(item);
                 TElement element = elementSelector(item);
-                if (groups.ContainsKey(key))
+                try
                 {
                     groups[key].Add(element);
-                    continue;
                 }
-
-                groups[key] = new List<TElement> { element };
+                catch
+                {
+                    groups[key] = new List<TElement> { element };
+                }              
             }
 
             foreach (var group in groups)
@@ -235,10 +276,12 @@
          Func<TSource, TKey> keySelector,
          IComparer<TKey> comparer)
         {
+            ThrowArgumentNullExceptionIfNecessary(source);
+            ThrowArgumentNullExceptionIfNecessary(keySelector);
             var list = new List<TSource>(source);
             for (int i = 1; i < list.Count; i++)
             {
-                for (int j = i; j >= 0 && comparer.Compare(keySelector(list[j - 1]), keySelector(list[j])) < 0; j--)
+                for (int j = i; j >= 0 && comparer.Compare(keySelector(list[j - 1]), keySelector(list[j])) > 0; j--)
                 {
                     (list[j - 1], list[j]) = (list[j], list[j - 1]);
                 }
@@ -254,6 +297,14 @@
          IComparer<TKey> comparer)
         {
             return OrderBy(source, keySelector, comparer);
+        }
+
+        public static void ThrowArgumentNullExceptionIfNecessary<T>(T item)
+        {
+            if (item == null)
+            {
+                throw new ArgumentNullException();
+            }
         }
     }
 }
