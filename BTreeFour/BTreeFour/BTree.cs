@@ -1,7 +1,7 @@
 ﻿namespace BTreeFour
 {
     public class BTreeFourthOrder<T> where T : IComparable<T>
-    { 
+    {
         public BTreeFourthOrder()
         {
             Root = new Node<T>();
@@ -12,7 +12,7 @@
         public bool Search(T key) => Search(Root, key) != null;
 
         public void Insert(T key) => Insert(Root, key);
-       
+
         public bool Remove(T key)
         {
             var node = Search(Root, key);
@@ -28,7 +28,7 @@
             }
             else
             {
-                ManageInternalNode(node, index); 
+                ManageInternalNode(node, index);
             }
 
             ReduceHeightIfNecesarry(node);
@@ -46,15 +46,15 @@
                 node.MergeParentAndBrotherInItsPlace();
             }
 
-        }     
+        }
 
         private void ManageInternalNode(Node<T> node, int index)
         {
             if (node.ReplaceItWith_Inorder_PredecessorOrSuccessor(index))
             {
-                return;        
+                return;
             }
-            
+
             node.MergeChildWithNextOne(index);
             if (node.KeysCount == 0 && node != Root && !node.CanRotate(index))
             {
@@ -67,7 +67,7 @@
             if (node == Root && Root.KeysCount == 0)
             {
                 Root = node.Children[0];
-                node = null;                
+                node = null;
             }
         }
 
@@ -80,7 +80,7 @@
                     return node;
                 }
 
-                Node<T> throughChildren = SearchThroughChildren(node, key, index); 
+                Node<T> throughChildren = SearchThroughChildren(node, key, index);
                 if (throughChildren != null)
                 {
                     return throughChildren;
@@ -111,7 +111,7 @@
                 AddKeyInNode(node, key);
                 return;
             }
-            
+
             InsertInChildren(node, key);
         }
 
@@ -129,40 +129,40 @@
                     Insert(node.Children[i], key);
                     return;
                 }
-            }                    
+            }
         }
 
         private void AddKeyInNode(Node<T> node, T key)
-        {  
+        {
             if (node.KeysCount < 3)
             {
                 node.AddKey(key);
-            }    
+            }
             else
             {
                 SplitKeys(node, key);
-            }                    
+            }
         }
 
         private void SplitKeys(Node<T> node, T key)
-        { 
+        {
             if (node.Parent == null)
             {
                 node.Parent = new Node<T>();
                 Root = node.Parent;
             }
 
-            T[] temporary = SetUpTemporaryKeysArray(node, key, out T keyToGoUp);          
+            T[] temporary = SetUpTemporaryKeysArray(node, key, out T keyToGoUp);
             node.ClearKeys();
             node.AddKey(temporary[0]);
             var splited = SetUpRightChildAfterSplit(temporary);
             AddKeyInNode(node.Parent, keyToGoUp);
-            ReestablishNodesConnections(node, splited, keyToGoUp);           
+            ReestablishNodesConnections(node, splited, keyToGoUp);
         }
 
         private void ReestablishNodesConnections(Node<T> node, Node<T> splited, T keyToGoUp)
-        {           
-            splited.Parent = Search(Root, keyToGoUp);       
+        {
+            splited.Parent = Search(Root, keyToGoUp);
             while (!node.IsLeaf && node.CountChildren() > node.KeysCount + 1)
             {
                 int childrenCount = node.CountChildren();
