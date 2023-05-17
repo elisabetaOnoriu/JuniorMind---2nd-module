@@ -96,13 +96,15 @@
             foreach (var item in source)
             {
                 var key = keySelector(item);
-                if (dictionary.ContainsKey(key))
+                ThrowArgumentNullExceptionIfNecessary(key);
+                try
                 {
-                    throw new ArgumentException();
+                    dictionary.Add(keySelector(item), elementSelector(item));
                 }
-
-                ThrowArgumentNullExceptionIfNecessary(keySelector(item));
-                dictionary.Add(keySelector(item), elementSelector(item));
+                catch(ArgumentException)
+                {
+                    throw new ArgumentException(nameof(key));
+                }               
             }
 
             return dictionary;
@@ -168,13 +170,10 @@
          IEqualityComparer<TSource> comparer)
         {
             ThrowArgumentNullExceptionIfNecessary(source);
-            var distinct = new HashSet<TSource>(comparer);
-            foreach (var item in source)
+            var distinct = new HashSet<TSource>(source, comparer);
+            foreach (var item in distinct)
             {
-                if (distinct.Add(item))
-                {
-                    yield return item;
-                }
+                yield return item;
             }
         }
 
@@ -185,21 +184,12 @@
         {
             ThrowArgumentNullExceptionIfNecessary(first);
             ThrowArgumentNullExceptionIfNecessary(second);
-            var distinct = new HashSet<TSource>(comparer);
-            foreach (var item in first)
+            var distinct = new HashSet<TSource>(first, comparer);
+            var secondDistinct = new HashSet<TSource>(second, comparer);
+            distinct.UnionWith(secondDistinct);
+            foreach (var item in distinct)
             {
-                if (distinct.Add(item))
-                {
-                    yield return item;
-                }
-            }
-
-            foreach (var item in second)
-            {
-                if (distinct.Add(item))
-                {
-                    yield return item;
-                }
+                yield return item;
             }
         }
 
@@ -210,15 +200,12 @@
         {
             ThrowArgumentNullExceptionIfNecessary(first);
             ThrowArgumentNullExceptionIfNecessary(second);
-            foreach (var item in first)
+            HashSet<TSource> distinct = new(first, comparer);
+            var secondDistinct = new HashSet<TSource>(second, comparer);
+            distinct.IntersectWith(secondDistinct);
+            foreach (var item in distinct)
             {
-                foreach (var item2 in second)
-                {
-                    if (comparer.Equals(item, item2))
-                    {
-                        yield return item;
-                    }
-                }
+                yield return item;
             }
         }
 
@@ -229,13 +216,11 @@
         {
             ThrowArgumentNullExceptionIfNecessary(first);
             ThrowArgumentNullExceptionIfNecessary(second);
-            var distinct = new HashSet<TSource>(second, comparer);
-            foreach (var item in first)
+            var distinct = new HashSet<TSource>(first, comparer);
+            distinct.ExceptWith(second);
+            foreach (var item in distinct)
             {
-                if (distinct.Add(item))
-                {
-                    yield return item;
-                }
+                yield return item;
             }
         }
 
@@ -279,15 +264,9 @@
             ThrowArgumentNullExceptionIfNecessary(source);
             ThrowArgumentNullExceptionIfNecessary(keySelector);
             var list = new List<TSource>(source);
-            for (int i = 1; i < list.Count; i++)
-            {
-                for (int j = i; j >= 0 && comparer.Compare(keySelector(list[j - 1]), keySelector(list[j])) > 0; j--)
-                {
-                    (list[j - 1], list[j]) = (list[j], list[j - 1]);
-                }
-            }
-
+            InsertionSort(list, keySelector, comparer, false);
             IOrderedEnumerable<TSource> orderedEnumerable = (IOrderedEnumerable<TSource>)list;
+            orderedEnumerable = orderedEnumerable.CreateOrderedEnumerable(keySelector, comparer, false);
             return orderedEnumerable;
         }
 
@@ -299,12 +278,25 @@
             return OrderBy(source, keySelector, comparer);
         }
 
-        public static void ThrowArgumentNullExceptionIfNecessary<T>(T item)
+        internal static void InsertionSort<T1, T2>
+            (this List<T1> list, Func<T1, T2> keySelector, IComparer<T2> comparer, bool descending)
+        {
+            for (int i = 1; i < list.Count; i++)
+            {
+                for (int j = i; j >= 0 && 
+                     comparer.Compare(keySelector(list[j - 1]), keySelector(list[j])) == (descending ? -1 : 1); j--)
+                {
+                    (list[j - 1], list[j]) = (list[j], list[j - 1]);
+                }
+            }
+        }
+
+        private static void ThrowArgumentNullExceptionIfNecessary<T>(T item)
         {
             if (item == null)
             {
                 throw new ArgumentNullException();
             }
-        }
+        }       
     }
 }
