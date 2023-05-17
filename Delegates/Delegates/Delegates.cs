@@ -216,11 +216,13 @@
         {
             ThrowArgumentNullExceptionIfNecessary(first);
             ThrowArgumentNullExceptionIfNecessary(second);
-            var distinct = new HashSet<TSource>(first, comparer);
-            distinct.ExceptWith(second);
-            foreach (var item in distinct)
+            var distinct = new HashSet<TSource>(second, comparer);
+            foreach (var item in first)
             {
-                yield return item;
+                if (distinct.Add(item))
+                {
+                    yield return item;
+                }
             }
         }
 
