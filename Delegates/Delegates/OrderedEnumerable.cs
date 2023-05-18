@@ -3,16 +3,21 @@ namespace Delegates
 {
     internal class OrderedEnumerable<TElement> : IOrderedEnumerable<TElement>
     {
+        IEnumerable<TElement> innerSource;
+
+        public OrderedEnumerable(IEnumerable<TElement> innerSource)
+        {
+            this.innerSource = innerSource;
+        }
+
         public IOrderedEnumerable<TElement> CreateOrderedEnumerable<TKey>(Func<TElement, TKey> keySelector, IComparer<TKey>? comparer, bool descending)
         {
-            var list = new List<TElement>(this);
-            Delegates.InsertionSort(list, keySelector, comparer, descending);
-            return (IOrderedEnumerable<TElement>)list;
+            return Delegates.OrderBy(innerSource, keySelector, comparer);
         }
 
         public IEnumerator<TElement> GetEnumerator()
         {
-            foreach (var item in this)
+            foreach (var item in innerSource)
             {
                 yield return item;
             }

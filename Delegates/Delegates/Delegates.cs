@@ -1,4 +1,6 @@
-﻿namespace Delegates
+﻿using System.Collections.Generic;
+
+namespace Delegates
 {
     public static class Delegates
     {
@@ -267,9 +269,7 @@
             ThrowArgumentNullExceptionIfNecessary(keySelector);
             var list = new List<TSource>(source);
             InsertionSort(list, keySelector, comparer, false);
-            IOrderedEnumerable<TSource> orderedEnumerable = (IOrderedEnumerable<TSource>)list;
-            orderedEnumerable = orderedEnumerable.CreateOrderedEnumerable(keySelector, comparer, false);
-            return orderedEnumerable;
+            return new OrderedEnumerable<TSource>(list);
         }
 
         public static IOrderedEnumerable<TSource> ThenBy<TSource, TKey>(
@@ -277,7 +277,7 @@
          Func<TSource, TKey> keySelector,
          IComparer<TKey> comparer)
         {
-            return OrderBy(source, keySelector, comparer);
+            return new OrderedEnumerable<TSource>(source).CreateOrderedEnumerable(keySelector, comparer, false);
         }
 
         internal static void InsertionSort<T1, T2>
@@ -285,7 +285,7 @@
         {
             for (int i = 1; i < list.Count; i++)
             {
-                for (int j = i; j >= 0 && 
+                for (int j = i; descending? j >= 0 : j > 0  && 
                      comparer.Compare(keySelector(list[j - 1]), keySelector(list[j])) == (descending ? -1 : 1); j--)
                 {
                     (list[j - 1], list[j]) = (list[j], list[j - 1]);
