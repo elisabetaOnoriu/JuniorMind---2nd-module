@@ -172,10 +172,13 @@ namespace Delegates
          IEqualityComparer<TSource> comparer)
         {
             ThrowArgumentNullExceptionIfNecessary(source);
-            var distinct = new HashSet<TSource>(source, comparer);
-            foreach (var item in distinct)
+            var distinct = new HashSet<TSource>(comparer);
+            foreach (var item in source)
             {
-                yield return item;
+                if (distinct.Add(item))
+                {
+                    yield return item;
+                }
             }
         }
 
@@ -184,14 +187,21 @@ namespace Delegates
          IEnumerable<TSource> second,
             IEqualityComparer<TSource> comparer)
         {
-            ThrowArgumentNullExceptionIfNecessary(first);
-            ThrowArgumentNullExceptionIfNecessary(second);
-            var distinct = new HashSet<TSource>(first, comparer);
-            var secondDistinct = new HashSet<TSource>(second, comparer);
-            distinct.UnionWith(secondDistinct);
-            foreach (var item in distinct)
+            var distinct = new HashSet<TSource>(comparer);
+            foreach (var item in first)
             {
-                yield return item;
+                if (distinct.Add(item))
+                {
+                    yield return item;
+                }
+            }
+
+            foreach (var item in second)
+            {
+                if (distinct.Add(item))
+                {
+                    yield return item;
+                }
             }
         }
 
@@ -202,12 +212,15 @@ namespace Delegates
         {
             ThrowArgumentNullExceptionIfNecessary(first);
             ThrowArgumentNullExceptionIfNecessary(second);
-            HashSet<TSource> distinct = new(first, comparer);
-            var secondDistinct = new HashSet<TSource>(second, comparer);
-            distinct.IntersectWith(secondDistinct);
-            foreach (var item in distinct)
+            foreach (var item in first)
             {
-                yield return item;
+                foreach (var item2 in second)
+                {
+                    if (comparer.Equals(item, item2))
+                    {
+                        yield return item;
+                    }
+                }
             }
         }
 
