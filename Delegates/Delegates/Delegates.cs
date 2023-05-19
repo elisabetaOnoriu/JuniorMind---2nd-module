@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Globalization;
 
 namespace Delegates
 {
@@ -273,7 +273,7 @@ namespace Delegates
             }
         }
 
-        public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(
+        public static IOrderedEnumerable<TSource> MyOrderBy<TSource, TKey>(
          this IEnumerable<TSource> source,
          Func<TSource, TKey> keySelector,
          IComparer<TKey> comparer)
@@ -282,15 +282,15 @@ namespace Delegates
             ThrowArgumentNullExceptionIfNecessary(keySelector);
             var list = new List<TSource>(source);
             InsertionSort(list, keySelector, comparer, false);
-            return new OrderedEnumerable<TSource>(list);
+            return new OrderedEnumerable<TSource, TKey>(list, keySelector, comparer);
         }
 
-        public static IOrderedEnumerable<TSource> ThenBy<TSource, TKey>(
+        public static IOrderedEnumerable<TSource> MyThenBy<TSource, TKey>(
           this IOrderedEnumerable<TSource> source,
          Func<TSource, TKey> keySelector,
          IComparer<TKey> comparer)
         {
-            return new OrderedEnumerable<TSource>(source).CreateOrderedEnumerable(keySelector, comparer, false);
+            return source.CreateOrderedEnumerable(keySelector, comparer, false);
         }
 
         internal static void InsertionSort<T1, T2>
