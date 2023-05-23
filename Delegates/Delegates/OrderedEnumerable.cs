@@ -5,21 +5,22 @@ namespace Delegates
     {
         IEnumerable<TElement> innerSource;
         Func<TElement, TKey> previousKeySelector;
-        IComparer<TKey> previousComparer;
 
         public OrderedEnumerable(IEnumerable<TElement> innerSource, Func<TElement, TKey> previousKeySelector,
         IComparer<TKey> previousComparer)
         {
             this.innerSource = innerSource;
             this.previousKeySelector = previousKeySelector;
-            this.previousComparer = previousComparer;
+            PreviousComparer = previousComparer;
         }
-      
-        public IOrderedEnumerable<TElement> CreateOrderedEnumerable<TKey>(Func<TElement, TKey> keySelector, IComparer<TKey>? comparer, bool descending)
+
+        public IOrderedEnumerable<TElement> CreateOrderedEnumerable<TKey1>(Func<TElement, TKey1> keySelector, IComparer<TKey1>? comparer, bool descending)
         {
             var list = new List<TElement>(innerSource);
-            MultiInsertionSort(list, keySelector, comparer, descending);
-            return new OrderedEnumerable<TElement, TKey>(list, keySelector, comparer);
+            var newComparer = new MultiComparer<TKey, TKey1>(PreviousComparer, comparer);
+            MultiInsertionSort(list, keySelector, newComparer, descending);
+            PreviousComparer = (IComparer<TKey>)newComparer;
+            return new OrderedEnumerable<TElement, TKey>(list, previousKeySelector, PreviousComparer);
         }
 
         public IEnumerator<TElement> GetEnumerator()
@@ -35,43 +36,18 @@ namespace Delegates
             return GetEnumerator();
         }
 
-        internal void MultiInsertionSort<TKey>
-         (List<TElement> list, Func<TElement, TKey> keySelector, IComparer<TKey> comparer, bool descending)
+        internal IComparer<TKey> PreviousComparer { get; set; }
+
+        internal void MultiInsertionSort<TKey1>(List<TElement> list, Func<TElement, TKey1> keySelector, MultiComparer<TKey, TKey1> comparer, bool descending)
         {
             for (int i = 1; i < list.Count; i++)
             {
                 for (int j = i; descending ? j >= 0 : j > 0 &&
-                     CustomMultiComparer(keySelector, list[j - 1], list[j], comparer) == (descending ? -1 : 1); j--)
+                     comparer.Compare(new Tuple<TKey, TKey1>(previousKeySelector(list[j-1]), keySelector(list[j - 1])), 
+                     new Tuple<TKey, TKey1>(previousKeySelector(list[j]), keySelector(list[j]))) == (descending ? -1 : 1); j--)
                 {
                     (list[j - 1], list[j]) = (list[j], list[j - 1]);
                 }
-            }
-        }
-
-        internal int CustomMultiComparer<TKey>(Func<TElement, TKey> keySelector, 
-            TElement item1, TElement item2, IComparer<TKey> comparer)
-        {
-            int firstComparer = previousComparer.Compare(previousKeySelector(item1), previousKeySelector(item2));
-            int actualComparer = comparer.Compare(keySelector(item1), keySelector(item2));
-            if (firstComparer == -1)
-            {
-                return -1;
-            }
-            else if (firstComparer == 1)
-            {
-                return 1;
-            }
-            else if (actualComparer == -1)
-            {
-                return -1;
-            }
-            else if (actualComparer == 1)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
             }
         }
     }
