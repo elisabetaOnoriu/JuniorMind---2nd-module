@@ -280,9 +280,7 @@ namespace Delegates
         {
             ThrowArgumentNullExceptionIfNecessary(source);
             ThrowArgumentNullExceptionIfNecessary(keySelector);
-            var list = new List<TSource>(source);
-            InsertionSort(list, keySelector, comparer, false);
-            return new OrderedEnumerable<TSource, TKey>(list, keySelector, comparer);
+            return new OrderedEnumerable<TSource, TKey>(source, keySelector, comparer, false);
         }
 
         public static IOrderedEnumerable<TSource> MyThenBy<TSource, TKey>(
@@ -291,19 +289,6 @@ namespace Delegates
          IComparer<TKey> comparer)
         {
             return source.CreateOrderedEnumerable(keySelector, comparer, false);
-        }
-
-        internal static void InsertionSort<T1, T2>
-            (this List<T1> list, Func<T1, T2> keySelector, IComparer<T2> comparer, bool descending)
-        {
-            for (int i = 1; i < list.Count; i++)
-            {
-                for (int j = i; descending? j >= 0 : j > 0  && 
-                     comparer.Compare(keySelector(list[j - 1]), keySelector(list[j])) == (descending ? -1 : 1); j--)
-                {
-                    (list[j - 1], list[j]) = (list[j], list[j - 1]);
-                }
-            }
         }
 
         private static void ThrowArgumentNullExceptionIfNecessary<T>(T item)
