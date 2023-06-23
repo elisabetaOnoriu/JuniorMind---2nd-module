@@ -280,7 +280,7 @@ namespace Delegates
         {
             ThrowArgumentNullExceptionIfNecessary(source);
             ThrowArgumentNullExceptionIfNecessary(keySelector);
-            return new OrderedEnumerable<TSource, TKey>(source, keySelector, comparer, false);
+            return new OrderedEnumerable<TSource>(source, new ConnectedSelectorAndComparer<TSource, TKey>(keySelector, comparer));
         }
 
         public static IOrderedEnumerable<TSource> MyThenBy<TSource, TKey>(

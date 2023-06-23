@@ -1,27 +1,19 @@
 ﻿namespace Delegates
 {
-    internal class MultiComparer<TSource, TKey> : IComparer<TSource>
+    internal class MultiComparer<TSource> : IComparer<TSource>
     {
-        internal IComparer<TKey> actual;
-        internal IComparer<TSource> next;
-        Func<TSource, TKey> keySelector;
+        readonly IComparer<TSource> primary, secondary;
 
-        internal MultiComparer(IComparer<TKey> comparer, Func <TSource, TKey> keySelector)
+        public MultiComparer(IComparer<TSource> primary, IComparer<TSource> secondary)
         {
-            actual = comparer;
-            this.keySelector = keySelector;
-            next = null;
+            this.primary = primary;
+            this.secondary = secondary;
         }
 
-        public int Compare(TSource? x, TSource? y)
+        int IComparer<TSource>.Compare(TSource x, TSource y)
         {
-            int compared = actual.Compare(keySelector(x), keySelector(y));
-            if (compared != 0)
-            {
-                compared = next.Compare(x, y);
-            }
-
-            return compared;
+            int result = primary.Compare(x, y);
+            return result == 0 ? secondary.Compare(x, y) : result;
         }
     }
 }
