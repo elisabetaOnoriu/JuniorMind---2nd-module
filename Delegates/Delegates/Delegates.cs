@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace Delegates
+﻿namespace Delegates
 {
     public static class Delegates
     {
@@ -280,7 +278,7 @@ namespace Delegates
         {
             ThrowArgumentNullExceptionIfNecessary(source);
             ThrowArgumentNullExceptionIfNecessary(keySelector);
-            return new OrderedEnumerable<TSource>(source, new ConnectedSelectorAndComparer<TSource, TKey>(keySelector, comparer));
+            return new OrderedEnumerable<TSource>(source, new CustomComparer<TSource>((e, f) => comparer.Compare(keySelector(e), keySelector(f))));
         }
 
         public static IOrderedEnumerable<TSource> MyThenBy<TSource, TKey>(

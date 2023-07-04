@@ -50,7 +50,7 @@ namespace Delegates.Facts
             var sorted = people.MyOrderBy(P => P.Age, Comparer<int>.Default)
                 .MyThenBy(p => p.City, Comparer<string>.Default)
                 .MyThenBy(per => per.Name, Comparer<string>.Default).Select(p => p.Name)
-                .ToList(); ;
+                .ToList();
             var sortedPeople = new List<string>{"Alice", "Emily", "David", "Alex", "John", "Bob" };
             Assert.Equal(sorted, sortedPeople);
         }
