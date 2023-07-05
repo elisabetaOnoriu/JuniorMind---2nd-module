@@ -19,9 +19,10 @@ internal class OrderedEnumerable<TSource> : IOrderedEnumerable<TSource>
 
     public IOrderedEnumerable<TSource> CreateOrderedEnumerable<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> keyComparer, bool descending)
     {
-        var customComparer = new CustomComparer<TSource>((e, f) => keyComparer.Compare(keySelector(e), keySelector(f)));
-        baseComparer.next = customComparer;
-        return new OrderedEnumerable<TSource>(source, baseComparer);
+        var customComparer = new CustomComparer<TSource>((e, f) => baseComparer.Compare(e, f) == 0 ? 
+                                                            keyComparer.Compare(keySelector(e), keySelector(f))
+                                                            : baseComparer.Compare(e, f));
+        return new OrderedEnumerable<TSource>(source, customComparer);
     }
 
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
