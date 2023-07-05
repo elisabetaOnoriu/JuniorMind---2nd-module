@@ -2,12 +2,12 @@
 internal class OrderedEnumerable<TSource> : IOrderedEnumerable<TSource>
 {
     internal IEnumerable<TSource> source;
-    internal CustomComparer<TSource> baseComparer;
+    internal IComparer<TSource> baseComparer;
 
     internal OrderedEnumerable(IEnumerable<TSource> source, IComparer<TSource> comparer)
     {
         this.source = source;
-        this.baseComparer = (CustomComparer<TSource>?)(comparer ?? Comparer<TSource>.Default);
+        this.baseComparer = comparer ?? Comparer<TSource>.Default;
     }
 
     public IEnumerator<TSource> GetEnumerator()
@@ -19,10 +19,12 @@ internal class OrderedEnumerable<TSource> : IOrderedEnumerable<TSource>
 
     public IOrderedEnumerable<TSource> CreateOrderedEnumerable<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> keyComparer, bool descending)
     {
-        var customComparer = new CustomComparer<TSource>((e, f) => 
-        baseComparer.Compare(e, f) == 0 
-            ? keyComparer.Compare(keySelector(e), keySelector(f))
-            : baseComparer.Compare(e, f));
+        var customComparer = new CustomComparer<TSource>((e, f) =>
+        {
+            var baseResult = baseComparer.Compare(e, f);
+            return baseResult == 0 ? keyComparer.Compare(keySelector(e), keySelector(f)) : baseResult;
+        });
+             
         return new OrderedEnumerable<TSource>(source, customComparer);
     }
 
