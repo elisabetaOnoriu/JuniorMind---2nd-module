@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LinqOperations\Stock.csproj" />
+    <ProjectReference Include="..\Queries\Queries.csproj" />
   </ItemGroup>
 
 </Project>

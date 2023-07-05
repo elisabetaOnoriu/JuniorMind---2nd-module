@@ -1,3 +1,4 @@
+global using Xunit;
 namespace Delegates.Facts
 {
     public class UnitTest1

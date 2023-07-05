@@ -3,11 +3,13 @@
     public class Stock
     {
         Dictionary<Product, int> products;
-        Action<Product> action;
+        public Action<Product> action;
+        int[] thresholds;
 
         public Stock()
         {
             products = new();
+            thresholds = new int[] { 10, 5, 2 };
         }
 
         public int this[Product product] { get => products[product]; set => products[product] = value; }
@@ -42,13 +44,14 @@
 
         public string GetMessage(Product product)
         {
-            var quantity = products[product] < 2 ? 2 : products[product] < 5 ? 5 : products[product] < 10 ? 10 : -1;
-            if (products[product] > -1)
-            {
-                return $"There are less than {quantity} units of {product.Name} available on stock.\n{products[product]} items are left.";
+            int quantity = products[product];
+            int threshold = -1;
+            for (int i = 0; i < thresholds.Length && quantity < thresholds[i]; i++)
+            {                
+                threshold = thresholds[i];
             }
 
-            return string.Empty;
+            return $"There are less than {threshold} units of {product.Name} available on stock.\n{quantity} items are left.";
         }
 
         private void NotifyLowStock()
