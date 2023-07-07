@@ -5,7 +5,7 @@ namespace StockFacts
     public class TestProgram
     {
         [Fact]
-        public void ActionTakesPlaceAtTheRightTime_LessThan10Units()
+        public void ActionTakesPlaceAtTheRightTime_DisplaysTheRightMessage_LessThan10Units()
         {
             Stock stock = new();
             Product conditioner = new("Conditioner");
@@ -15,7 +15,7 @@ namespace StockFacts
         }
 
         [Fact]
-        public void ActionTakesPlaceAtTheRightTime_LessThan5Units()
+        public void ActionTakesPlaceAtTheRightTime_DisplaysTheRightMessage_LessThan5Units()
         {
             Product shampoo = new("Shampoo");
             Stock stock = new();
@@ -25,7 +25,7 @@ namespace StockFacts
         }
 
         [Fact]
-        public void ActionTakesPlaceAtTheRightTime_LessThan2Units()
+        public void ActionTakesPlaceAtTheRightTime_DisplaysTheRightMessage_LessThan2Units()
         {
             Product mango = new("mango");
             Stock stock = new();
