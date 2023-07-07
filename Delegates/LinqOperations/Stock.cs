@@ -3,13 +3,13 @@
     public class Stock
     {
         Dictionary<Product, int> products;
-        public Action<Product> action;
-        int[] thresholds;
+        readonly int[] thresholds;
+        public string message;
 
         public Stock()
         {
             products = new();
-            thresholds = new int[] { 10, 5, 2 };
+            thresholds = new int[] { 2, 5, 10 };
         }
 
         public int this[Product product] { get => products[product]; set => products[product] = value; }
@@ -25,7 +25,7 @@
             products[product] = quantity;
         }
 
-        public void SellItem(Product product, int quantity)
+        public void SellItem(Product product, int quantity, Action<Product> action)
         {
             if (!products.ContainsKey(product))
             {
@@ -37,28 +37,25 @@
                 throw new ArgumentException("Product is not on stock.");
             }
 
-            action = DisplayMessage;
             products[product] -= quantity;
-            NotifyLowStock();
+            NotifyLowStock(action);
         }
 
         public string GetMessage(Product product)
         {
-            int quantity = products[product];
-            int threshold = -1;
-            for (int i = 0; i < thresholds.Length && quantity < thresholds[i]; i++)
-            {                
-                threshold = thresholds[i];
-            }
-
-            return $"There are less than {threshold} units of {product.Name} available on stock.\n{quantity} items are left.";
+            var quantity = products[product] < thresholds[0] ? thresholds[0] :
+                products[product] < thresholds[1] ? thresholds[1] :
+                products[product] < thresholds[2] ? thresholds[2] : -1;
+            return $"There are less than {quantity} units of {product.Name} available on stock." +
+                   $"\n{products[product]} items are left.";
         }
 
-        private void NotifyLowStock()
+        private void NotifyLowStock(Action<Product> action)
         {
             products.Where(a => a.Value < 10).ToList().ForEach(a => action(a.Key));
+            DisplayMessage();
         }
 
-        private void DisplayMessage(Product product) => Console.WriteLine(GetMessage(product));
+        private void DisplayMessage() => Console.WriteLine(message);
     }
 }

@@ -5,32 +5,33 @@ namespace StockFacts
     public class TestProgram
     {
         [Fact]
-        public void ActionTakesPlaceAtTheRightTime()
+        public void ActionTakesPlaceAtTheRightTime_LessThan10Units()
         {
             Stock stock = new();
             Product conditioner = new("Conditioner");
             stock.AddProduct(conditioner, 20);
-            Assert.True(stock.action == null);
-            stock.SellItem(conditioner, 11);
-            Assert.True(stock.action != null);
+            stock.SellItem(conditioner, 11, e => stock.message = stock.GetMessage(e));
+            Assert.Equal("There are less than 10 units of Conditioner available on stock.\n9 items are left.", stock.message);
         }
 
         [Fact]
-        public void NotificationsAreShowingTheRightMessage()
+        public void ActionTakesPlaceAtTheRightTime_LessThan5Units()
         {
             Product shampoo = new("Shampoo");
-            Product conditioner = new("Conditioner");
+            Stock stock = new();
+            stock.AddProduct(shampoo, 15);           
+            stock.SellItem(shampoo, 11, e => stock.message = stock.GetMessage(e));        
+            Assert.Equal("There are less than 5 units of Shampoo available on stock.\n4 items are left.", stock.message);
+        }
+
+        [Fact]
+        public void ActionTakesPlaceAtTheRightTime_LessThan2Units()
+        {
             Product mango = new("mango");
             Stock stock = new();
-            stock.AddProduct(shampoo, 15);
-            stock.AddProduct(conditioner, 20);
-            stock.AddProduct(mango, 15);           
-            stock.SellItem(shampoo, 6);
-            stock.SellItem(conditioner, 20);
-            stock.SellItem(mango, 11);          
-            Assert.Equal("There are less than 5 units of mango available on stock.\n4 items are left.", stock.GetMessage(mango));
-            Assert.Equal("There are less than 10 units of Shampoo available on stock.\n9 items are left.", stock.GetMessage(shampoo));
-            Assert.Equal("There are less than 2 units of Conditioner available on stock.\n0 items are left.", stock.GetMessage(conditioner));
+            stock.AddProduct(mango, 15);
+            stock.SellItem(mango, 15, e => stock.message = stock.GetMessage(e));
+            Assert.Equal("There are less than 2 units of mango available on stock.\n0 items are left.", stock.message);
         }
     }
 }
