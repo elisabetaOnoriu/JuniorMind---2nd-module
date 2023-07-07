@@ -38,7 +38,8 @@
             }
 
             products[product] -= quantity;
-            NotifyLowStock(action);
+            action(product);
+            DisplayMessage();
         }
 
         public string GetMessage(Product product)
@@ -50,10 +51,9 @@
                    $"\n{products[product]} items are left.";
         }
 
-        private void NotifyLowStock(Action<Product> action)
+        public bool IsLow(Product product)
         {
-            products.Where(a => a.Value < 10).ToList().ForEach(a => action(a.Key));
-            DisplayMessage();
+            return products[product] < 10;
         }
 
         private void DisplayMessage() => Console.WriteLine(message);
