@@ -10,10 +10,10 @@ namespace StockFacts
             Stock stock = new();
             Product conditioner = new("Conditioner");
             stock.AddProduct(conditioner, 20);
-            Action<Product> action = product => stock.message = stock.IsLow(product) ?
-            stock.GetMessage(product) : string.Empty;
+            string message = string.Empty;
+            Action<Product> action = product => message += stock.GetMessage(product);
             stock.SellItem(conditioner, 11, action);
-            Assert.Equal(stock.GetMessage(conditioner), stock.message);
+            Assert.Equal(stock.GetMessage(conditioner), message);
         }
 
         [Fact]
@@ -22,10 +22,10 @@ namespace StockFacts
             Product shampoo = new("Shampoo");
             Stock stock = new();
             stock.AddProduct(shampoo, 15);
-            Action<Product> action = product => stock.message = stock.IsLow(product) ? 
-            stock.GetMessage(product) : string.Empty;
+            string message = string.Empty;
+            Action<Product> action = product => message += stock.GetMessage(product);
             stock.SellItem(shampoo, 11, action);        
-            Assert.Equal(stock.GetMessage(shampoo), stock.message);
+            Assert.Equal(stock.GetMessage(shampoo), message);
         }
 
         [Fact]
@@ -34,10 +34,10 @@ namespace StockFacts
             Product mango = new("mango");
             Stock stock = new();
             stock.AddProduct(mango, 15);
-            Action<Product> action = product => stock.message = stock.IsLow(product) ?
-            stock.GetMessage(product) : string.Empty;
+            string message = string.Empty;
+            Action<Product> action = product => message += stock.GetMessage(product);
             stock.SellItem(mango, 15, action);
-            Assert.Equal(stock.GetMessage(mango), stock.message);
+            Assert.Equal(message, stock.GetMessage(mango));
         }
     }
 }

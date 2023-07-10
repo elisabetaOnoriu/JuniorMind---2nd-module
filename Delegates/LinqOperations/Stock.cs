@@ -3,13 +3,13 @@
     public class Stock
     {
         Dictionary<Product, int> products;
-        readonly int[] thresholds;
-        public string message;
+        public readonly int[] thresholds;
 
         public Stock()
         {
             products = new();
             thresholds = new int[] { 2, 5, 10 };
+            Array.Sort(thresholds);
         }
 
         public int this[Product product] { get => products[product]; set => products[product] = value; }
@@ -38,24 +38,30 @@
             }
 
             products[product] -= quantity;
-            action(product);
-            DisplayMessage();
+            if (StockIsLow())
+            {
+                NotifyLowStock(action);
+            }          
         }
 
         public string GetMessage(Product product)
         {
-            var quantity = products[product] < thresholds[0] ? thresholds[0] :
-                products[product] < thresholds[1] ? thresholds[1] :
-                products[product] < thresholds[2] ? thresholds[2] : -1;
+            var quantity = thresholds.Where(threshold => products[product] < threshold).First();
             return $"There are less than {quantity} units of {product.Name} available on stock." +
                    $"\n{products[product]} items are left.";
         }
 
-        public bool IsLow(Product product)
+        private void NotifyLowStock(Action<Product> action)
         {
-            return products[product] < 10;
+            products.Where(a => a.Value < thresholds[^1]).ToList().ForEach(a =>
+            { 
+                action(a.Key); 
+                DisplayMessage(a.Key); 
+            });
         }
 
-        private void DisplayMessage() => Console.WriteLine(message);
+        private bool StockIsLow() => products.Any(product => this[product.Key] < thresholds[^1]);
+
+        private void DisplayMessage(Product product) => Console.WriteLine(GetMessage(product));
     }
 }
