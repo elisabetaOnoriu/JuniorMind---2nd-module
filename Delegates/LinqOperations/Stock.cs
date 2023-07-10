@@ -38,27 +38,27 @@
                 throw new ArgumentException("Product is not on stock.");
             }
 
-            var threshold = GetThreshold(product);         
             notify = action;
+            var previousThreshold = GetThreshold(product);                    
             products[product] -= quantity;
-            if (threshold > GetThreshold(product))
+            var actualThreshold = GetThreshold(product);
+            if (previousThreshold != actualThreshold)
             {
                 NotifyLowStock(product);
             }                   
+        }
+
+        public int GetHashCode(Product product)
+        {
+            int keyHash = Math.Abs(product.GetHashCode());
+            return keyHash >= products.Count ? keyHash % products.Count : keyHash;
         }
 
         private void NotifyLowStock(Product product) => notify(product, products[product]);
 
         private int GetThreshold(Product product)
         {
-            try
-            {
-                return thresholds.Where(threshold => products[product] < threshold).First();
-            }
-            catch
-            {
-                return 20000;
-            }
+            return thresholds.FirstOrDefault(threshold => products[product] < threshold);
         }
     }
 }
