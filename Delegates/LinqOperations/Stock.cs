@@ -4,6 +4,7 @@
     {
         Dictionary<Product, int> products;
         public readonly int[] thresholds;
+        Action<Product, int> notify;
 
         public Stock()
         {
@@ -25,7 +26,7 @@
             products[product] = quantity;
         }
 
-        public void SellItem(Product product, int quantity, Action<Product> action)
+        public void SellItem(Product product, int quantity, Action<Product, int> action)
         {
             if (!products.ContainsKey(product))
             {
@@ -37,31 +38,27 @@
                 throw new ArgumentException("Product is not on stock.");
             }
 
+            var threshold = GetThreshold(product);         
+            notify = action;
             products[product] -= quantity;
-            if (StockIsLow())
+            if (threshold > GetThreshold(product))
             {
-                NotifyLowStock(action);
-            }          
+                NotifyLowStock(product);
+            }                   
         }
 
-        public string GetMessage(Product product)
+        private void NotifyLowStock(Product product) => notify(product, products[product]);
+
+        private int GetThreshold(Product product)
         {
-            var quantity = thresholds.Where(threshold => products[product] < threshold).First();
-            return $"There are less than {quantity} units of {product.Name} available on stock." +
-                   $"\n{products[product]} items are left.";
+            try
+            {
+                return thresholds.Where(threshold => products[product] < threshold).First();
+            }
+            catch
+            {
+                return 20000;
+            }
         }
-
-        private void NotifyLowStock(Action<Product> action)
-        {
-            products.Where(a => a.Value < thresholds[^1]).ToList().ForEach(a =>
-            { 
-                action(a.Key); 
-                DisplayMessage(a.Key); 
-            });
-        }
-
-        private bool StockIsLow() => products.Any(product => this[product.Key] < thresholds[^1]);
-
-        private void DisplayMessage(Product product) => Console.WriteLine(GetMessage(product));
     }
 }

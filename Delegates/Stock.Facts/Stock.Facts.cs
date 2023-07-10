@@ -11,9 +11,10 @@ namespace StockFacts
             Product conditioner = new("Conditioner");
             stock.AddProduct(conditioner, 20);
             string message = string.Empty;
-            Action<Product> action = product => message += stock.GetMessage(product);
+            Action<Product, int> action = (product, items) =>
+            message = $"There are {items} items left of {product.Name} product.";
             stock.SellItem(conditioner, 11, action);
-            Assert.Equal(stock.GetMessage(conditioner), message);
+            Assert.Equal("There are 9 items left of Conditioner product.", message);
         }
 
         [Fact]
@@ -23,9 +24,10 @@ namespace StockFacts
             Stock stock = new();
             stock.AddProduct(shampoo, 15);
             string message = string.Empty;
-            Action<Product> action = product => message += stock.GetMessage(product);
-            stock.SellItem(shampoo, 11, action);        
-            Assert.Equal(stock.GetMessage(shampoo), message);
+            Action<Product, int> action = (product, items) =>
+            message = $"There are {items} items left of {product.Name} product.";
+            stock.SellItem(shampoo, 11, action);
+            Assert.Equal("There are 4 items left of Shampoo product.", message);
         }
 
         [Fact]
@@ -35,9 +37,23 @@ namespace StockFacts
             Stock stock = new();
             stock.AddProduct(mango, 15);
             string message = string.Empty;
-            Action<Product> action = product => message += stock.GetMessage(product);
+            Action<Product, int> action = (product, items) =>
+            message = $"There are {items} items left of {product.Name} product.";
             stock.SellItem(mango, 15, action);
-            Assert.Equal(message, stock.GetMessage(mango));
+            Assert.Equal("There are 0 items left of mango product.", message);
+        }
+
+        [Fact]
+        public void ActionTakesPlaceAtTheRightTime_DisplaysTheRightMessage_ThresholdIsNotPassed()
+        {
+            Product mango = new("mango");
+            Stock stock = new();
+            stock.AddProduct(mango, 4);
+            string message = string.Empty;
+            Action<Product, int> action = (product, items) =>
+            message = $"There are {items} items left of {product.Name} product.";
+            stock.SellItem(mango, 2, action);
+            Assert.Equal(string.Empty, message);
         }
     }
 }
