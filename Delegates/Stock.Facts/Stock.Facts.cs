@@ -7,13 +7,12 @@ namespace StockFacts
         [Fact]
         public void ActionTakesPlaceAtTheRightTime_DisplaysTheRightMessage_LessThan10Units()
         {
-            Stock stock = new();
             Product conditioner = new("Conditioner");
-            stock.AddProduct(conditioner, 20);
             string message = string.Empty;
-            Action<Product, int> action = (product, items) =>
-            message = $"There are {items} items left of {product.Name} product.";
-            stock.SellItem(conditioner, 11, action);
+            Stock stock = new((product, items) =>
+            message = $"There are {items} items left of {product.Name} product.");            
+            stock.AddProduct(conditioner, 20);            
+            stock.SellItem(conditioner, 11);
             Assert.Equal("There are 9 items left of Conditioner product.", message);
         }
 
@@ -21,12 +20,11 @@ namespace StockFacts
         public void ActionTakesPlaceAtTheRightTime_DisplaysTheRightMessage_LessThan5Units()
         {
             Product shampoo = new("Shampoo");
-            Stock stock = new();
-            stock.AddProduct(shampoo, 15);
             string message = string.Empty;
-            Action<Product, int> action = (product, items) =>
-            message = $"There are {items} items left of {product.Name} product.";
-            stock.SellItem(shampoo, 11, action);
+            Stock stock = new((product, items) =>
+            message = $"There are {items} items left of {product.Name} product.");
+            stock.AddProduct(shampoo, 15);            
+            stock.SellItem(shampoo, 11);
             Assert.Equal("There are 4 items left of Shampoo product.", message);
         }
 
@@ -34,12 +32,11 @@ namespace StockFacts
         public void ActionTakesPlaceAtTheRightTime_DisplaysTheRightMessage_LessThan2Units()
         {
             Product mango = new("mango");
-            Stock stock = new();
-            stock.AddProduct(mango, 15);
             string message = string.Empty;
-            Action<Product, int> action = (product, items) =>
-            message = $"There are {items} items left of {product.Name} product.";
-            stock.SellItem(mango, 15, action);
+            Stock stock = new((product, items) =>
+            message = $"There are {items} items left of {product.Name} product.");         
+            stock.AddProduct(mango, 15);
+            stock.SellItem(mango, 15);          
             Assert.Equal("There are 0 items left of mango product.", message);
         }
 
@@ -47,12 +44,11 @@ namespace StockFacts
         public void ActionTakesPlaceAtTheRightTime_DisplaysTheRightMessage_ThresholdIsNotPassed()
         {
             Product mango = new("mango");
-            Stock stock = new();
-            stock.AddProduct(mango, 4);
             string message = string.Empty;
-            Action<Product, int> action = (product, items) =>
-            message = $"There are {items} items left of {product.Name} product.";
-            stock.SellItem(mango, 2, action);
+            Stock stock = new((product, items) =>
+            message = $"There are {items} items left of {product.Name} product.");
+            stock.AddProduct(mango, 4);          
+            stock.SellItem(mango, 2);
             Assert.Equal(string.Empty, message);
         }
     }

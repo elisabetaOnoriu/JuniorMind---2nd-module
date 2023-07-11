@@ -6,9 +6,10 @@
         public readonly int[] thresholds;
         Action<Product, int> notify;
 
-        public Stock()
+        public Stock(Action<Product, int> notify)
         {
             products = new();
+            this.notify = notify;
             thresholds = new int[] { 2, 5, 10 };
             Array.Sort(thresholds);
         }
@@ -26,7 +27,7 @@
             products[product] = quantity;
         }
 
-        public void SellItem(Product product, int quantity, Action<Product, int> action)
+        public void SellItem(Product product, int quantity)
         {
             if (!products.ContainsKey(product))
             {
@@ -37,22 +38,22 @@
             {
                 throw new ArgumentException("Product is not on stock.");
             }
-
-            notify = action;
-            var previousThreshold = GetThreshold(product);                    
+                   
             products[product] -= quantity;
-            var actualThreshold = GetThreshold(product);
-            if (previousThreshold != actualThreshold)
+            if (PassedThreshold(product, quantity))
             {
-                NotifyLowStock(product);
-            }                   
+                NotifyLowStock(product); 
+            }                             
         }
 
         private void NotifyLowStock(Product product) => notify(product, products[product]);
 
-        private int GetThreshold(Product product)
+        private bool PassedThreshold(Product product, int quantitySold)
         {
-            return thresholds.FirstOrDefault(threshold => products[product] < threshold);
+            var quantity = products[product];
+            return GetThreshold(quantity) != GetThreshold(quantity + quantitySold);
         }
+
+        private int GetThreshold(int quantity) => thresholds.FirstOrDefault(threshold => quantity < threshold);
     }
 }
