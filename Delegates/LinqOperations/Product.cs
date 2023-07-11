@@ -14,7 +14,7 @@
 
         public override bool Equals(object? obj)
         {
-            return obj is Product product && this.Name == product.Name;
+            return obj is Product product && Name == product.Name && Description == product.Description;
         }
 
         public override int GetHashCode()
