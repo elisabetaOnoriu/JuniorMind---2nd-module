@@ -48,12 +48,6 @@
             }                   
         }
 
-        public int GetHashCode(Product product)
-        {
-            int keyHash = Math.Abs(product.GetHashCode());
-            return keyHash >= products.Count ? keyHash % products.Count : keyHash;
-        }
-
         private void NotifyLowStock(Product product) => notify(product, products[product]);
 
         private int GetThreshold(Product product)

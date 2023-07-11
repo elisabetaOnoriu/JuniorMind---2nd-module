@@ -11,5 +11,15 @@
         public string Name { get; set; }
 
         public string Description { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Product product && this.Name == product.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, Description);
+        }
     }
 }
