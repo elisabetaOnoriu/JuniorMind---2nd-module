@@ -6,15 +6,20 @@
         public readonly int[] thresholds;
         Action<Product, int> notify;
 
-        public Stock(Action<Product, int> notify)
+        public Stock()
         {
             products = new();
-            this.notify = notify;
+            
             thresholds = new int[] { 2, 5, 10 };
             Array.Sort(thresholds);
         }
 
         public int this[Product product] { get => products[product]; set => products[product] = value; }
+
+        public void Register(Action<Product, int> notify)
+        {
+            this.notify = notify;
+        }
 
         public void AddProduct(Product product, int quantity)
         {
@@ -50,10 +55,8 @@
 
         private bool PassedThreshold(Product product, int quantitySold)
         {
-            var quantity = products[product];
-            return GetThreshold(quantity) != GetThreshold(quantity + quantitySold);
+            int quantity = products[product];
+            return quantity + quantitySold > thresholds.FirstOrDefault(threshold => quantity < threshold);
         }
-
-        private int GetThreshold(int quantity) => thresholds.FirstOrDefault(threshold => quantity < threshold);
     }
 }

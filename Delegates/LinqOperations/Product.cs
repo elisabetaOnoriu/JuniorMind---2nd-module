@@ -17,9 +17,6 @@
             return obj is Product product && Name == product.Name && Description == product.Description;
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Name, Description);
-        }
+        public override int GetHashCode() => HashCode.Combine(Name, Description);
     }
 }
