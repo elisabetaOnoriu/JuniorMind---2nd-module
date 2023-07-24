@@ -56,7 +56,8 @@
         private bool PassedThreshold(Product product, int quantitySold)
         {
             int quantity = products[product];
-            return quantity + quantitySold > thresholds.FirstOrDefault(threshold => quantity < threshold);
+            return thresholds.FirstOrDefault(threshold => quantity < threshold && 
+                                                          quantity + quantitySold > threshold) != 0;
         }
     }
 }
