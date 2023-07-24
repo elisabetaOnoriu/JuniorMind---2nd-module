@@ -41,12 +41,21 @@ namespace QueriesFacts
         {
             string word = "aabaac";
             var result = word.Palindromes();
-            Assert.True(result.Contains("aabaa"));
-            Assert.True(result.Contains("aba"));
-            Assert.True(result.Contains("aa"));
-            Assert.True(result.Contains("a"));
-            Assert.True(result.Contains("b"));
-            Assert.Equal(10, result.Length);
+            string[] palindromes = new[]
+            {
+                "a",
+                "a",
+                "b",
+                "a",
+                "a",
+                "c",
+                "aa",
+                "aa",
+                "aba",
+                "aabaa",
+
+            };
+            Assert.Equal(palindromes, result);
         }
 
         [Fact]
