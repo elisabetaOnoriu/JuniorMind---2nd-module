@@ -9,7 +9,6 @@
                 return IsVowel(c)
                     ? (counts.vowels + 1, counts.consonants)
                     : (counts.vowels, counts.consonants + 1);
-                return counts;
             }) : throw new FormatException();
         }
 
