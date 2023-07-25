@@ -4,15 +4,16 @@
     {
         public static (int, int) CountVowelsAndConsonant(this string input)
         {
-            return input.All(c => char.IsLetter(c)) ? input.Aggregate((vowels: 0, consonants: 0), (counts, c) =>
+            return input.Where(c => char.IsLetter(c)).Aggregate((vowels: 0, consonants: 0), (counts, c) =>
             {
                 return IsVowel(c)
                     ? (counts.vowels + 1, counts.consonants)
                     : (counts.vowels, counts.consonants + 1);
-            }) : throw new FormatException();
+            });
         }
 
-        public static char FindFirstUniqueChar(this string input) => input.Distinct().First();
+        public static char FindFirstUniqueChar(this string input) => input.GroupBy(c => c)
+                                                                          .First(c => c.Count() == 1).Key;
 
         public static int StringToInt(this string input) => input.Aggregate(0, (number, next) => char.IsDigit(next) ? 
                                                             number * 10 + (next - '0') : throw new FormatException());
@@ -32,9 +33,9 @@
         {
             return Enumerable
             .Range(0, array.Length)
-                .SelectMany(i => Enumerable.Range(i, array.Length - i)
-                .Select(j => array[i..(j + 1)])
-                .Where(j => j.Sum() <= k));
+            .SelectMany(i => Enumerable.Range(i, array.Length - i)
+            .Select(j => array[i..(j + 1)]))
+            .Where(subarray => subarray.Sum() <= k);
         }
 
         static private bool IsVowel(this char c)
