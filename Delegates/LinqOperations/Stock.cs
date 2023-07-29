@@ -8,8 +8,7 @@
 
         public Stock()
         {
-            products = new();
-            
+            products = new();            
             thresholds = new int[] { 2, 5, 10 };
             Array.Sort(thresholds);
         }
