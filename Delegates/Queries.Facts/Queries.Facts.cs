@@ -251,24 +251,26 @@ namespace QueriesFacts
         public static void TopWords_ReturnsTopMostUsedWords(int index)
         {
             string text = "Ana is busy trying to solve a bug. The bug is undetectable, Ana says. Ana solved the issue";
-            string[] expected = new[]
+            List<(string, int)> expected = new()
             {
-                "ana",
-                "is",
-                "bug",
-                "the",
-                "busy",
-                "trying",
-                "to",
-                "solve",
-                "a",               
-                "undetectable",
-                "says",
-                "solved",
-                "issue"
+                ("ana", 3),
+                ("is", 2),
+                ("bug", 2),
+                ("the", 2),
+                ("busy", 1),
+                ("trying", 1),
+                ("to", 1),
+                ("solve", 1),
+                ("a", 1),               
+                ("undetectable", 1),
+                ("says", 1),
+                ("solved", 1),
+                ("issue", 1)
             };
-
-            Assert.Equal(expected[index], text.TopWords().ToArray()[index]);
+            int[] topThree = new[] { 3, 2, 2 };
+            var topWords = text.TopWords();
+            Assert.Equal(expected[index], topWords.Item1.ToArray()[index]);
+            Assert.Equal(topThree, topWords.Item2);
         }
 
         [Fact]
