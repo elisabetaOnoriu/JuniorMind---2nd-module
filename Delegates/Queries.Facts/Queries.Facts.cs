@@ -1,7 +1,5 @@
 global using Xunit;
 using Queries;
-using Xunit.Abstractions;
-
 namespace QueriesFacts
 {
     public class UnitTest1
@@ -154,7 +152,7 @@ namespace QueriesFacts
         }
 
         [Fact]
-        public void NonFeatures_ReturnsValidProducts()
+        public void NoneFeatures_ReturnsValidProducts()
         {
             ProductFeature[] productsWithFeatures = new[]
             {

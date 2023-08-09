@@ -1,5 +1,5 @@
-﻿using System.Security.Cryptography;
-
+﻿using System.Linq;
+using static System.Collections.Generic.CollectionExtensions;
 namespace Queries
 {
     public static class Queries
@@ -59,23 +59,22 @@ namespace Queries
             .SelectMany((a, i) =>
                 array.Skip(i + 1).SelectMany((b, j) =>
                 array.Skip(i + j + 2).Where(c => Math.Pow(a, 2) + Math.Pow(b, 2) == Math.Pow(c, 2))
-                     .Select(c => new[] { a, b, c })));
-            
+                     .Select(c => new[] { a, b, c })));          
         }
 
         public static IEnumerable<ProductFeature> AnyFeature(this IEnumerable<ProductFeature> products, IEnumerable<Feature> features)
         {
-            return products.Where(product => product.Features.Any(feature => features.Any(f => f.Id == feature.Id)));
+           return products.Where(product => product.Features.IntersectBy(features.Select(f => f.Id), f => f.Id).Any());
         }
 
         public static IEnumerable<ProductFeature> AllFeatures(this IEnumerable<ProductFeature> products, IEnumerable<Feature> features)
         {
-            return products.Where(product => features.All(feature => product.Features.Any(f => f.Id == feature.Id)));
+            return products.Where(product => product.Features.UnionBy(features, f => f.Id).Count() == product.Features.Count);
         }
 
         public static IEnumerable<ProductFeature> NoneFeatures(this IEnumerable<ProductFeature> products, IEnumerable<Feature> features)
         {
-            return products.Except(products.Where(product => product.Features.Any(f => features.Any(feat => feat.Id == f.Id))));
+            return products.Except(products.AnyFeature(features));
         }
 
         public static IEnumerable<Product> MergeGroups(this IEnumerable<Product> first, IEnumerable<Product> second)
