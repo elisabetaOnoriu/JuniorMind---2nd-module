@@ -1,17 +1,13 @@
-﻿using System.Linq;
-using static System.Collections.Generic.CollectionExtensions;
-namespace Queries
+﻿namespace Queries
 {
     public static class Queries
     {
         public static (int, int) CountVowelsAndConsonant(this string input)
         {
             return input.Where(c => char.IsLetter(c)).Aggregate((vowels: 0, consonants: 0), (counts, c) =>
-            {
-                return IsVowel(c)
-                    ? (counts.vowels + 1, counts.consonants)
-                    : (counts.vowels, counts.consonants + 1);
-            });
+               IsVowel(c) 
+                ? (counts.vowels + 1, counts.consonants)
+                : (counts.vowels, counts.consonants + 1));
         }
 
         public static char FindFirstUniqueChar(this string input) => input.GroupBy(c => c)
@@ -35,20 +31,20 @@ namespace Queries
         {
             return Enumerable
                .Range(0, array.Length)
-               .SelectMany(i => Enumerable.Range(i, array.Length - i),
-               (i, j) => array[i..(j + 1)])
+               .SelectMany(i => Enumerable.Range(i + 1, array.Length - i),
+               (i, j) => array[i..j])
                .Where(subarray => subarray.Sum() <= k);
         }
 
         public static IEnumerable<IEnumerable<int>> OperationCombinations(this int n, int k)
         {
-            IEnumerable<List<int>> seed = new[] { new List<int>() };
+            IEnumerable<IEnumerable<int>> seed = new[] { new int[] { }  };
             return Enumerable
                 .Range(1, n)
-                .Aggregate(seed, (a, i) => a.SelectMany(s => new List<int>[]
+                .Aggregate(seed, (a, i) => a.SelectMany(s => new []
                 {
-                    new List<int>(s) { i },
-                    new List<int>(s) { -i },
+                     s.Append(i).ToArray(),
+                     s.Append(-i).ToArray(),
                 }))
                 .Where(combination => combination.Sum() == k);
         }
@@ -58,7 +54,7 @@ namespace Queries
             return array
             .SelectMany((a, i) =>
                 array.Skip(i + 1).SelectMany((b, j) =>
-                array.Skip(i + j + 2).Where(c => Math.Pow(a, 2) + Math.Pow(b, 2) == Math.Pow(c, 2))
+                array.Skip(i + j + 2).Where(c => IsPythagorean(a, b, c))
                      .Select(c => new[] { a, b, c })));          
         }
 
@@ -89,46 +85,29 @@ namespace Queries
             return testResults.GroupBy(result => result.FamilyId).Select(group => group.MaxBy(test => test.Score));
         }
 
-        public static (IEnumerable<(string word, int count)>, int[] topThree) TopWords(this string text)
+        public static IEnumerable<(string word, int count)> TopWords(this string text, int count = 10)
         {
-            var wordCounts = text.ToLower()
-                .Split(new char[] { ' ', '.', ',', ':', ';', '!', '?', '(', ')' }, StringSplitOptions.RemoveEmptyEntries)
+            return text.ToLower()
+                .Split(" .,:;!?()".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
                 .GroupBy(word => word)
                 .OrderByDescending(group => group.Count())
+                .Take(count)
                 .Select(group => (word: group.Key, count: group.Count()));
-
-            var topThree = wordCounts
-                .Select(wordCount => wordCount.count)
-                .Take(3)
-                .ToArray();
-
-            return (wordCounts, topThree);
         }
 
         public static bool SudokuValidator(this int[][] sudoku)
         {
             return Enumerable.Range(0, 9).All(i =>
-                sudoku.ValidateRow(i) &&
-                sudoku.ValidateColumn(i) &&
-                sudoku.ValidateSubGrid(i));
+            new int[][] { sudoku.Row(i), sudoku.Column(i), sudoku.SubGrid(i) }.All(items => items.Validate())); 
         }
 
         public static double EvaluatePostfixExpression(this IEnumerable<string> expression)
         {
-            var operators = ExecuteOperations();
-            return expression.Aggregate(new List<int>(), (items, item) =>
-            {
-                if (int.TryParse(item, out int operand))
-                {
-                    items.Add(operand);
-                }
-                else
-                {
-                    int[] lastTwo = items.TakeLast(2).ToArray();
-                    items.Add(operators[item[0]](lastTwo[0], lastTwo[1]));
-                }
-                return items;
-            }).Last();
+            IEnumerable<double> items = new double[] { };
+            return expression.Aggregate(items, (items, item) =>
+                double.TryParse(item, out double operand)
+               ? items.Append(operand)
+               : items.SkipLast(2).Append(Calculate(items.TakeLast(2).ToArray(), item))).Last();
         }
 
         static private bool IsVowel(this char c)
@@ -137,39 +116,42 @@ namespace Queries
             return vowels.Contains(char.ToLower(c));
         }
 
-        static Dictionary<char, Func<int, int, int>> ExecuteOperations()
+        static private bool IsPythagorean(int a, int b, int c)
         {
-            return new Dictionary<char, Func<int, int, int>>
+            return Math.Pow(a, 2) + Math.Pow(b, 2) == Math.Pow(c, 2) ||
+                Math.Pow(b, 2) + Math.Pow(c, 2) == Math.Pow(a, 2) ||
+                Math.Pow(a, 2) + Math.Pow(c, 2) == Math.Pow(b, 2);
+        }
+
+        static double Calculate(double[] elements, string operand)
+        {
+            return operand switch
             {
-                {'+', (a, b) => a + b},
-                {'-', (a, b) => a - b},
-                {'*', (a, b) => a * b},
-                {'/', (a, b) => a / b},
+                "+" => elements[0] + elements[1],
+                "-" => elements[0] - elements[1],
+                "*" => elements[0] * elements[1],
+                "/" => elements[0] / elements[1],
+                _ => throw new Exception(),
             };
         }
         
-        static private bool ValidateRow(this int[][] sudoku, int row)
+        static private int[] Row(this int[][] sudoku, int row) =>sudoku[row].ToArray();
+
+        static private int[] Column(this int[][] sudoku, int column)
         {
-            return sudoku[row]
-                .GroupBy(num => num)
-                .All(group => group.Count() == 1 && group.Key >= 1 && group.Key <= 9);
+            return Enumerable.Range(0, 9).Select(j => sudoku[j][column]).ToArray();
         }
 
-        static private bool ValidateColumn(this int[][] sudoku, int column)
-        {
-            return Enumerable.Range(0, 9)
-                    .Select(j => sudoku[j][column])
-                    .GroupBy(num => num)
-                    .All(group => group.Count() == 1);
-        }
-
-        static private bool ValidateSubGrid(this int[][] sudoku, int index)
+        static private int[] SubGrid(this int[][] sudoku, int index)
         {
             return Enumerable.Range(index / 3 * 3, 3)
                     .SelectMany(row => Enumerable.Range(index % 3 * 3, 3),
-                    (row, column) => sudoku[row][column])
-                    .GroupBy(num => num)
-                    .All(group => group.Count() == 1);
+                    (row, column) => sudoku[row][column]).ToArray();
+        }
+
+        static private bool Validate(this int[] array)
+        {
+            return array.GroupBy(num => num).All(group => group.Count() == 1 && group.Key >= 1 && group.Key <= 9);
         }
     }
 }

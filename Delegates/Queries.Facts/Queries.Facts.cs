@@ -244,8 +244,6 @@ namespace QueriesFacts
         [InlineData(7)]
         [InlineData(8)]
         [InlineData(9)]
-        [InlineData(10)]
-        [InlineData(11)]
         public static void TopWords_ReturnsTopMostUsedWords(int index)
         {
             string text = "Ana is busy trying to solve a bug. The bug is undetectable, Ana says. Ana solved the issue";
@@ -261,14 +259,11 @@ namespace QueriesFacts
                 ("solve", 1),
                 ("a", 1),               
                 ("undetectable", 1),
-                ("says", 1),
-                ("solved", 1),
-                ("issue", 1)
             };
-            int[] topThree = new[] { 3, 2, 2 };
+
             var topWords = text.TopWords();
-            Assert.Equal(expected[index], topWords.Item1.ToArray()[index]);
-            Assert.Equal(topThree, topWords.Item2);
+            Assert.Equal(expected[index], topWords.ToArray()[index]);
+            Assert.Equal(expected.Count, topWords.Count());
         }
 
         [Fact]
@@ -332,7 +327,7 @@ namespace QueriesFacts
         public static void EvaluatePostFixNotation()
         {
             string[] splittedExpression = new[] {"10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"};
-            Assert.Equal(22, splittedExpression.EvaluatePostfixExpression());
+            Assert.Equal(21.545454545454547, splittedExpression.EvaluatePostfixExpression());
         }
     }
 }
