@@ -64,12 +64,12 @@ namespace Queries
 
         public static IEnumerable<ProductFeature> AnyFeature(this IEnumerable<ProductFeature> products, IEnumerable<Feature> features)
         {
-           return products.Where(product => product.Features.IntersectBy(features.Select(f => f.Id), f => f.Id).Any());
+           return products.Where(product => product.Features.Intersect(features).Any());
         }
 
         public static IEnumerable<ProductFeature> AllFeatures(this IEnumerable<ProductFeature> products, IEnumerable<Feature> features)
         {
-            return products.Where(product => product.Features.UnionBy(features, f => f.Id).Count() == product.Features.Count);
+            return products.Where(product => product.Features.Union(features).Count() == product.Features.Count);
         }
 
         public static IEnumerable<ProductFeature> NoneFeatures(this IEnumerable<ProductFeature> products, IEnumerable<Feature> features)
