@@ -6,7 +6,7 @@
         static int selectedCol = 1;
         static bool isEditing = false;
         const int defaultSize = 11;
-        const string defaultCell = "|________";
+        const string defaultCell = "         ";
         static string[,] table = new string[defaultSize, defaultSize];
         
         static void Main(string[] args)
@@ -52,6 +52,7 @@
             ConsoleKeyInfo keyInfo;          
             do
             {
+                Console.BackgroundColor = ConsoleColor.DarkGray;
                 Console.Clear();
                 GenerateTable(table);
                 keyInfo = Console.ReadKey();
@@ -91,11 +92,11 @@
             if (CellHasToBeHighlighted(i, j) )
             {
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.ForegroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.DarkGray;
             }
             else
             {
-                Console.BackgroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.DarkGray;
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
@@ -108,16 +109,16 @@
 
         static void SetHeaders(int i)
         {
-            table[i, 0] = $"{i}".PadRight(5);
+            table[i, 0] = $"{i}".PadLeft(5);
             table[0, i] = $"    {(char)('A' + i - 1)}    ";
-            table[i, defaultSize - 1] = "|_______|";
+            table[i, defaultSize - 1] = "         ";
         }
 
         private static bool EditSelectedCell(int i, int j)
         {
             if (isEditing && IsSelectedCell(i, j))
             {
-                table[i, j] = "|" + Console.ReadLine().PadRight(8);
+                table[i, j] = " " + Console.ReadLine().PadRight(8);
                 Console.SetCursorPosition(j * 8 + j - 4, i * 2);                                              
                 Console.Write(table[i, j]);
                 isEditing = false;
