@@ -43,7 +43,7 @@
                     }                
                 }
 
-                Console.WriteLine("\n");
+                Console.WriteLine("\t");
             }
         }
 
@@ -119,7 +119,7 @@
             if (isEditing && IsSelectedCell(i, j))
             {
                 table[i, j] = " " + Console.ReadLine().PadRight(8);
-                Console.SetCursorPosition(j * 8 + j - 4, i * 2);                                              
+                Console.SetCursorPosition(j * 8 + j - 4, i);                                              
                 Console.Write(table[i, j]);
                 isEditing = false;
                 return true;
