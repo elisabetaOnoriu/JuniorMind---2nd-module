@@ -111,7 +111,16 @@
             }
         }
 
-        private static bool CellHasToBeHighlighted(int i, int j) => IsSelectedCell(i, j) || IsHeader(i, j);
+        private static bool CellHasToBeHighlighted(int i, int j)
+        {
+            bool highlight = IsHeader(i, j);
+            if (highlight && i == selectedRow)
+            {
+                highlight = false;
+            }
+
+            return IsSelectedCell(i, j) || highlight;
+        }
 
         private static bool IsSelectedCell(int i, int j) => i == selectedRow && j == selectedCol;
 
