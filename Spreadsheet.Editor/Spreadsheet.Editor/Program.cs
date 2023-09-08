@@ -5,33 +5,42 @@
         static int selectedRow = 1;
         static int selectedCol = 1;
         static bool isEditing = false;
-        const int defaultSize = 11;
+        const int defaultSize = 21;
+        const int cellSize = 9;
         const string defaultCell = "         ";
         static string[,] table = new string[defaultSize, defaultSize];
-        
+
         static void Main(string[] args)
         {
             BuildTable();
+            ConfigureLayout();
             NavigateThroughCells();
+            Console.ResetColor();
         }
 
-        static void BuildTable ()
+        static void ConfigureLayout()
+        {
+            Console.BufferWidth =  Math.Max(defaultSize * cellSize - 4, Console.WindowWidth);
+        }
+
+        static void BuildTable()
         {
             for (int i = 1; i < defaultSize; i++)
-            {              
+            {
                 for (int j = 1; j < defaultSize; j++)
                 {
                     table[i, j] = defaultCell;
                 }
-                
-                SetHeaders(i); 
+
+                SetHeaders(i);
             }
-            
+
             table[0, 0] = "     ";
         }
 
         static void GenerateTable(string[,] table)
         {
+
             for (int i = 0; i < defaultSize; i++)
             {
                 for (int j = 0; j < defaultSize; j++)
@@ -39,17 +48,17 @@
                     SetBackgroundAndForegroundColor(i, j);
                     if (!EditSelectedCell(i, j))
                     {
-                        Console.Write(table[i, j]); 
-                    }                
+                        Console.Write(table[i, j]);
+                    }
                 }
 
-                Console.WriteLine("\t");
+                Console.WriteLine();
             }
         }
 
         static void NavigateThroughCells()
         {
-            ConsoleKeyInfo keyInfo;          
+            ConsoleKeyInfo keyInfo;
             do
             {
                 Console.BackgroundColor = ConsoleColor.DarkGray;
@@ -80,16 +89,17 @@
 
                     case ConsoleKey.Enter:
                         isEditing = true;
+                        Console.SetCursorPosition(selectedRow * 8 + selectedRow - 4, selectedCol);
                         Console.Write(table[selectedRow, selectedCol]);
                         break;
                 }
-            } 
+            }
             while (keyInfo.Key != ConsoleKey.Escape);
         }
 
         private static void SetBackgroundAndForegroundColor(int i, int j)
         {
-            if (CellHasToBeHighlighted(i, j) )
+            if (CellHasToBeHighlighted(i, j))
             {
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -119,7 +129,7 @@
             if (isEditing && IsSelectedCell(i, j))
             {
                 table[i, j] = " " + Console.ReadLine().PadRight(8);
-                Console.SetCursorPosition(j * 8 + j - 4, i);                                              
+                Console.SetCursorPosition(j * 8 + j - 4, i);
                 Console.Write(table[i, j]);
                 isEditing = false;
                 return true;
