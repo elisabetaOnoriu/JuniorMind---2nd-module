@@ -88,9 +88,7 @@
                         break;
 
                     case ConsoleKey.Enter:
-                        isEditing = true;
-                        Console.SetCursorPosition(selectedRow * 8 + selectedRow - 4, selectedCol);
-                        Console.Write(table[selectedRow, selectedCol]);
+                        isEditing = true;                  
                         break;
                 }
             }
