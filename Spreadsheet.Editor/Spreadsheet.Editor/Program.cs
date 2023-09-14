@@ -72,7 +72,7 @@
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        if (selectedRow > 0)
+                        if (selectedRow > 1)
                             selectedRow--;
                         break;
 
@@ -82,12 +82,12 @@
                         break;
 
                     case ConsoleKey.LeftArrow:
-                        if (selectedCol > 0)
+                        if (selectedCol > 1)
                             selectedCol--;
                         break;
 
                     case ConsoleKey.RightArrow:
-                        if (selectedCol < defaultSize - 1)
+                        if (selectedCol < defaultSize - 2)
                             selectedCol++;
                         break;
 
