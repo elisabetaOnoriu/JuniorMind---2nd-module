@@ -13,14 +13,9 @@
         static void Main(string[] args)
         {
             BuildTable();
-            ConfigureLayout();
+            Console.WindowWidth = 14 * cellSize;
             NavigateThroughCells();
             Console.ResetColor();
-        }
-
-        static void ConfigureLayout()
-        {
-            Console.BufferWidth =  Math.Max(defaultSize * cellSize - 4, Console.WindowWidth);
         }
 
         static void BuildTable()
@@ -40,20 +35,29 @@
 
         static void GenerateTable(string[,] table)
         {
-
             for (int i = 0; i < defaultSize; i++)
             {
                 for (int j = 0; j < defaultSize; j++)
                 {
                     SetBackgroundAndForegroundColor(i, j);
-                    if (!EditSelectedCell(i, j))
+                    if (!EditSelectedCell(i, j) && FitsLayout(j))
                     {
                         Console.Write(table[i, j]);
                     }
                 }
 
-                Console.WriteLine();
+                Console.Write('\n');
             }
+        }
+
+        private static bool FitsLayout(int index)
+        {
+            if (index * cellSize < Console.WindowWidth)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         static void NavigateThroughCells()
@@ -88,7 +92,7 @@
                         break;
 
                     case ConsoleKey.Enter:
-                        isEditing = true;                  
+                        isEditing = true;
                         break;
                 }
             }
@@ -127,8 +131,12 @@
         static void SetHeaders(int i)
         {
             table[i, 0] = $"{i}".PadLeft(5);
-            table[0, i] = $"    {(char)('A' + i - 1)}    ";
-            table[i, defaultSize - 1] = "         ";
+            if (FitsLayout(i))
+            {
+                table[0, i] = $"    {(char)('A' + i - 1)}    ";
+            }
+            
+            table[i, defaultSize - 1] = new string(' ', cellSize);
         }
 
         private static bool EditSelectedCell(int i, int j)
@@ -136,7 +144,7 @@
             if (isEditing && IsSelectedCell(i, j))
             {
                 table[i, j] = " " + Console.ReadLine().PadRight(8);
-                Console.SetCursorPosition(j * 8 + j - 4, i);
+                Console.SetCursorPosition(j * cellSize - 4, i);
                 Console.Write(table[i, j]);
                 isEditing = false;
                 return true;
