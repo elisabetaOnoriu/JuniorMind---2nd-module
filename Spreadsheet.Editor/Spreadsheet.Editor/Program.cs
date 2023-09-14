@@ -7,15 +7,21 @@
         static bool isEditing = false;
         const int defaultSize = 21;
         const int cellSize = 9;
+        const int fittingCells = 14;
         const string defaultCell = "         ";
         static string[,] table = new string[defaultSize, defaultSize];
 
         static void Main(string[] args)
         {
             BuildTable();
-            Console.WindowWidth = 14 * cellSize;
+            SetWindowSize();           
             NavigateThroughCells();
             Console.ResetColor();
+        }
+
+        private static void SetWindowSize()
+        {
+            Console.WindowWidth = fittingCells * cellSize;
         }
 
         static void BuildTable()
