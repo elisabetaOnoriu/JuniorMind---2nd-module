@@ -13,15 +13,9 @@
 
         static void Main(string[] args)
         {
-            BuildTable();
-            SetWindowSize();           
+            BuildTable();           
             NavigateThroughCells();
             Console.ResetColor();
-        }
-
-        private static void SetWindowSize()
-        {
-            Console.WindowWidth = fittingCells * cellSize;
         }
 
         static void BuildTable()
@@ -58,7 +52,7 @@
 
         private static bool FitsLayout(int index)
         {
-            if (index * cellSize < Console.WindowWidth)
+            if (index * cellSize + 4 < Console.WindowWidth)
             {
                 return true;
             }
