@@ -7,13 +7,13 @@
         static bool isEditing = false;
         const int defaultSize = 21;
         const int cellSize = 9;
-        const int fittingCells = 14;
         const string defaultCell = "         ";
         static string[,] table = new string[defaultSize, defaultSize];
+        static ConsoleKeyInfo keyInfo;
 
         static void Main(string[] args)
         {
-            BuildTable();           
+            BuildTable();
             NavigateThroughCells();
             Console.ResetColor();
         }
@@ -35,22 +35,25 @@
 
         static void GenerateTable(string[,] table)
         {
-            for (int i = 0; i < defaultSize; i++)
+            bool done = false;
+            for (int i = 0; i < defaultSize &&!done; i++)
             {
-                for (int j = 0; j < defaultSize; j++)
+                for (int j = 0; j < defaultSize && LayoutFits(j); j++)
                 {
                     SetBackgroundAndForegroundColor(i, j);
-                    if (!EditSelectedCell(i, j) && FitsLayout(j))
+                    Console.Write(table[i, j]); 
+                    if (EditSelectedCell(i, j))
                     {
-                        Console.Write(table[i, j]);
-                    }
+                        done = true;
+                        break;
+                    }                                                        
                 }
 
                 Console.Write('\n');
             }
         }
 
-        private static bool FitsLayout(int index)
+        private static bool LayoutFits(int index)
         {
             if (index * cellSize + 4 < Console.WindowWidth)
             {
@@ -62,7 +65,6 @@
 
         static void NavigateThroughCells()
         {
-            ConsoleKeyInfo keyInfo;
             do
             {
                 Console.BackgroundColor = ConsoleColor.DarkGray;
@@ -93,11 +95,14 @@
 
                     case ConsoleKey.Enter:
                         isEditing = true;
+
                         break;
                 }
             }
             while (keyInfo.Key != ConsoleKey.Escape);
         }
+
+
 
         private static void SetBackgroundAndForegroundColor(int i, int j)
         {
@@ -131,11 +136,11 @@
         static void SetHeaders(int i)
         {
             table[i, 0] = $"{i}".PadLeft(5);
-            if (FitsLayout(i))
+            if (LayoutFits(i))
             {
                 table[0, i] = $"    {(char)('A' + i - 1)}    ";
             }
-            
+
             table[i, defaultSize - 1] = new string(' ', cellSize);
         }
 
@@ -143,10 +148,26 @@
         {
             if (isEditing && IsSelectedCell(i, j))
             {
-                table[i, j] = " " + Console.ReadLine().PadRight(8);
-                Console.SetCursorPosition(j * cellSize - 4, i);
-                Console.Write(table[i, j]);
-                isEditing = false;
+                int position = 0;
+                Console.SetCursorPosition(j * cellSize - 4 + position, i);             
+                do
+                {                  
+                    keyInfo = Console.ReadKey(true);
+                    if (keyInfo.Key == ConsoleKey.Enter)
+                    {
+                        isEditing = false;
+                    }
+                    else if (char.IsLetterOrDigit(keyInfo.KeyChar) || char.IsWhiteSpace(keyInfo.KeyChar))
+                    {
+                        table[i, j] = table[i,j][..position] + keyInfo.KeyChar + new string(' ', cellSize - position - 1);
+                        position++;
+                        isEditing = false;
+                        Console.Clear();
+                        GenerateTable(table);
+                    }
+
+                } while (keyInfo.Key != ConsoleKey.Enter);
+
                 return true;
             }
 
