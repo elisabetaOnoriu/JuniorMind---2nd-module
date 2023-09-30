@@ -68,8 +68,7 @@
             do
             {
                 Console.BackgroundColor = ConsoleColor.DarkGray;
-                Console.Clear();
-                GenerateTable(table);
+                RedrawTable();
                 keyInfo = Console.ReadKey();
                 switch (keyInfo.Key)
                 {
@@ -95,14 +94,12 @@
 
                     case ConsoleKey.Enter:
                         isEditing = true;
-
+                        EditSelectedCell(selectedRow, selectedCol);
                         break;
                 }
             }
             while (keyInfo.Key != ConsoleKey.Escape);
         }
-
-
 
         private static void SetBackgroundAndForegroundColor(int i, int j)
         {
@@ -146,32 +143,57 @@
 
         private static bool EditSelectedCell(int i, int j)
         {
-            if (isEditing && IsSelectedCell(i, j))
+            if (!(isEditing && IsSelectedCell(i, j)))
             {
-                int position = 0;
-                Console.SetCursorPosition(j * cellSize - 4 + position, i);             
-                do
-                {                  
-                    keyInfo = Console.ReadKey(true);
-                    if (keyInfo.Key == ConsoleKey.Enter)
-                    {
-                        isEditing = false;
-                    }
-                    else if (char.IsLetterOrDigit(keyInfo.KeyChar) || char.IsWhiteSpace(keyInfo.KeyChar))
-                    {
-                        table[i, j] = table[i,j][..position] + keyInfo.KeyChar + new string(' ', cellSize - position - 1);
-                        position++;
-                        isEditing = false;
-                        Console.Clear();
-                        GenerateTable(table);
-                    }
+               return false; 
+            }
+            
+            int position = 0;
+            Console.SetCursorPosition(j * cellSize - 4, i);
+            do
+            {              
+                position = WriteInCell(i, j, position);
+            } while (keyInfo.Key != ConsoleKey.Enter);
+            
+            return true;            
+        }
 
-                } while (keyInfo.Key != ConsoleKey.Enter);
+        static void RedrawTable()
+        {
+            Console.Clear();
+            GenerateTable(table);
+        }
 
-                return true;
+        static int AddCharToCell(int i, int j, int position)
+        {
+            try
+            {
+                table[i, j] = table[i,j][..position] + keyInfo.KeyChar + new string(' ', cellSize - position - 1);
+                position++;
+                isEditing = false;
+                RedrawTable();
+            }
+            catch(ArgumentOutOfRangeException e)
+            {
+                Console.WriteLine(e.Message);
             }
 
-            return false;
+            return position;
         }
-    }
+
+        static int WriteInCell(int i, int j, int position)
+        {
+            keyInfo = Console.ReadKey(true);
+            if (keyInfo.Key == ConsoleKey.Enter)
+            {
+                isEditing = false;
+            }
+            else if (char.IsLetterOrDigit(keyInfo.KeyChar) || char.IsWhiteSpace(keyInfo.KeyChar))
+            {
+                return AddCharToCell(i, j, position);                     
+            }
+
+            return position;
+        }
+    }    
 }
