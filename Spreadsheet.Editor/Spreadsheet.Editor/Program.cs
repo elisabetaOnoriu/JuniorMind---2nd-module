@@ -175,7 +175,7 @@
             }
             catch(ArgumentOutOfRangeException e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Your content length reached the maximum cell size.");
             }
 
             return position;
