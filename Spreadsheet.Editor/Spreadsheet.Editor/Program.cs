@@ -136,7 +136,7 @@
                     }
                     break;
                 case ConsoleKey.LeftArrow:
-                    if ((Console.CursorLeft - 5) % j > 0)
+                    if (cursorLeftIndexExcluded % j > 0)
                         Console.SetCursorPosition(Console.CursorLeft - 1, i);
                     break;
                 case ConsoleKey.RightArrow:
