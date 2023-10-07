@@ -122,24 +122,25 @@
         static void WriteInCell(int i, int j)
         {
             keyInfo = Console.ReadKey(true);
+            int cursorLeftIndexExcluded = Console.CursorLeft - 5;
             switch (keyInfo.Key)
             {
                 case ConsoleKey.Enter:
                     table.IsEditing = false;
                     break;
                 case ConsoleKey.Backspace:
-                    if (table.SelectedCol > 1)
+                    if (cursorLeftIndexExcluded % table.CellSize > 0)
                     {
-                        table[i, j].RemoveChar((Console.CursorLeft - 5) % table[i, j].Size - 1);
+                        table[i, j].RemoveChar(cursorLeftIndexExcluded % table[i, j].Size - 1);
                         Update(-1, i);
                     }
                     break;
                 case ConsoleKey.LeftArrow:
-                    if (Console.CursorLeft > 0)
+                    if ((Console.CursorLeft - 5) % j > 0)
                         Console.SetCursorPosition(Console.CursorLeft - 1, i);
                     break;
                 case ConsoleKey.RightArrow:
-                    if (Console.CursorLeft - 5 < (Console.CursorLeft - 5) % table.SelectedRow)
+                    if (cursorLeftIndexExcluded < cursorLeftIndexExcluded % table.SelectedRow)
                         Console.SetCursorPosition(Console.CursorLeft + 1, i);
                     break;
                 default:
