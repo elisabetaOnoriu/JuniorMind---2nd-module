@@ -2,46 +2,24 @@
 {
     class Program
     {
-        static int selectedRow = 1;
-        static int selectedCol = 1;
-        static bool isEditing = false;
-        const int defaultSize = 21;
-        const int cellSize = 9;
-        const string defaultCell = "         ";
-        static string[,] table = new string[defaultSize, defaultSize];
+        static Table.Table table = new();
         static ConsoleKeyInfo keyInfo;
 
         static void Main(string[] args)
         {
-            BuildTable();
             NavigateThroughCells();
             Console.ResetColor();
         }
 
-        static void BuildTable()
-        {
-            for (int i = 1; i < defaultSize; i++)
-            {
-                for (int j = 1; j < defaultSize; j++)
-                {
-                    table[i, j] = defaultCell;
-                }
-
-                SetHeaders(i);
-            }
-
-            table[0, 0] = "     ";
-        }
-
-        static void GenerateTable(string[,] table)
+        static void GenerateTable()
         {
             bool done = false;
-            for (int i = 0; i < defaultSize &&!done; i++)
+            for (int i = 0; i < table.DefaultSize &&!done; i++)
             {
-                for (int j = 0; j < defaultSize && LayoutFits(j); j++)
+                for (int j = 0; j < table.DefaultSize && table.LayoutFits(j); j++)
                 {
                     SetBackgroundAndForegroundColor(i, j);
-                    Console.Write(table[i, j]); 
+                    Console.Write(table[i, j].Content); 
                     if (EditSelectedCell(i, j))
                     {
                         done = true;
@@ -51,16 +29,6 @@
 
                 Console.Write('\n');
             }
-        }
-
-        private static bool LayoutFits(int index)
-        {
-            if (index * cellSize + 4 < Console.WindowWidth)
-            {
-                return true;
-            }
-
-            return false;
         }
 
         static void NavigateThroughCells()
@@ -73,28 +41,28 @@
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        if (selectedRow > 1)
-                            selectedRow--;
+                        if (table.SelectedRow > 1)
+                            table.SelectedRow--;
                         break;
 
                     case ConsoleKey.DownArrow:
-                        if (selectedRow < defaultSize - 1)
-                            selectedRow++;
+                        if (table.SelectedRow < table.DefaultSize - 1)
+                            table.SelectedRow++;
                         break;
 
                     case ConsoleKey.LeftArrow:
-                        if (selectedCol > 1)
-                            selectedCol--;
+                        if (table.SelectedCol > 1)
+                            table.SelectedCol--;
                         break;
 
                     case ConsoleKey.RightArrow:
-                        if (selectedCol < defaultSize - 2)
-                            selectedCol++;
+                        if (table.SelectedCol < table.DefaultSize - 2)
+                            table.SelectedCol++;
                         break;
 
                     case ConsoleKey.Enter:
-                        isEditing = true;
-                        EditSelectedCell(selectedRow, selectedCol);
+                        table.IsEditing = true;
+                        EditSelectedCell(table.SelectedRow, table.SelectedCol);
                         break;
                 }
             }
@@ -103,7 +71,7 @@
 
         private static void SetBackgroundAndForegroundColor(int i, int j)
         {
-            if (CellHasToBeHighlighted(i, j))
+            if (table.CellHasToBeHighlighted(i, j))
             {
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -115,44 +83,18 @@
             }
         }
 
-        private static bool CellHasToBeHighlighted(int i, int j)
-        {
-            bool highlight = IsHeader(i, j);
-            if (highlight && i == selectedRow)
-            {
-                highlight = false;
-            }
-
-            return IsSelectedCell(i, j) || highlight;
-        }
-
-        private static bool IsSelectedCell(int i, int j) => i == selectedRow && j == selectedCol;
-
-        private static bool IsHeader(int i, int j) => i == 0 || j == 0;
-
-        static void SetHeaders(int i)
-        {
-            table[i, 0] = $"{i}".PadLeft(5);
-            if (LayoutFits(i))
-            {
-                table[0, i] = $"    {(char)('A' + i - 1)}    ";
-            }
-
-            table[i, defaultSize - 1] = new string(' ', cellSize);
-        }
 
         private static bool EditSelectedCell(int i, int j)
         {
-            if (!(isEditing && IsSelectedCell(i, j)))
+            if (!(table.IsEditing && table.IsSelectedCell(i, j)))
             {
                return false; 
             }
-            
-            int position = 0;
-            Console.SetCursorPosition(j * cellSize - 4, i);
+
+            Console.SetCursorPosition(j * table[i,j].Size - 4 + table[i, j].Count, i);
             do
             {              
-                position = WriteInCell(i, j, position);
+                WriteInCell(i, j);
             } while (keyInfo.Key != ConsoleKey.Enter);
             
             return true;            
@@ -161,39 +103,57 @@
         static void RedrawTable()
         {
             Console.Clear();
-            GenerateTable(table);
+            GenerateTable();
         }
 
-        static int AddCharToCell(int i, int j, int position)
+        static void AddCharToCell(int i, int j)
         {
-            try
+            if (table[i, j].Count == table[i, j].Size)
             {
-                table[i, j] = table[i,j][..position] + keyInfo.KeyChar + new string(' ', cellSize - position - 1);
-                position++;
-                isEditing = false;
-                RedrawTable();
-            }
-            catch(ArgumentOutOfRangeException e)
-            {
+                Console.SetCursorPosition(0, table.DefaultSize);
                 Console.WriteLine("Your content length reached the maximum cell size.");
+                return;
             }
-
-            return position;
+            
+            table[i, j].AddChar(keyInfo.KeyChar, (Console.CursorLeft - 5) % table[i, j].Size);
+            Update(1, i);
         }
 
-        static int WriteInCell(int i, int j, int position)
+        static void WriteInCell(int i, int j)
         {
             keyInfo = Console.ReadKey(true);
-            if (keyInfo.Key == ConsoleKey.Enter)
+            switch (keyInfo.Key)
             {
-                isEditing = false;
+                case ConsoleKey.Enter:
+                    table.IsEditing = false;
+                    break;
+                case ConsoleKey.Backspace:
+                    if (table.SelectedCol > 1)
+                    {
+                        table[i, j].RemoveChar((Console.CursorLeft - 5) % table[i, j].Size - 1);
+                        Update(-1, i);
+                    }
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (Console.CursorLeft > 0)
+                        Console.SetCursorPosition(Console.CursorLeft - 1, i);
+                    break;
+                case ConsoleKey.RightArrow:
+                    if (Console.CursorLeft - 5 < (Console.CursorLeft - 5) % table.SelectedRow)
+                        Console.SetCursorPosition(Console.CursorLeft + 1, i);
+                    break;
+                default:
+                    AddCharToCell(i, j);
+                    break;
             }
-            else if (char.IsLetterOrDigit(keyInfo.KeyChar) || char.IsWhiteSpace(keyInfo.KeyChar))
-            {
-                return AddCharToCell(i, j, position);                     
-            }
+        }
 
-            return position;
+        static void Update(int moveCursor, int column)
+        {
+            int cursorLeft = Console.CursorLeft;
+            table.IsEditing = false;
+            RedrawTable();
+            Console.SetCursorPosition(cursorLeft + moveCursor, column);
         }
     }    
 }
