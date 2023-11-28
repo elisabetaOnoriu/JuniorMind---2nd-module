@@ -250,9 +250,9 @@
             }
             if (i == table.SelectedRow 
             &&  table[i, table.SelectedCol].Count > table.CellSize
-            &&  table[i, table.SelectedCol].Count + columnsBefore * table.CellSize > j * table.CellSize)
+            &&  table[i, table.SelectedCol].Count + columnsBefore * table.CellSize > (j - 1) * table.CellSize)
             {
-                return true;
+                return table.IsEditing;
             }
 
             return false;
