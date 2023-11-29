@@ -5,7 +5,6 @@
         static Table.Table table = new();
         static ConsoleKeyInfo keyInfo;
         static int firstCellSize = 5;
-        static int widthOutsideOfTable = 7;
         static int visibleColumns;
         static int cursorPosition;
 
@@ -64,12 +63,12 @@
                             table.SelectedCol++;
                         break;
 
-                    case ConsoleKey.Enter: 
+                    case ConsoleKey.Enter:
                         TurnEditingModeON(true);
                         RedrawTable();
                         MoveCursorToEndOfContent(table.SelectedRow, table.SelectedCol);
                         cursorPosition = Console.CursorLeft;
-                        EditSelectedCell(table.SelectedRow, table.SelectedCol);                                          
+                        EditSelectedCell(table.SelectedRow, table.SelectedCol);
                         break;
                 }
             }
@@ -139,15 +138,20 @@
 
         static void AddCharToCell(int i, int j)
         {
+            int cellPosition = CursorCellPosition(j);
             if (!ContentFitsWidth(i, j))
             {
-                table[i, j].AddChar(keyInfo.KeyChar, table[i, j].Count);
-                table[i, j].VisibleContentStartIndex++;
-                RedrawTable();
+                table[i, j].AddChar(keyInfo.KeyChar, cellPosition + table[i, j].VisibleContentStartIndex);
+                if (cellPosition + table[i, j].VisibleContentStartIndex == table[i, j].Count - 1)
+                {
+                    table[i, j].VisibleContentStartIndex++;
+                }
+
+                Update(1, i);
                 return;
             }
 
-            table[i, j].AddChar(keyInfo.KeyChar, CursorCellPosition(j));
+            table[i, j].AddChar(keyInfo.KeyChar, cellPosition);
             Update(1, i);
         }
 
@@ -176,7 +180,6 @@
                         Console.SetCursorPosition(Console.CursorLeft - 1, i);
                         cursorPosition--;
                     }
-                        
                     else if (table[i, j].VisibleContentStartIndex > 0)
                     {
                         table[i, j].VisibleContentStartIndex--;
@@ -185,16 +188,17 @@
                     }
                     break;
                 case ConsoleKey.RightArrow:
-                    if (cellPositionCursor < VisibleContent(i, j).Length && Console.CursorLeft < Console.WindowWidth)
-                    {
-                        Console.SetCursorPosition(Console.CursorLeft + 1, i);
-                        cursorPosition++;
-                    }
-                    else if (!ContentFitsWidth(i, j))
+                    if (!ContentFitsWidth(i, j) && table[i, j].Count - table[i, j].VisibleContentStartIndex > VisibleContent(i, j).Length)
                     {
                         table[i, j].VisibleContentStartIndex++;
                         RedrawTable();
                     }
+                    else if (cellPositionCursor < VisibleContent(i, j).Length && Console.CursorLeft < Console.WindowWidth - 1)
+                    {
+                        Console.SetCursorPosition(Console.CursorLeft + 1, i);
+                        cursorPosition++;
+                    }
+                    
                     break;
                 default:
                     AddCharToCell(i, j);
@@ -206,7 +210,14 @@
         {
             int newPosition = Console.CursorLeft + moveCursor;
             RedrawTable();
-            Console.SetCursorPosition(newPosition, row);
+            if (newPosition < Console.WindowWidth)
+            {
+                Console.SetCursorPosition(newPosition, row);
+            }
+            else
+            {
+                Console.SetCursorPosition(newPosition - moveCursor, row);
+            }
         }
 
         static int CursorCellPosition(int j)
@@ -216,7 +227,7 @@
 
         static bool ContentFitsWidth(int i, int j)
         {
-            return (j - 1) * table.CellSize + table[i, j].Count + firstCellSize < Console.WindowWidth - widthOutsideOfTable;
+            return (j - 1) * table.CellSize + table[i, j].Count + 1 + firstCellSize < Console.WindowWidth;
         }
 
         static int CellSizeFittingWidth(int j) => Console.WindowWidth - firstCellSize - (j - 1) * table.CellSize;
@@ -225,7 +236,8 @@
         {
             if (table.IsSelectedCell(i, j) && table.IsEditing == true && table[i, j].IsEditing)
             {
-                return table[i, j].Content[table[i, j].VisibleContentStartIndex..Math.Min(CellSizeFittingWidth(j), table[i, j].Count)];
+                int startIndex = table[i, j].VisibleContentStartIndex;
+                return table[i, j].Content[startIndex..Math.Min(CellSizeFittingWidth(j) + startIndex, table[i, j].Count)];
             }
             else if (!table.IsHeader(i, j) && j < visibleColumns - 1 && table[i, j + 1].Count > 0)
             {
@@ -236,7 +248,7 @@
                 return table[i, j].Content;
             }
 
-            return table[i, j].Content[table[i, j].VisibleContentStartIndex..table.CellSize];
+            return table[i, j].Content[..table.CellSize];
         }
 
         static bool ShouldSkipCell(int i, int j)
@@ -248,9 +260,9 @@
             {
                 return false;
             }
-            if (i == table.SelectedRow 
-            &&  table[i, table.SelectedCol].Count > table.CellSize
-            &&  table[i, table.SelectedCol].Count + columnsBefore * table.CellSize > (j - 1) * table.CellSize)
+            if (i == table.SelectedRow
+            && table[i, table.SelectedCol].Count > table.CellSize
+            && table[i, table.SelectedCol].Count + columnsBefore * table.CellSize > (j - 1) * table.CellSize)
             {
                 return table.IsEditing;
             }

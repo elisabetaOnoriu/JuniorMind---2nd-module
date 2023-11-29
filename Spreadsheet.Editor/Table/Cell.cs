@@ -23,9 +23,17 @@
 
         public void AddChar(char toAdd, int index)
         {
-            string half = Count > 0 ? Content[..index] : "";
-            string otherHalf = Count > index ? Content[index..] : "";
-            Content = (half + toAdd + otherHalf).PadRight(Size);
+            if (index >= Count - 1 && Size > defaultLength)
+            {
+                Content += toAdd;
+            }
+            else
+            {
+                string half = Count > 0 ? Content[..index] : "";
+                string otherHalf = Count > index ? Content[index..] : "";
+                Content = (half + toAdd + otherHalf).PadRight(Size);
+            }
+            
             Count++;
         }
 
