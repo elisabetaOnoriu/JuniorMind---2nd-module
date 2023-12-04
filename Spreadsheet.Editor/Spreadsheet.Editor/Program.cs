@@ -132,7 +132,7 @@
 
         static void RedrawTable()
         {
-            Console.Clear();
+            Console.SetCursorPosition(0, 0);
             GenerateTable();
         }
 
