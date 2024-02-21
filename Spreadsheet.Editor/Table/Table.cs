@@ -1,4 +1,5 @@
-﻿namespace Table
+﻿using ConsoleDatas;
+namespace Table
 {
     public class Table
     {
@@ -21,15 +22,19 @@
             set => table[index, secondIndex] = value;
         }
 
+        public int FirstCellSize { get; set; } = 5; //cellsize/2.MathCeiling
+
         public int SelectedRow { get; set; } = 1;
 
         public int SelectedCol { get; set; } = 1;
 
-        public bool IsEditing { get; set; }
+        public bool IsEditing { get; set; } = false;
 
         public int DefaultSize { get => defaultSize; set => defaultSize = value; }
 
         public int CellSize { get; set; } = 9;
+
+        public ConsoleData ConsoleData { get; set; } = new ConsoleData();
 
         public bool IsSelectedCell(int i, int j) => i == SelectedRow && j == SelectedCol;
 
@@ -59,15 +64,33 @@
 
             return IsSelectedCell(i, j) || highlight;
         }
+
         public bool LayoutFits(int index)
         {
-            if (index * CellSize + 4 < windowWidth)
+            if (index * CellSize + 5 < windowWidth)
             {
                 return true;
             }
 
             return false;
         }
+
+        public void TurnEditingModeON(bool on)
+        {
+            IsEditing = on;
+            table[SelectedRow, SelectedCol].IsEditing = on;
+        }
+
+        public bool ContentFitsWidth(int i, int j)
+        {
+            return (j - 1) * CellSize + table[i, j].Count + 1 + FirstCellSize <= ConsoleData.Width - GetWidthOutsideOfTable();
+        }
+
+        public int GetWidthOutsideOfTable() => ConsoleData.Width - (GetVisibleColumns() - 1) * CellSize - FirstCellSize;
+
+        public int GetVisibleColumns() => (ConsoleData.Width - FirstCellSize) / CellSize + 1;
+
+        public int CellSizeFittingWidth(int j) => ConsoleData.Width - FirstCellSize - (j - 1) * CellSize - GetWidthOutsideOfTable();
 
         private void SetHeaders(int i)
         {

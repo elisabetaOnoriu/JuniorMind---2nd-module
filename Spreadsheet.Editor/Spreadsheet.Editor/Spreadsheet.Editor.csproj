@@ -13,6 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ConsoleData\ConsoleData.csproj" />
+    <ProjectReference Include="..\DisplayCell\DisplayCell.csproj" />
     <ProjectReference Include="..\Table\Table.csproj" />
   </ItemGroup>
 

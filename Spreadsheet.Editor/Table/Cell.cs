@@ -3,12 +3,13 @@
     public class Cell
     {
         int defaultLength;
+
         public Cell(int length = 9)
         {
             defaultLength = length;
             Content = new string(' ', length);
         }
-      
+
         public int VisibleContentStartIndex { get; set; } = 0;
         
         public int Size { get => Content.Length; }
@@ -23,7 +24,7 @@
 
         public void AddChar(char toAdd, int index)
         {
-            if (index >= Count - 1 && Size > defaultLength)
+            if (index >= Count - 1 && Count >= Size)
             {
                 Content += toAdd;
             }
@@ -44,6 +45,6 @@
                 Content = (Content[..index] + otherHalf).PadRight(Size);
             }
             Count--;
-        }       
+        }
     }
 }
