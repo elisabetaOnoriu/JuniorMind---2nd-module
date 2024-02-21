@@ -1,6 +1,6 @@
 ﻿namespace DisplayCell
 {
-    internal class NotShowableDisplay : IDisplayCell
+    public class NotShowableDisplay : IDisplayCell
     {
         public string DisplayContent() => "";
     }

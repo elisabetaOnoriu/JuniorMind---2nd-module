@@ -228,7 +228,15 @@ namespace SpreadsheetConsole
         static string VisibleContent(int i, int j)
         {
             Displayable displayable = new(table, i, j);
-            return displayable.Get().DisplayContent();
+            var toDisplay = displayable.Get();
+            if (toDisplay is NotShowableDisplay)
+            {
+                if (j == table.GetVisibleColumns() - 1)
+                    ResetCursorPosition(i + 1, j);
+                else
+                    ResetCursorPosition(i, j + 1);
+            }
+            return toDisplay.DisplayContent();
         }
 
         static void SetConsoleData()
