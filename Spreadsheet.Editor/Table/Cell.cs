@@ -22,6 +22,8 @@
 
         public string DefaultSizedContent() => Content[..defaultLength];
 
+        public string DisplayCell { get; set; } = "";
+
         public void AddChar(char toAdd, int index)
         {
             if (index >= Count - 1 && Count >= Size)

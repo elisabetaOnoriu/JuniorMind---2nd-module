@@ -62,6 +62,7 @@ namespace SpreadsheetConsole
                         break;
 
                     case ConsoleKey.Enter:
+                        MoveCursorToEndOfContent(table.SelectedRow, table.SelectedCol);
                         table.TurnEditingModeON(true);
                         RedrawTable();
                         MoveCursorToEndOfContent(table.SelectedRow, table.SelectedCol);
@@ -124,7 +125,7 @@ namespace SpreadsheetConsole
 
         private static void MoveCursorToEndOfContent(int i, int j)
         {
-            int size = table[i, j].Count < table.CellSize ? table[i, j].Count : VisibleContent(i, j).Length - 1;           
+            int size = table[i, j].Count < table.CellSize ? table[i, j].Count : VisibleContent(i, j).Length;           
             if (table.CellSizeFittingWidth(j) > 0)
             {
                 Console.SetCursorPosition(j * table.CellSize - 4 + size, i);
@@ -164,7 +165,7 @@ namespace SpreadsheetConsole
                     table.IsEditing = false;
                     break;
                 case ConsoleKey.Backspace:
-                    int cellsBefore = j > 1 ? j - 1 : 0;
+                    int cellsBefore = j - 1;
                     int index = cursorLeftIndexExcluded - cellsBefore * table.CellSize;
                     if (index + 1 > 0)
                     {
@@ -236,7 +237,9 @@ namespace SpreadsheetConsole
                 else
                     ResetCursorPosition(i, j + 1);
             }
-            return toDisplay.DisplayContent();
+
+            table[i, j].DisplayCell = toDisplay.DisplayContent();
+            return table[i, j].DisplayCell;
         }
 
         static void SetConsoleData()

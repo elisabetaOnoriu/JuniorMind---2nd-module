@@ -39,7 +39,6 @@
             int columnsNotToCount = 2;
             int columnsBefore = table.SelectedCol > firstNonHeaderColumnIndex ? table.SelectedCol - columnsNotToCount : 0;
             if (row == table.SelectedRow && column <= table.SelectedCol)
-                //|| column == table.SelectedCol + 1)
             {
                 return false;
             }
@@ -47,7 +46,7 @@
             && table[row, table.SelectedCol].Count > table.CellSize
             && table[row, table.SelectedCol].Count + columnsBefore * table.CellSize > (column - columnsNotToCount) * table.CellSize)
             {
-                return table.IsEditing;
+                return table[row, table.SelectedCol].DisplayCell.Length > table.CellSize;
             }
 
             return false;
