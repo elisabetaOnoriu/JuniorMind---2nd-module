@@ -171,7 +171,9 @@ namespace SpreadsheetConsole
                     if (index + 1 > 0)
                     {
                         table[i, j].RemoveChar(index);
-                        Update(-1, i);
+                        Console.CursorLeft--; 
+                        Console.Write(" ");
+                        Update(-1, i);                       
                     }
                     break;
                 case ConsoleKey.LeftArrow:

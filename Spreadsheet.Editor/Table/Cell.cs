@@ -48,6 +48,7 @@
             }
 
             Count--;
+            Content = Content.PadRight(this.defaultLength);
         }
     }
 }
