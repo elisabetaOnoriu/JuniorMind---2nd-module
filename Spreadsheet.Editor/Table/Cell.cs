@@ -42,10 +42,11 @@
 
         public void RemoveChar(int index)
         {
-            string otherHalf = index == this.Count ?  "" : Content[(index + 1)..];
+            string otherHalf = index == this.Count ?  "" : Content[index..];
             {
-                Content = (Content[..index] + otherHalf).PadRight(Size);
+                Content = Content[..(index - 1)] + otherHalf;
             }
+
             Count--;
         }
     }

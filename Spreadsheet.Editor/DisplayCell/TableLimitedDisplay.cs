@@ -1,7 +1,7 @@
 ﻿using Table;
 namespace DisplayCell
 {
-    internal class TableLimitedDisplay : IDisplayCell
+    public class TableLimitedDisplay : IDisplayCell
     {
         Table.Table table;
         int row;

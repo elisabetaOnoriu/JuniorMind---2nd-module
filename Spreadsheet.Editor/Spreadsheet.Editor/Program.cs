@@ -22,8 +22,7 @@ namespace SpreadsheetConsole
             for (int i = 0; i < table.DefaultSize; i++)
             {
                 for (int j = 0; table.LayoutFits(j); j++)
-                {
-                    
+                {               
                     SetBackgroundAndForegroundColor(i, j);
                     Console.Write(VisibleContent(i, j));
                 }
@@ -145,13 +144,15 @@ namespace SpreadsheetConsole
         {
             int cellPosition = CursorCellPosition(j);
             int nextPosition = 1;
+            bool startIndexRaises = false;
             if (cellPosition + nextPosition > table.CellSizeFittingWidth(j))
             {
                 table[i, j].VisibleContentStartIndex++;
+                startIndexRaises = true;
             }
 
             table[i, j].AddChar(keyInfo.KeyChar, cellPosition + table[i, j].VisibleContentStartIndex);
-            Update(1, i);
+            Update(startIndexRaises ? 0 : 1, i);
         }
 
         static void WriteInCell(int i, int j)
@@ -237,6 +238,8 @@ namespace SpreadsheetConsole
                 else
                     ResetCursorPosition(i, j + 1);
             }
+            else if (toDisplay is TableLimitedDisplay)
+                    ResetCursorPosition(i, j);
 
             table[i, j].DisplayCell = toDisplay.DisplayContent();
             return table[i, j].DisplayCell;
