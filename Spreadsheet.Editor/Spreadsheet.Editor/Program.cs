@@ -167,12 +167,19 @@ namespace SpreadsheetConsole
                     break;
                 case ConsoleKey.Backspace:
                     int cellsBefore = j - 1;
-                    int index = cursorLeftIndexExcluded - cellsBefore * table.CellSize;
+                    int index = cursorLeftIndexExcluded - cellsBefore * table.CellSize + table[i, j].VisibleContentStartIndex;
                     if (index + 1 > 0)
                     {
                         table[i, j].RemoveChar(index);
-                        Console.CursorLeft--; 
+                        
+                        Console.CursorLeft--;
                         Console.Write(" ");
+                        if (table[i, j].VisibleContentStartIndex > 0 && index > table.CellSize)
+                        {
+                            table[i, j].VisibleContentStartIndex--;
+                            Console.CursorLeft++;
+                        } 
+                                               
                         Update(-1, i);                       
                     }
                     break;
