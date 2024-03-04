@@ -197,12 +197,14 @@ namespace SpreadsheetConsole
                     }
                     break;
                 case ConsoleKey.RightArrow:
-                    if (!table.ContentFitsWidth(i, j) && table[i, j].Count - table[i, j].VisibleContentStartIndex > VisibleContent(i, j).Length)
+                    if (!table.ContentFitsWidth(i, j) && cellPositionCursor == table[i, j].DisplayCell.Length
+                        && cellPositionCursor + table[i, j].VisibleContentStartIndex < table[i, j].Count)
                     {
                         table[i, j].VisibleContentStartIndex++;
                         RedrawTable();
+                        Console.SetCursorPosition(table.FirstCellSize + (j - 1) * table.CellSize + table[i, j].DisplayCell.Length, i);
                     }
-                    else if (cellPositionCursor == VisibleContent(i, j).Length - 1 && Console.CursorLeft < Console.WindowWidth - 1)
+                    else if (cellPositionCursor < table.CellSize)
                     {
                         Console.SetCursorPosition(Console.CursorLeft + 1, i);
                         cursorPosition++;
