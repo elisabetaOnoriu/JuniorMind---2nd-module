@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NuGetEnablePackageRestore" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ConsoleData\ConsoleData.csproj" />
     <ProjectReference Include="..\Table\Table.csproj" />
   </ItemGroup>

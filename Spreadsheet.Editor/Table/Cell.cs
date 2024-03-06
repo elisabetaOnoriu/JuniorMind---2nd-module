@@ -42,7 +42,12 @@
 
         public void RemoveChar(int index)
         {
-            string otherHalf = index == this.Count ?  "" : Content[index..];
+            if (index < 0 || index > Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            string otherHalf = index == this.Count ? "" : Content[index..];
             {
                 Content = Content[..(index - 1)] + otherHalf;
             }
