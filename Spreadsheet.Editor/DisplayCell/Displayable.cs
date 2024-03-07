@@ -15,7 +15,11 @@
 
         public IDisplayCell Get()
         {
-            if (ContentShouldBeCellLimited())
+            if (ShouldSkipCell())
+            {
+                return new NotShowableDisplay();
+            }
+            else if (ContentShouldBeCellLimited())
             {
                 return new CellLimitedDisplay(table, row, column);
             }
@@ -23,11 +27,7 @@
             {
                 return new FragmentedDisplay(table, row, column, difference);
             }
-            else if (ShouldSkipCell())
-            {
-                return new NotShowableDisplay();
-            }
-
+            
             return new TableLimitedDisplay(table, row, column);
         }
 
@@ -73,7 +73,8 @@
             differenceBetweenSelectedCellAndIteratedCell =
                 (table.SelectedCol - 1) * table.CellSize + selectedColumnLengthShown - indexOfIteratedCell
                 ;
-            return table[row, table.SelectedCol].Count > this.table.CellSize && differenceBetweenSelectedCellAndIteratedCell > 0;
+            return table[row, table.SelectedCol].Count > this.table.CellSize && differenceBetweenSelectedCellAndIteratedCell > 0
+                && differenceBetweenSelectedCellAndIteratedCell < table[row, column].Size;
         }
     }
 }
