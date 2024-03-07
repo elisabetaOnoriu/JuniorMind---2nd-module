@@ -168,7 +168,7 @@ namespace SpreadsheetConsole
                 case ConsoleKey.Backspace:
                     int cellsBefore = j - 1;
                     int index = cursorLeftIndexExcluded - cellsBefore * table.CellSize + table[i, j].VisibleContentStartIndex;
-                    if (index + 1 > 0)
+                    if (index > 0)
                     {
                         table[i, j].RemoveChar(index);
                         

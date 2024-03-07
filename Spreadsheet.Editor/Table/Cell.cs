@@ -42,7 +42,7 @@
 
         public void RemoveChar(int index)
         {
-            if (index < 0 || index > Count)
+            if (index > Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
