@@ -16,7 +16,7 @@
         }
         public string DisplayContent()
         {
-            return table[row, column].Content[difference..];
+            return table[row, column].Content[(difference + table[row, column].VisibleContentStartIndex)..];
         }
     }
 }
