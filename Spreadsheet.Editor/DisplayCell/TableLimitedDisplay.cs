@@ -17,7 +17,8 @@ namespace DisplayCell
         public string DisplayContent()
         {
             int startIndex = table[row, column].VisibleContentStartIndex;
-            return table[row, column].Content[startIndex..Math.Min(table.CellSizeFittingWidth(column), table[row, column].Size)];
+            return table[row, column].Content[startIndex..Math.Min(table.CellSizeFittingWidth(column) + startIndex,
+                table[row, column].Size)];
         }
     }
 }
