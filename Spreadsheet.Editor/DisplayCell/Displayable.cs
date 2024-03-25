@@ -39,24 +39,27 @@
         }
         private bool ShouldSkipCell()
         {
-            int firstNonHeaderColumnIndex = 1;
             int columnsNotToCount = 2;
-            int columnsBefore = table.SelectedCol > firstNonHeaderColumnIndex ? table.SelectedCol - columnsNotToCount : 0;
-            if (row == table.SelectedRow && column <= table.SelectedCol)
+            int columnsBeforeSelectedOne = GetColumnsBefore(table.SelectedCol, columnsNotToCount);
+            if (row == table.SelectedRow && column < table.SelectedCol)
             {
                 return false;
             }
             else if (row == table.SelectedRow
             && table[row, table.SelectedCol].Count > table.CellSize
-            && table[row, table.SelectedCol].Count + columnsBefore * table.CellSize > (column - columnsNotToCount) * table.CellSize)
+            && table[row, table.SelectedCol].Count + columnsBeforeSelectedOne * table.CellSize > (column - columnsNotToCount) * table.CellSize)
             {
-                return table[row, table.SelectedCol].DisplayCell.Length > table.CellSize;
+                return table[row, column].Count == 0;
             }
 
             return false;
         }
 
-
+        private int GetColumnsBefore(int column, int columnsNotToCount)
+        {
+            int firstNonHeaderColumnIndex = 1;
+            return column > firstNonHeaderColumnIndex ? column - columnsNotToCount : 0;
+        }
         private bool CellsAreIntersecting(out int differenceBetweenSelectedCellAndIteratedCell)
         {
             if (table.SelectedRow != row || table.SelectedCol >= column || !table.IsEditing || table[row, column].Count == 0)

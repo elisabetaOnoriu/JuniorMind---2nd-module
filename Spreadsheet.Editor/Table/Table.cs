@@ -57,7 +57,7 @@ namespace Table
         public bool CellHasToBeHighlighted(int i, int j)
         {
             bool highlight = IsHeader(i, j);
-            if (highlight && i == SelectedRow)
+            if (highlight && (i == SelectedRow || j == SelectedCol))
             {
                 highlight = false;
             }

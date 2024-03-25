@@ -1,12 +1,10 @@
-﻿using ConsoleDatas;
-using DisplayCell;
+﻿using DisplayCell;
 namespace SpreadsheetConsole
 {
     public class Program
     {
         static Table.Table table = new();
         static ConsoleKeyInfo keyInfo;
-        static int visibleColumns = table.GetVisibleColumns();
         static int cursorPosition;
         static int widthOutsideOfTable = table.GetWidthOutsideOfTable();
 
@@ -260,7 +258,7 @@ namespace SpreadsheetConsole
         {
             table.ConsoleData.CursorTop = Console.CursorTop;
             table.ConsoleData.CursorLeft = Console.CursorLeft;
-            table.ConsoleData.Height = Console.WindowHeight;    
+            table.ConsoleData.Height = Console.WindowHeight;
             table.ConsoleData.Width = Console.WindowWidth;    
         }
     }
