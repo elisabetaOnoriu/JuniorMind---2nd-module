@@ -21,8 +21,9 @@ namespace SpreadsheetConsole
             {
                 for (int j = 0; table.LayoutFits(j); j++)
                 {               
-                    SetBackgroundAndForegroundColor(i, j);
+                    SetBackgroundAndForegroundColor(i, j);                  
                     Console.Write(VisibleContent(i, j));
+                    VerifyOverlapping(i, j);
                 }
 
                 Console.Write('\n');
@@ -100,7 +101,11 @@ namespace SpreadsheetConsole
         private static bool EditSelectedCell(int i, int j)
         {
             table.TurnEditingModeON(true);
-            ErasePreviousExtraContent(i, j);
+            if (table.OverlappedCells.Contains((i, j)))
+            {
+                ErasePreviousExtraContent(i, j);
+            }
+            
             MoveCursorToEndOfContent(i, j);
             do
             {
@@ -113,10 +118,11 @@ namespace SpreadsheetConsole
 
         private static void ErasePreviousExtraContent(int i, int j)
         {
-            if (table[i, j].Count == 0)
+            if (!table.IsHeader(i, j))//table[i, j].Count == 0)
             {
+                ResetCursorPosition(i, j);
                 Console.Write(new String(' ', table.CellSize));
-                MoveCursorToEndOfContent(i, j);
+                ResetCursorPosition(i, j);
             }
         }
 
@@ -215,6 +221,67 @@ namespace SpreadsheetConsole
             }
         }
 
+        private static void VerifyOverlapping(int i, int j)
+        {
+            if (RemoveFromOverlappedList(i, j))
+            {
+                return;
+            }
+
+            int remainder = table[i, j].Count % table.CellSize;
+            int numberOfCellsCoveredByText = table[i, j].Count / table.CellSize;
+            numberOfCellsCoveredByText = remainder > 0 ? numberOfCellsCoveredByText + 1 : numberOfCellsCoveredByText;
+            for (int k = 1; k < numberOfCellsCoveredByText && (table[i, j].IsEditing || (table[i, j + 1].Count == 0 && !table[i, j].IsEditing)); k++)
+            {
+                if (table[i, j].OverlappedCells == null)
+                {
+                    table[i, j].OverlappedCells = new();
+                }
+                if (!table[i, j].OverlappedCells.Contains(j + k))
+                {
+                    table[i, j].OverlappedCells.Add(j + k);
+                    table.OverlappedCells.Add((i, j + k));
+                }
+            }
+        }
+
+        private static bool RemoveFromOverlappedList(int i, int j)
+        {
+            int writtenCell = LookForWrittenCell(i, j);
+            if (!table[i, j].IsEditing && writtenCell > -1 || 
+                (table[i, j].Count % table.CellSize == 0 && writtenCell > -1))
+            {
+                for (int k = writtenCell; k < table[i, j].OverlappedCells.Count; k++)
+                {
+                    ErasePreviousExtraContent(i, table[i, j].OverlappedCells[k]);
+                    table.OverlappedCells.Remove((i, table[i, j].OverlappedCells[k])); 
+                    if (table[i, table[i, j].OverlappedCells[k]].DisplayFragmentedDifference > 0)
+                    {
+                        table[i, table[i, j].OverlappedCells[k]].DisplayFragmentedDifference = 0;
+                    }
+                }
+
+                table[i, j].OverlappedCells = table[i, j].OverlappedCells.GetRange(0, writtenCell);           
+                return true;
+            }
+
+            return false;
+        }
+
+        private static int LookForWrittenCell(int i, int j)
+        {
+            for (int k = 0; table[i, j].OverlappedCells != null && k < table[i, j].OverlappedCells.Count; k++)
+            {
+                if (table[i, table[i, j].OverlappedCells[k]].IsEditing ||
+                    table[i, table[i, j].OverlappedCells[k]].Count > 0)
+                {
+                    return k;
+                }
+            }
+
+            return -1;
+        }
+
         static void Update(int moveCursor, int row)
         {
             int newPosition = Console.CursorLeft + moveCursor;
@@ -247,8 +314,12 @@ namespace SpreadsheetConsole
                 else
                     ResetCursorPosition(i, j + 1);
             }
-            else if (toDisplay is TableLimitedDisplay)
-                    ResetCursorPosition(i, j);
+
+            else
+            {
+                ResetCursorPosition(i, j);
+                Console.CursorLeft += table[i, j].DisplayFragmentedDifference;
+            }
 
             table[i, j].DisplayCell = toDisplay.DisplayContent();
             return table[i, j].DisplayCell;

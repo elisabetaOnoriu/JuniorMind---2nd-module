@@ -15,51 +15,40 @@
 
         public IDisplayCell Get()
         {
-            if (ShouldSkipCell())
-            {
-                return new NotShowableDisplay();
-            }
-            else if (ContentShouldBeCellLimited())
-            {
-                return new CellLimitedDisplay(table, row, column);
-            }
-            else if (CellsAreIntersecting(out int difference))
+            if (CellsAreIntersecting(out int difference))
             {
                 return new FragmentedDisplay(table, row, column, difference);
             }
+            else if (ShouldSkipCell())
+            {
+                return new NotShowableDisplay();
+            }           
+            else if (ContentShouldBeCellLimited())
+            {
+                return new CellLimitedDisplay(table, row, column);
+            }            
             
             return new TableLimitedDisplay(table, row, column);
         }
 
         private bool ContentShouldBeCellLimited()
         {
-            return !table.IsHeader(row, column)
-                && !table[row, column].IsEditing
-                && table[row, column + 1].Count > 0;
-        }
-        private bool ShouldSkipCell()
-        {
-            int columnsNotToCount = 2;
-            int columnsBeforeSelectedOne = GetColumnsBefore(table.SelectedCol, columnsNotToCount);
-            if (row == table.SelectedRow && column < table.SelectedCol)
+            int overlappedCellsAfterIt = table[row, column].Count / table.CellSize - 1;
+            int remainder = table[row, column].Count % table.CellSize;
+            overlappedCellsAfterIt = remainder > 0 ? overlappedCellsAfterIt + 1 : overlappedCellsAfterIt;
+            bool result = !table.IsHeader(row, column)
+                && (table[row, column + 1].Count > 0); //|| !table[row, column].IsEditing);
+            int k = 1;
+            while (k <= overlappedCellsAfterIt && !result)
             {
-                return false;
-            }
-            else if (row == table.SelectedRow
-            && table[row, table.SelectedCol].Count > table.CellSize
-            && table[row, table.SelectedCol].Count + columnsBeforeSelectedOne * table.CellSize > (column - columnsNotToCount) * table.CellSize)
-            {
-                return table[row, column].Count == 0;
+                result = table[row, column + k].Count > 0;
+                k++;
             }
 
-            return false;
+            return result ? !table[row, column].IsEditing : result;
         }
+        private bool ShouldSkipCell() => table.OverlappedCells.Contains((row, column));
 
-        private int GetColumnsBefore(int column, int columnsNotToCount)
-        {
-            int firstNonHeaderColumnIndex = 1;
-            return column > firstNonHeaderColumnIndex ? column - columnsNotToCount : 0;
-        }
         private bool CellsAreIntersecting(out int differenceBetweenSelectedCellAndIteratedCell)
         {
             if (table.SelectedRow != row || table.SelectedCol >= column || !table.IsEditing || table[row, column].Count == 0)

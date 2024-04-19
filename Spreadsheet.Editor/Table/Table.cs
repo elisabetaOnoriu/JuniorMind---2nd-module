@@ -1,4 +1,5 @@
 ﻿using ConsoleDatas;
+using System.Reflection;
 namespace Table
 {
     public class Table
@@ -13,6 +14,7 @@ namespace Table
             SelectedCol = 1;
             this.windowWidth = windowWidth;
             table = new Cell[defaultSize, defaultSize];
+            ShownContent = new string[defaultSize, defaultSize];
             Build();
         }
 
@@ -23,6 +25,10 @@ namespace Table
         }
 
         public int FirstCellSize { get; set; } = 5; //cellsize/2.MathCeiling
+
+        public List<(int, int)> OverlappedCells { get; set; } = new List<(int, int)> ();
+
+        public string[,] ShownContent { get; set; }
 
         public int SelectedRow { get; set; } = 1;
 

@@ -1,6 +1,6 @@
 ﻿namespace DisplayCell
 {
-    internal class FragmentedDisplay : IDisplayCell
+    public class FragmentedDisplay : IDisplayCell
     {
         Table.Table table;
         int row;
@@ -13,6 +13,7 @@
             row = i;
             column = j;
             this.difference = difference;
+            table[i, j].DisplayFragmentedDifference = difference;
         }
         public string DisplayContent()
         {

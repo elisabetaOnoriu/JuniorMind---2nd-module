@@ -17,8 +17,17 @@ namespace DisplayCell
         public string DisplayContent()
         {
             int startIndex = table[row, column].VisibleContentStartIndex;
-            return table[row, column].Content[startIndex..Math.Min(table.CellSizeFittingWidth(column) + startIndex,
+            string result = table[row, column].Content[startIndex..Math.Min(table.CellSizeFittingWidth(column) + startIndex,
                 table[row, column].Size)];
+            int numberOfCellsCovered = (int)Math.Ceiling((double)result.Length / table.CellSize);
+            int startingPoint = 0;
+            for (int k = row; k <= numberOfCellsCovered + row; k++)
+            {
+                table.ShownContent[row, k] = result.Substring(startingPoint, table.CellSize).PadRight(table.CellSize);
+                startingPoint += table.CellSize;
+            }
+
+            return result;
         }
     }
 }

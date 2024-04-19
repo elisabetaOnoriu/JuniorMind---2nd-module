@@ -11,6 +11,10 @@
         }
 
         public int VisibleContentStartIndex { get; set; } = 0;
+
+        public int DisplayFragmentedDifference { get; set; } = 0;
+
+        public List<int> OverlappedCells { get; set; } = null;
         
         public int Size { get => Content.Length; }
 
