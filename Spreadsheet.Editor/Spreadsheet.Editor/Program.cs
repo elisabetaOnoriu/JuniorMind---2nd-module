@@ -34,65 +34,87 @@ namespace SpreadsheetConsole
         {
             do
             {
-                Console.BackgroundColor = ConsoleColor.DarkGray;
-                RedrawTable();
+                PrepareConsoleForNavigation();
                 keyInfo = Console.ReadKey();
-                switch (keyInfo.Key)
-                {
-                    case ConsoleKey.UpArrow:
-                        if (table.SelectedRow > 1)
-                            table.SelectedRow--;
-                        break;
-
-                    case ConsoleKey.DownArrow:
-                        if (table.SelectedRow < table.DefaultSize - 1)
-                            table.SelectedRow++;
-                        break;
-
-                    case ConsoleKey.LeftArrow:
-                        if (table.SelectedCol > 1)
-                            table.SelectedCol--;
-                        break;
-
-                    case ConsoleKey.RightArrow:
-                        if (table.SelectedCol < table.DefaultSize - 2)
-                            table.SelectedCol++;
-                        break;
-
-                    case ConsoleKey.Enter:
-                        MoveCursorToEndOfContent(table.SelectedRow, table.SelectedCol);
-                        table.TurnEditingModeON(true);
-                        RedrawTable();
-                        MoveCursorToEndOfContent(table.SelectedRow, table.SelectedCol);
-                        cursorPosition = Console.CursorLeft;
-                        EditSelectedCell(table.SelectedRow, table.SelectedCol);
-                        break;
-                }
+                HandleKeyPress();
             }
             while (keyInfo.Key != ConsoleKey.Escape);
             SetConsoleData();
         }
 
-        private static void SetBackgroundAndForegroundColor(int i, int j)
+        static void PrepareConsoleForNavigation()
+        {
+            Console.BackgroundColor = ConsoleColor.DarkGray;
+            RedrawTable();
+        }
+
+        static void HandleKeyPress()
+        {
+            switch (keyInfo.Key)
+            {
+                case ConsoleKey.UpArrow:
+                    MoveSelection(-1, 0);
+                    break;
+                case ConsoleKey.DownArrow:
+                    MoveSelection(1, 0);
+                    break;
+                case ConsoleKey.LeftArrow:
+                    MoveSelection(0, -1);
+                    break;
+                case ConsoleKey.RightArrow:
+                    MoveSelection(0, 1);
+                    break;
+                case ConsoleKey.Enter:
+                    EnterEditMode();
+                    break;
+            }
+        }
+
+        static void MoveSelection(int rowOffset, int colOffset)
+        {
+            table.SelectedRow = Math.Clamp(table.SelectedRow + rowOffset, 1, table.DefaultSize - 1);
+            table.SelectedCol = Math.Clamp(table.SelectedCol + colOffset, 1, table.DefaultSize - 2);
+        }
+
+        static void EnterEditMode()
+        {
+            MoveCursorToEndOfContent(table.SelectedRow, table.SelectedCol);
+            table.TurnEditingModeON(true);
+            RedrawTable();
+            MoveCursorToEndOfContent(table.SelectedRow, table.SelectedCol);
+            cursorPosition = Console.CursorLeft;
+            EditSelectedCell(table.SelectedRow, table.SelectedCol);
+        }
+        public static void SetBackgroundAndForegroundColor(int i, int j)
         {
             if (table.CellHasToBeHighlighted(i, j))
             {
                 ResetCursorPosition(i, j);
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Highlight();
             }
             else
             {
-                Console.BackgroundColor = ConsoleColor.DarkGray;
-                Console.ForegroundColor = ConsoleColor.White;
+                UnHighlight();
             }
+        }
+
+        public static void Highlight()
+        {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+        }
+
+        public static void UnHighlight()
+        {
+            Console.BackgroundColor = ConsoleColor.DarkGray;
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         private static void ResetCursorPosition(int i, int j)
         {
             if (!table.IsHeader(i, j))
             {
-                Console.SetCursorPosition(j * table.CellSize - 4, i);
+                Console.SetCursorPosition((j * table.CellSize - 4) + table[i,j].VisibleContentStartIndex, i);
             }
 
             SetConsoleData();
@@ -162,58 +184,20 @@ namespace SpreadsheetConsole
         static void WriteInCell(int i, int j)
         {
             keyInfo = Console.ReadKey(true);
-            int cursorLeftIndexExcluded = Console.CursorLeft - table.FirstCellSize;
-            int cellPositionCursor = CursorCellPosition(j);
+
             switch (keyInfo.Key)
             {
                 case ConsoleKey.Enter:
                     table.IsEditing = false;
                     break;
                 case ConsoleKey.Backspace:
-                    int cellsBefore = j - 1;
-                    int index = cursorLeftIndexExcluded - cellsBefore * table.CellSize + table[i, j].VisibleContentStartIndex;
-                    if (index > 0)
-                    {
-                        table[i, j].RemoveChar(index);
-                        
-                        Console.CursorLeft--;
-                        Console.Write(" ");
-                        if (table[i, j].VisibleContentStartIndex > 0 && index > table.CellSize)
-                        {
-                            table[i, j].VisibleContentStartIndex--;
-                            Console.CursorLeft++;
-                        } 
-                                               
-                        Update(-1, i);                       
-                    }
+                    HandleBackspace(i, j);
                     break;
                 case ConsoleKey.LeftArrow:
-                    if (cellPositionCursor > 0)
-                    {
-                        Console.SetCursorPosition(Console.CursorLeft - 1, i);
-                        cursorPosition--;
-                    }
-                    else if (table[i, j].VisibleContentStartIndex > 0)
-                    {
-                        table[i, j].VisibleContentStartIndex--;
-                        RedrawTable();
-                        Console.SetCursorPosition(table.FirstCellSize + (j - 1) * table.CellSize, i);
-                    }
+                    MoveCursorLeft(i, j);
                     break;
                 case ConsoleKey.RightArrow:
-                    if (!table.ContentFitsWidth(i, j) && cellPositionCursor == table[i, j].DisplayCell.Length
-                        && cellPositionCursor + table[i, j].VisibleContentStartIndex < table[i, j].Count)
-                    {
-                        table[i, j].VisibleContentStartIndex++;
-                        RedrawTable();
-                        Console.SetCursorPosition(table.FirstCellSize + (j - 1) * table.CellSize + table[i, j].DisplayCell.Length, i);
-                    }
-                    else if (cellPositionCursor < table.CellSize)
-                    {
-                        Console.SetCursorPosition(Console.CursorLeft + 1, i);
-                        cursorPosition++;
-                    }
-
+                    MoveCursorRight(i, j);
                     break;
                 default:
                     AddCharToCell(i, j);
@@ -221,6 +205,61 @@ namespace SpreadsheetConsole
             }
         }
 
+        static void HandleBackspace(int i, int j)
+        {
+            int cursorLeftIndexExcluded = Console.CursorLeft - table.FirstCellSize;
+            int index = cursorLeftIndexExcluded - (j - 1) * table.CellSize + table[i, j].VisibleContentStartIndex;
+
+            if (index > 0)
+            {
+                table[i, j].RemoveChar(index);
+                Console.CursorLeft--;
+                Console.Write(" ");
+
+                if (table[i, j].VisibleContentStartIndex > 0 && index > table.CellSize)
+                {
+                    table[i, j].VisibleContentStartIndex--;
+                    Console.CursorLeft++;
+                }
+
+                Update(-1, i);
+            }
+        }
+
+        static void MoveCursorLeft(int i, int j)
+        {
+            int cellPositionCursor = CursorCellPosition(j);
+
+            if (cellPositionCursor > 0)
+            {
+                Console.SetCursorPosition(Console.CursorLeft - 1, i);
+                cursorPosition--;
+            }
+            else if (table[i, j].VisibleContentStartIndex > 0)
+            {
+                table[i, j].VisibleContentStartIndex--;
+                RedrawTable();
+                Console.SetCursorPosition(table.FirstCellSize + (j - 1) * table.CellSize, i);
+            }
+        }
+
+        static void MoveCursorRight(int i, int j)
+        {
+            int cellPositionCursor = CursorCellPosition(j);
+
+            if (!table.ContentFitsWidth(i, j) && cellPositionCursor == table[i, j].DisplayCell.Length
+                && cellPositionCursor + table[i, j].VisibleContentStartIndex < table[i, j].Count)
+            {
+                table[i, j].VisibleContentStartIndex++;
+                RedrawTable();
+                Console.SetCursorPosition(table.FirstCellSize + (j - 1) * table.CellSize + table[i, j].DisplayCell.Length, i);
+            }
+            else if (cellPositionCursor < table.CellSize)
+            {
+                Console.SetCursorPosition(Console.CursorLeft + 1, i);
+                cursorPosition++;
+            }
+        }
         private static void VerifyOverlapping(int i, int j)
         {
             if (RemoveFromOverlappedList(i, j))
@@ -253,7 +292,7 @@ namespace SpreadsheetConsole
             {
                 for (int k = writtenCell; k < table[i, j].OverlappedCells.Count; k++)
                 {
-                    ErasePreviousExtraContent(i, table[i, j].OverlappedCells[k]);
+                    ErasePreviousExtraContent(i, table[i, j].OverlappedCells[k]);   
                     table.OverlappedCells.Remove((i, table[i, j].OverlappedCells[k])); 
                     if (table[i, table[i, j].OverlappedCells[k]].DisplayFragmentedDifference > 0)
                     {
@@ -307,14 +346,11 @@ namespace SpreadsheetConsole
         {
             Displayable displayable = new(table, i, j);
             var toDisplay = displayable.Get();
+
             if (toDisplay is NotShowableDisplay)
             {
-                if (j == table.GetVisibleColumns() - 1)
-                    ResetCursorPosition(i + 1, j);
-                else
-                    ResetCursorPosition(i, j + 1);
+                MoveToNextVisibleCell(i, j);
             }
-
             else
             {
                 ResetCursorPosition(i, j);
@@ -324,6 +360,15 @@ namespace SpreadsheetConsole
             table[i, j].DisplayCell = toDisplay.DisplayContent();
             return table[i, j].DisplayCell;
         }
+
+        static void MoveToNextVisibleCell(int i, int j)
+        {
+            if (j == table.GetVisibleColumns() - 1)
+                ResetCursorPosition(i + 1, j);
+            else
+                ResetCursorPosition(i, j + 1);
+        }
+
 
         static void SetConsoleData()
         {

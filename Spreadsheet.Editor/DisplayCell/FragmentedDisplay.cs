@@ -19,5 +19,6 @@
         {
             return table[row, column].Content[(difference + table[row, column].VisibleContentStartIndex)..];
         }
+
     }
 }

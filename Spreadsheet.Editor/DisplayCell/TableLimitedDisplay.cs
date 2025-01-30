@@ -1,11 +1,12 @@
 ﻿using Table;
+
 namespace DisplayCell
 {
     public class TableLimitedDisplay : IDisplayCell
     {
-        Table.Table table;
-        int row;
-        int column;
+        private readonly Table.Table table;
+        private readonly int row;
+        private readonly int column;
 
         public TableLimitedDisplay(Table.Table table, int i, int j)
         {
@@ -16,18 +17,45 @@ namespace DisplayCell
 
         public string DisplayContent()
         {
+            string result = GetVisibleContent();
+            PopulateTableWithContent(result);
+            return result;
+        }
+
+        private string GetVisibleContent()
+        {
             int startIndex = table[row, column].VisibleContentStartIndex;
-            string result = table[row, column].Content[startIndex..Math.Min(table.CellSizeFittingWidth(column) + startIndex,
-                table[row, column].Size)];
+            return table[row, column].Content[startIndex..Math.Min(table.CellSizeFittingWidth(column) + startIndex, table[row, column].Size)];
+        }
+
+        private void PopulateTableWithContent(string result)
+        {
             int numberOfCellsCovered = (int)Math.Ceiling((double)result.Length / table.CellSize);
             int startingPoint = 0;
+
             for (int k = row; k <= numberOfCellsCovered + row; k++)
             {
-                table.ShownContent[row, k] = result.Substring(startingPoint, table.CellSize).PadRight(table.CellSize);
+                string contentToShow = GetContentToShow(result, startingPoint);
+                table.ShownContent[row, k] = FormatContent(contentToShow);
+
+                if (!table[row, column].IsEditing)
+                    table.ShownContent[row, k] = table.ShownContent[row, k].PadRight(numberOfCellsCovered * table.CellSize);
+
+                if (contentToShow.Length <= table.CellSize)
+                    break;
+
                 startingPoint += table.CellSize;
             }
+        }
 
-            return result;
+        private string GetContentToShow(string result, int startingPoint)
+        {
+            return result.Substring(startingPoint, Math.Min(table.CellSize, result.Length - startingPoint));
+        }
+
+        private string FormatContent(string content)
+        {
+            return content.PadRight(table.CellSize);
         }
     }
 }
