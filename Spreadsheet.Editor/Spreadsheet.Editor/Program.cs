@@ -74,6 +74,18 @@ namespace SpreadsheetConsole
         {
             table.SelectedRow = Math.Clamp(table.SelectedRow + rowOffset, 1, table.DefaultSize - 1);
             table.SelectedCol = Math.Clamp(table.SelectedCol + colOffset, 1, table.DefaultSize - 2);
+
+            if (table.SelectedCol == table.GetVisibleColumns())
+            {
+                table.SelectedCol = 1;
+                table.SelectedRow++;
+            }
+
+            if (table.SelectedCol == 1 && colOffset == -1 && table.SelectedRow > 1)
+            {
+                table.SelectedCol = table.GetVisibleColumns() -  1;
+                table.SelectedRow--;
+            }
         }
 
         static void EnterEditMode()
@@ -93,7 +105,7 @@ namespace SpreadsheetConsole
                 Highlight();
             }
             else
-            {
+            {     
                 UnHighlight();
             }
         }
@@ -114,7 +126,7 @@ namespace SpreadsheetConsole
         {
             if (!table.IsHeader(i, j))
             {
-                Console.SetCursorPosition((j * table.CellSize - 4) + table[i,j].VisibleContentStartIndex, i);
+                Console.SetCursorPosition((j * table.CellSize - 4), i);
             }
 
             SetConsoleData();
@@ -260,6 +272,7 @@ namespace SpreadsheetConsole
                 cursorPosition++;
             }
         }
+
         private static void VerifyOverlapping(int i, int j)
         {
             if (RemoveFromOverlappedList(i, j))
@@ -368,7 +381,6 @@ namespace SpreadsheetConsole
             else
                 ResetCursorPosition(i, j + 1);
         }
-
 
         static void SetConsoleData()
         {
